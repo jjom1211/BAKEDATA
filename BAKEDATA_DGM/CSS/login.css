@@ -1,0 +1,96 @@
+body {
+    background-image: url("https://i.imgur.com/mGwWm4L.jpg");
+    background-size: 40%;
+    background-repeat: repeat;
+    background-position: top left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+.login-container {
+    background: rgba(255, 255, 255, 0.7); /* Fondo blanco semitransparente */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #000000;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #000000;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.password-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 35px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #DA6049;
+    background: none;
+    border: none;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #DA6049;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: large;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.login-container button:hover {
+    background-color: #eb816c;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.register-text {
+    color: #000000;
+    font-weight: bold;
+}
