@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bake Data - Inicio</title>
+    <link rel="icon" href="https://i.imgur.com/vInTmwh.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fffaf0;
+        }
+        .top-bar {
+            background-color: #b35340;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+        }
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 50px;
+            height: auto;
+        }
+        .icon-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px;
+            height: auto;
+        }
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            background-color: #4f4f4f;
+            padding: 10px;
+        }
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        .nav-bar a:hover {
+            background-color: #3d3d3d;
+            border-radius: 5px;
+        }
+        .container {
+            text-align: justify;
+            padding: 50px;
+        }
+        .title-gray {
+            color: #847c84;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .title-black {
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .product-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .left-section {
+            display: flex;
+            justify-content: flex-start;
+        }
+        .right-section {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .view-all-btn {
+            background-color: #d8a394;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-dropdown {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Quicksand', sans-serif;
+            color: #b35340;
+        }
+        .carousel-container {
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+        .carousel {
+            display: flex;
+            width: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel div {
+            text-align: center;
+            min-width: 200px;
+            flex: 0 0 auto;
+        }
+        .carousel img {
+            width: 200px;
+            height: auto;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        .product-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .product-price {
+            font-size: 16px;
+        }
+        .arrow {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .left-arrow {
+            left: 10px;
+        }
+        .right-arrow {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <img src="https://i.imgur.com/vInTmwh.png" alt="Mascota Bake Data" class="logo">
+        <img src="https://i.imgur.com/piX2hC1.png" alt="Icono adicional" class="icon-right">
+        Bake Data
+    </div>
+    <div class="nav-bar">
+        <a href="#">Realizar Pedido</a>
+        <a href="#">Sucursales</a>
+        <a href="#">Promociones y Cupones</a>
+        <a href="#">Conócenos</a>
+    </div>
+    <div class="container">
+        <h1 class="title-gray">Conoce nuestros productos:</h1>
+        
+        <!-- Secciones actualizadas -->
+        <script>
+            const categories = [
+                "Panes", "Gelatinas y flanes", "Galletas", "Pasteles", "Postres", "Pan de temporada"
+            ];
+            
+            document.write(categories.map(category => {
+                let options = "";
+                if (category === "Panes") {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <option value="PAN MANTECA">PAN MANTECA</option>
+                        <option value="PAN POLVORON">PAN POLVORON</option>
+                        <option value="PAN DONAS Y FRITAS">PAN DONAS Y FRITAS</option>
+                        <option value="PAN DANES">PAN DANES</option>
+                        <option value="PAN CONCHA">PAN CONCHA</option>
+                        <option value="PAN FEITE">PAN FEITE</option>
+                        <option value="PAN OTROS">PAN OTROS</option>
+                        <option value="PAN SURTIDO">PAN SURTIDO</option>
+                        <option value="PAN RELLENO">PAN RELLENO</option>
+                        <option value="PAN POSTRE">PAN POSTRE</option>
+                        <option value="PAN BLANCO">PAN BLANCO</option>`;
+                } else if (category === "Galletas") {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <option value="GALLETA SURTIDO">GALLETA SURTIDO</option>
+                        <option value="GALLETA NATA">GALLETA NATA</option>
+                        <option value="GALLETA SUR. MINI">GALLETA SUR. MINI</option>
+                        <option value="GARABATO">GARABATO</option>
+                        <option value="PASTISETA">PASTISETA</option>
+                        <option value="PASTISETA CH.">PASTISETA CH.</option>
+                        <option value="PASTISETA FRESA">PASTISETA FRESA</option>
+                        <option value="PASTISETA PIÑA">PASTISETA PIÑA</option>
+                        <option value="COLORES">COLORES</option>
+                        <option value="CUERNITO">CUERNITO</option>
+                        <option value="CHIPS ALMENDRA">CHIPS ALMENDRA</option>
+                        <option value="BICOLOR">BICOLOR</option>
+                        <option value="BICOLOR CH. BCO">BICOLOR CH. BCO</option>
+                        <option value="CH. C/CHISPAS">CH. C/CHISPAS</option>
+                        <option value="DELICIOSA">DELICIOSA</option>
+                        <option value="CAJA DE GALLETA">CAJA DE GALLETA</option>
+                        <option value="ALFAJORES">ALFAJORES</option>`;
+                } else if (category === "Gelatinas y flanes") {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <option value="GELATINA AGUA">GELATINA AGUA</option>
+                        <option value="GELATINA">GELATINA</option>
+                        <option value="GELATINA YOGUR">GELATINA YOGUR</option>
+                        <option value="GELATINA ROMPOPE">GELATINA ROMPOPE</option>
+                        <option value="GELATINA DE ANIMAL">GELATINA DE ANIMAL</option>
+                        <option value="GELATINA DE M. CH.">GELATINA DE M. CH.</option>
+                        <option value="GELATINA GDE.">GELATINA GDE.</option>
+                        <option value="G. MOSAICO DE NUEZ">G. MOSAICO DE NUEZ</option>
+                        <option value="GELATINA CHICA NUEZ">GELATINA CHICA NUEZ</option>
+                        <option value="FLAN MOSAICO">FLAN MOSAICO</option>
+                        <option value="FLAN CHICO">FLAN CHICO</option>
+                        <option value="GEL. ANIMAL GDE.">GEL. ANIMAL GDE.</option>
+                        <option value="GEL. ANIMAL MINI">GEL. ANIMAL MINI</option>
+                        <option value="GELATINA TARRO">GELATINA TARRO</option>`;
+                } else if (category === "Pan de temporada") {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <option value="PAN TEMPORADA ROSCA REYES">PAN TEMPORADA ROSCA REYES</option>
+                        <option value="PAN TEMPORADA MUERTO">PAN TEMPORADA MUERTO</option>`;
+                } else if (category === "Pasteles") {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <option value="P.CHICO BAILEYS">P.CHICO BAILEYS</option>
+                        <option value="OREO">OREO</option>
+                        <option value="2 CHOCOLATE">2 CHOCOLATE</option>
+                        <option value="MARIAS">MARIAS</option>
+                        <option value="SELVA NEGRA">SELVA NEGRA</option>
+                        <option value="TRUFA">TRUFA</option>
+                        <option value="PIÑA COCO">PIÑA COCO</option>
+                        <option value="CHOCOLATE">CHOCOLATE</option>
+                        <option value="NUTELA">NUTELA</option>
+                        <option value="FRESAS C/CREMA">FRESAS C/CREMA</option>
+                        <option value="ZARZAMORA">ZARZAMORA</option>
+                        <option value="MOKA">MOKA</option>
+                        <option value="BAYLEYS jueves">BAYLEYS jueves</option>
+                        <option value="ZANAHORIA">ZANAHORIA</option>
+                        <option value="PASTEL OPERA">PASTEL OPERA</option>
+                        <option value="PASTEL * KILO">PASTEL * KILO</option>
+                        <option value="PASTEL MIL HOJAS CH.">PASTEL MIL HOJAS CH.</option>
+                        <option value="MIL HOJAS REB">MIL HOJAS REB</option>
+                        <option value="NIÑO ENVUELTO">NIÑO ENVUELTO</option>
+                        <option value="N.E. CHOCOLATE">N.E. CHOCOLATE</option>
+                        <option value="N.E. FRESA">N.E. FRESA</option>
+                        <option value="N.E. BAILEYS">N.E. BAILEYS</option>`;
+                } else if (category === "Postres") {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <option value="CARLOTA C/PASTELER">CARLOTA C/PASTELER</option>
+                        <option value="FRESAS C/CREMA">FRESAS C/CREMA</option>
+                        <option value="ARROZ C/CREMA">ARROZ C/CREMA</option>
+                        <option value="TARTA CH.">TARTA CH.</option>
+                        <option value="TARTA GDE.">TARTA GDE.</option>
+                        <option value="PAY DE LIMÓN">PAY DE LIMÓN</option>
+                        <option value="MOSAICO">MOSAICO</option>
+                        <option value="CHEESECAKE MINI">CHEESECAKE MINI</option>`;
+                } else {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <option value="producto1">Producto 1</option>
+                        <option value="producto2">Producto 2</option>`;
+                }
+                return `
+                    <div class="product-section">
+                        <div class="left-section">
+                            <h2 class="title-black">${category}</h2>
+                        </div>
+                        <div class="right-section">
+                            <select class="search-dropdown" id="search-${category.replace(/\s/g, '')}">
+                                ${options}
+                            </select>
+                            <button class="view-all-btn">Ver todo</button>
+                        </div>
+                    </div>
+                    <div class="carousel-container">
+                        <button class="arrow left-arrow" onclick="moveSlide(-1, '${category}')">&#10094;</button>
+                        <div class="carousel" id="carousel-${category.replace(/\s/g, '')}">
+                            <div>
+                                <img src="https://via.placeholder.com/200" alt="${category} 1">
+                                <p class="product-name">Producto 1</p>
+                                <p class="product-price">Precio por unidad: $5</p>
+                            </div>
+                        </div>
+                        <button class="arrow right-arrow" onclick="moveSlide(1, '${category}')">&#10095;</button>
+                    </div>
+                `;
+            }).join(''));
+        </script>
+    </div>
+</body>
+</html>
