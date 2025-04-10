@@ -1,5 +1,10 @@
 from flask import Flask, jsonify, request, render_template, send_from_directory
 import pymysql
+from datetime import datetime
+import pytz
+
+
+
 
 app = Flask(__name__, template_folder='HTML')
 
@@ -33,7 +38,18 @@ def handle_login():
             result = cursor.fetchone()
 
             if result:
-                return jsonify({'message': 'Inicio de sesión exitoso'}), 200
+                # Obtener la hora local de México Centro
+                tz = pytz.timezone('America/Mexico_City')
+                hora_actual = datetime.now(tz).hour
+
+                if 5 <= hora_actual < 12:
+                    saludo = '¡Buenos días!'
+                elif 12 <= hora_actual < 19:
+                    saludo = '¡Buenas tardes!'
+                else:
+                    saludo = '¡Buenas noches!'
+
+                return jsonify({'message': f'{saludo}, inicio de sesión exitoso'}), 200
             else:
                 return jsonify({'error': 'Usuario o contraseña no válidos'}), 401
     finally:
