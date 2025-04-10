@@ -43,13 +43,13 @@ def handle_login():
                 hora_actual = datetime.now(tz).hour
 
                 if 5 <= hora_actual < 12:
-                    saludo = '¡Buenos días!'
+                    saludo = '¡Buenos días ' + username + ' !'
                 elif 12 <= hora_actual < 19:
-                    saludo = '¡Buenas tardes!'
+                    saludo = '¡Buenas tardes ' + username + ' !'
                 else:
-                    saludo = '¡Buenas noches!'
+                    saludo = '¡Buenas noches ' + username + ' !'
 
-                return jsonify({'message': f'{saludo}, inicio de sesión exitoso'}), 200
+                return jsonify({'message': f'{saludo} , ¡Bienvenido!'}), 200
             else:
                 return jsonify({'error': 'Usuario o contraseña no válidos'}), 401
     finally:
