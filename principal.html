@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Configuración básica del documento -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bake Data - Inicio</title>
-    <link rel="icon" href="https://i.imgur.com/vInTmwh.png" type="image/png">
+    
+    <!-- Favicon y fuentes de Google -->
+    <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos CSS -->
     <style>
+        /* Estilos generales */
         body {
             font-family: 'Quicksand', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #fffaf0;
         }
+        
+        /* Barra superior con logo y título */
         .top-bar {
             background-color: #b35340;
             color: white;
@@ -22,6 +30,8 @@
             font-weight: bold;
             position: relative;
         }
+        
+        /* Logo en la barra superior */
         .logo {
             position: absolute;
             top: 10px;
@@ -29,6 +39,8 @@
             width: 50px;
             height: auto;
         }
+        
+        /* Icono derecho en la barra superior */
         .icon-right {
             position: absolute;
             top: 10px;
@@ -36,52 +48,72 @@
             width: 100px;
             height: auto;
         }
+        
+        /* Barra de navegación */
         .nav-bar {
             display: flex;
             justify-content: center;
             background-color: #4f4f4f;
             padding: 10px;
         }
+        
+        /* Estilos de los enlaces de navegación */
         .nav-bar a {
             color: white;
             text-decoration: none;
-            padding: 10px 20px;
+            padding: 10px 40px;
             font-size: 18px;
         }
+        
+        /* Efecto hover en enlaces de navegación */
         .nav-bar a:hover {
             background-color: #3d3d3d;
             border-radius: 5px;
         }
+        
+        /* Contenedor principal del contenido */
         .container {
             text-align: justify;
             padding: 50px;
         }
+        
+        /* Título principal en color gris */
         .title-gray {
             color: #847c84;
             font-size: 28px;
             font-weight: bold;
         }
+        
+        /* Título de categoría en negro */
         .title-black {
             color: black;
             font-size: 24px;
             font-weight: bold;
             margin: 0;
         }
+        
+        /* Sección de productos (título + controles) */
         .product-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-top: 20px;
         }
+        
+        /* Sección izquierda (título de categoría) */
         .left-section {
             display: flex;
             justify-content: flex-start;
         }
+        
+        /* Sección derecha (búsqueda + botón) */
         .right-section {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
         }
+        
+        /* Botón "Ver todo" */
         .view-all-btn {
             background-color: #d8a394;
             color: white;
@@ -91,6 +123,8 @@
             font-size: 16px;
             cursor: pointer;
         }
+        
+        /* Selector de búsqueda */
         .search-dropdown {
             padding: 10px;
             border: 1px solid #ccc;
@@ -98,6 +132,8 @@
             font-family: 'Quicksand', sans-serif;
             color: #b35340;
         }
+        
+        /* Contenedor del carrusel */
         .carousel-container {
             display: flex;
             align-items: center;
@@ -105,29 +141,48 @@
             width: 100%;
             position: relative;
         }
+        
+        /* Carrusel de productos */
         .carousel {
             display: flex;
             width: 100%;
             transition: transform 0.5s ease-in-out;
         }
+        
+        /* Elemento individual del carrusel */
         .carousel div {
             text-align: center;
             min-width: 200px;
             flex: 0 0 auto;
+            cursor: pointer; /* Cambia el cursor a mano al pasar sobre productos */
         }
+        
+        /* Efecto hover para productos */
+        .carousel div:hover {
+            transform: scale(1.03);
+            transition: transform 0.2s ease;
+        }
+        
+        /* Imagen del producto en el carrusel */
         .carousel img {
             width: 200px;
             height: auto;
             margin: 10px;
             border-radius: 5px;
         }
+        
+        /* Nombre del producto */
         .product-name {
             font-size: 20px;
             font-weight: bold;
         }
+        
+        /* Precio del producto */
         .product-price {
             font-size: 16px;
         }
+        
+        /* Flechas del carrusel */
         .arrow {
             background: none;
             border: none;
@@ -137,37 +192,49 @@
             top: 50%;
             transform: translateY(-50%);
         }
+        
+        /* Flecha izquierda */
         .left-arrow {
             left: 10px;
         }
+        
+        /* Flecha derecha */
         .right-arrow {
             right: 10px;
         }
     </style>
 </head>
 <body>
+    <!-- Barra superior con logo y título -->
     <div class="top-bar">
-        <img src="https://i.imgur.com/vInTmwh.png" alt="Mascota Bake Data" class="logo">
+        <img src="https://i.imgur.com/WW384uk.png" alt="Logo Bake Data" class="logo">
         <img src="https://i.imgur.com/piX2hC1.png" alt="Icono adicional" class="icon-right">
         Bake Data
     </div>
+    
+    <!-- Barra de navegación -->
     <div class="nav-bar">
         <a href="#">Realizar Pedido</a>
         <a href="#">Sucursales</a>
-        <a href="#">Promociones y Cupones</a>
         <a href="#">Conócenos</a>
     </div>
+    
+    <!-- Contenido principal -->
     <div class="container">
         <h1 class="title-gray">Conoce nuestros productos:</h1>
         
-        <!-- Secciones actualizadas -->
+        <!-- Script que genera dinámicamente las secciones de productos -->
         <script>
+            // Lista de categorías de productos
             const categories = [
                 "Panes", "Gelatinas y flanes", "Galletas", "Pasteles", "Postres", "Pan de temporada"
             ];
             
+            // Genera el HTML para cada categoría
             document.write(categories.map(category => {
                 let options = "";
+                
+                // Opciones específicas para cada categoría
                 if (category === "Panes") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
@@ -266,31 +333,133 @@
                         <option value="producto1">Producto 1</option>
                         <option value="producto2">Producto 2</option>`;
                 }
-                return `
-                    <div class="product-section">
-                        <div class="left-section">
-                            <h2 class="title-black">${category}</h2>
-                        </div>
-                        <div class="right-section">
-                            <select class="search-dropdown" id="search-${category.replace(/\s/g, '')}">
-                                ${options}
-                            </select>
-                            <button class="view-all-btn">Ver todo</button>
-                        </div>
-                    </div>
-                    <div class="carousel-container">
-                        <button class="arrow left-arrow" onclick="moveSlide(-1, '${category}')">&#10094;</button>
-                        <div class="carousel" id="carousel-${category.replace(/\s/g, '')}">
-                            <div>
-                                <img src="https://via.placeholder.com/200" alt="${category} 1">
-                                <p class="product-name">Producto 1</p>
-                                <p class="product-price">Precio por unidad: $5</p>
+                
+                // Estructura HTML para cada categoría
+                if (category === "Pasteles") {
+                    return `
+                        <div class="product-section">
+                            <div class="left-section">
+                                <h2 class="title-black">${category}</h2>
+                            </div>
+                            <div class="right-section">
+                                <select class="search-dropdown" id="search-${category.replace(/\s/g, '')}">
+                                    ${options}
+                                </select>
+                                <button class="view-all-btn">Ver todo</button>
                             </div>
                         </div>
-                        <button class="arrow right-arrow" onclick="moveSlide(1, '${category}')">&#10095;</button>
-                    </div>
-                `;
+                        <div class="carousel-container">
+                            <button class="arrow left-arrow" onclick="moveSlide(-1, '${category}')">&#10094;</button>
+                            <div class="carousel" id="carousel-${category.replace(/\s/g, '')}">
+                                <div onclick="mostrarDetalles('Pastel de zanahoria', 'Pasteles')">
+                                    <img src="https://i.imgur.com/vI4ZD2S.jpg" alt="Pastel de zanahoria">
+                                    <p class="product-name">Pastel de zanahoria</p>
+                                    <p class="product-price">Precio por unidad: $17</p>
+                                </div>
+                                <div onclick="mostrarDetalles('Pastel de chocolate', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Pastel de chocolate">
+                                    <p class="product-name">Pastel de chocolate</p>
+                                    <p class="product-price">Precio por unidad: $15</p>
+                                </div>
+                            </div>
+                            <button class="arrow right-arrow" onclick="moveSlide(1, '${category}')">&#10095;</button>
+                        </div>
+                    `;
+                } else if (category === "Postres") {
+                    return `
+                        <div class="product-section">
+                            <div class="left-section">
+                                <h2 class="title-black">${category}</h2>
+                            </div>
+                            <div class="right-section">
+                                <select class="search-dropdown" id="search-${category.replace(/\s/g, '')}">
+                                    ${options}
+                                </select>
+                                <button class="view-all-btn">Ver todo</button>
+                            </div>
+                        </div>
+                        <div class="carousel-container">
+                            <button class="arrow left-arrow" onclick="moveSlide(-1, '${category}')">&#10094;</button>
+                            <div class="carousel" id="carousel-${category.replace(/\s/g, '')}">
+                                <div onclick="mostrarDetalles('Tarta Chica', 'Postres')">
+                                    <img src="https://i.imgur.com/m3xVdLD.jpg" alt="Tarta Chica">
+                                    <p class="product-name">Tarta Chica</p>
+                                    <p class="product-price">Precio por unidad: $22</p>
+                                </div>
+                                <div onclick="mostrarDetalles('Pay de limón', 'Postres')">
+                                    <img src="https://i.imgur.com/sK2h3f2.jpg" alt="Pay de limón">
+                                    <p class="product-name">Pay de limón</p>
+                                    <p class="product-price">Precio por unidad: $22</p>
+                                </div>
+                                <div onclick="mostrarDetalles('Fresas con crema', 'Postres')">
+                                    <img src="https://i.imgur.com/fkx0ooE.jpg" alt="Fresas con crema">
+                                    <p class="product-name">Fresas con crema</p>
+                                    <p class="product-price">Precio por unidad: $22</p>
+                                </div>
+                                <div onclick="mostrarDetalles('Carlota', 'Postres')">
+                                    <img src="https://i.imgur.com/jD94j9f.jpg" alt="Carlota">
+                                    <p class="product-name">Carlota</p>
+                                    <p class="product-price">Precio por unidad: $22</p>
+                                </div>
+                                <div onclick="mostrarDetalles('Arroz con leche', 'Postres')">
+                                    <img src="https://i.imgur.com/otOFCSD.jpg" alt="Arroz con leche">
+                                    <p class="product-name">Arroz con leche</p>
+                                    <p class="product-price">Precio por unidad: $16</p>
+                                </div>
+                            </div>
+                            <button class="arrow right-arrow" onclick="moveSlide(1, '${category}')">&#10095;</button>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="product-section">
+                            <div class="left-section">
+                                <h2 class="title-black">${category}</h2>
+                            </div>
+                            <div class="right-section">
+                                <select class="search-dropdown" id="search-${category.replace(/\s/g, '')}">
+                                    ${options}
+                                </select>
+                                <button class="view-all-btn">Ver todo</button>
+                            </div>
+                        </div>
+                        <div class="carousel-container">
+                            <button class="arrow left-arrow" onclick="moveSlide(-1, '${category}')">&#10094;</button>
+                            <div class="carousel" id="carousel-${category.replace(/\s/g, '')}">
+                                <div onclick="mostrarDetalles('Producto 1', '${category}')">
+                                    <img src="https://via.placeholder.com/200" alt="${category} 1">
+                                    <p class="product-name">Producto 1</p>
+                                    <p class="product-price">Precio por unidad: $5</p>
+                                </div>
+                            </div>
+                            <button class="arrow right-arrow" onclick="moveSlide(1, '${category}')">&#10095;</button>
+                        </div>
+                    `;
+                }
             }).join(''));
+
+            function moveSlide(direction, category) {
+                // Función para mover el carrusel
+                console.log("Mover carrusel de " + category + " en dirección: " + direction);
+            }
+
+            // Función para manejar clicks en productos
+            function mostrarDetalles(nombreProducto, categoria) {
+                // EJEMPLO: Mostrar alerta con los detalles
+                alert(`Producto: ${nombreProducto}\nCategoría: ${categoria}`);
+                
+                /* 
+                Otras opciones:
+                
+                1. Redirigir a página de detalles:
+                window.location.href = `detalle.html?producto=${encodeURIComponent(nombreProducto)}&categoria=${encodeURIComponent(categoria)}`;
+                
+                2. Mostrar modal con detalles:
+                document.getElementById('modal-titulo').textContent = nombreProducto;
+                document.getElementById('modal-categoria').textContent = categoria;
+                document.getElementById('modal-detalles').style.display = 'block';
+                */
+            }
         </script>
     </div>
 </body>
