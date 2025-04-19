@@ -3,9 +3,6 @@ import pymysql
 from datetime import datetime
 import pytz
 
-
-
-
 app = Flask(__name__, template_folder='HTML')
 
 # Configuración de la base de datos
@@ -63,7 +60,6 @@ def serve_css(filename):
 @app.route('/JS/<path:filename>')
 def serve_js(filename):
     return send_from_directory('JS', filename)
-
 
 
 @app.route('/gerente.html')
