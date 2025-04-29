@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     const calendarGrid = document.getElementById('calendarGrid');
     const currentMonthElement = document.getElementById('currentMonth');
@@ -11,22 +12,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const year = date.getFullYear();
         const month = date.getMonth();
         currentMonthElement.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
-
+    
         const firstDayOfMonth = new Date(year, month, 1);
         const lastDayOfMonth = new Date(year, month + 1, 0);
         const daysInMonth = lastDayOfMonth.getDate();
         const startDay = firstDayOfMonth.getDay();
-
+    
         for (let i = 0; i < startDay; i++) {
             calendarGrid.appendChild(document.createElement('div'));
         }
-
+    
         for (let i = 1; i <= daysInMonth; i++) {
             const dayElement = document.createElement('div');
             dayElement.textContent = i;
+    
+            const fechaActual = new Date(year, month, i);
+            const fechaStr = fechaActual.toISOString().split('T')[0];
+    
+            if (diasConLimpieza.includes(fechaStr)) {
+                dayElement.classList.add('event'); // aplica el estilo púrpura
+            }
+    
             dayElement.addEventListener('click', () => {
-                dayElement.classList.toggle('event');
+                mostrarTareasDelDia(fechaStr);
             });
+            
+    
             calendarGrid.appendChild(dayElement);
         }
     }
@@ -57,4 +68,25 @@ function toggleSidebar() {
     const content = document.querySelector('.content');
     sidebar.classList.toggle('active');
     content.classList.toggle('active');
+}
+
+function mostrarTareasDelDia(fechaStr) {
+    fetch(`/tareas_por_fecha/${fechaStr}`)
+        .then(response => response.json())
+        .then(data => {
+            const tareasDiv = document.getElementById('tareasDelDia');
+            tareasDiv.innerHTML = `<h3>Tareas para ${fechaStr}</h3>`;
+            if (data.length === 0) {
+                tareasDiv.innerHTML += "<p>No hay tareas registradas.</p>";
+            } else {
+                const lista = document.createElement('ul');
+                data.forEach(tarea => {
+                    const item = document.createElement('li');
+                    item.textContent = `${tarea.actividad} - ${tarea.estado}`;
+                    lista.appendChild(item);
+                });
+                tareasDiv.appendChild(lista);
+            }
+        })
+        .catch(error => console.error('Error al obtener tareas:', error));
 }

@@ -1,6 +1,6 @@
 function verCalendario() {
     alert("Abriendo calendario...");
-    window.location.href = "limCalendario.html";
+    window.location.href = "limCalendario.jinja2";
 }
 function limpiezaDelDia() {
     alert("Viendo limpieza del dia...");

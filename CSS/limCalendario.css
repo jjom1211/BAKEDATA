@@ -223,3 +223,14 @@ h1{
 .content.active {
     margin-left: 250px;
 }
+
+
+
+.tareas-del-dia {
+    color: white;
+    margin-top: 20px;
+    background: #fc9d78;
+    padding: 15px;
+    border-radius: 10px;
+}
+
