@@ -1,26 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Configuración básica del documento -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bake Data - Inicio</title>
-    
-    <!-- Favicon y fuentes de Google -->
     <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Estilos CSS -->
     <style>
-        /* Estilos generales */
         body {
             font-family: 'Quicksand', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #fffaf0;
         }
-        
-        /* Barra superior con logo y título */
         .top-bar {
             background-color: #b35340;
             color: white;
@@ -30,8 +22,6 @@
             font-weight: bold;
             position: relative;
         }
-        
-        /* Logo en la barra superior */
         .logo {
             position: absolute;
             top: 10px;
@@ -39,8 +29,6 @@
             width: 50px;
             height: auto;
         }
-        
-        /* Icono derecho en la barra superior */
         .icon-right {
             position: absolute;
             top: 10px;
@@ -48,72 +36,52 @@
             width: 100px;
             height: auto;
         }
-        
-        /* Barra de navegación */
         .nav-bar {
             display: flex;
             justify-content: center;
             background-color: #4f4f4f;
             padding: 10px;
         }
-        
-        /* Estilos de los enlaces de navegación */
         .nav-bar a {
             color: white;
             text-decoration: none;
             padding: 10px 40px;
             font-size: 18px;
         }
-        
-        /* Efecto hover en enlaces de navegación */
         .nav-bar a:hover {
             background-color: #3d3d3d;
             border-radius: 5px;
         }
-        
-        /* Contenedor principal del contenido */
         .container {
             text-align: justify;
             padding: 50px;
         }
-        
-        /* Título principal en color gris */
         .title-gray {
             color: #847c84;
             font-size: 28px;
             font-weight: bold;
         }
-        
-        /* Título de categoría en negro */
         .title-black {
             color: black;
             font-size: 24px;
             font-weight: bold;
             margin: 0;
         }
-        
-        /* Sección de productos (título + controles) */
         .product-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-top: 20px;
         }
-        
-        /* Sección izquierda (título de categoría) */
         .left-section {
             display: flex;
             justify-content: flex-start;
         }
-        
-        /* Sección derecha (búsqueda + botón) */
         .right-section {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
         }
-        
-        /* Botón "Ver todo" */
         .view-all-btn {
             background-color: #d8a394;
             color: white;
@@ -123,8 +91,6 @@
             font-size: 16px;
             cursor: pointer;
         }
-        
-        /* Selector de búsqueda */
         .search-dropdown {
             padding: 10px;
             border: 1px solid #ccc;
@@ -132,8 +98,6 @@
             font-family: 'Quicksand', sans-serif;
             color: #b35340;
         }
-        
-        /* Contenedor del carrusel */
         .carousel-container {
             display: flex;
             align-items: center;
@@ -142,15 +106,11 @@
             position: relative;
             margin: 20px 0;
         }
-        
-        /* Carrusel de productos */
         .carousel {
             display: flex;
             transition: transform 0.5s ease-in-out;
             padding: 10px 0;
         }
-        
-        /* Elemento individual del carrusel */
         .carousel-item {
             text-align: center;
             min-width: 220px;
@@ -159,33 +119,23 @@
             margin: 0 10px;
             transition: transform 0.3s ease;
         }
-        
-        /* Efecto hover para productos */
         .carousel-item:hover {
             transform: scale(1.03);
         }
-        
-        /* Imagen del producto en el carrusel */
         .carousel-item img {
             width: 200px;
             height: auto;
             border-radius: 5px;
         }
-        
-        /* Nombre del producto */
         .product-name {
             font-size: 20px;
             font-weight: bold;
             margin: 5px 0;
         }
-        
-        /* Precio del producto */
         .product-price {
             font-size: 16px;
             margin: 5px 0;
         }
-        
-        /* Flechas del carrusel */
         .arrow {
             background: rgba(179, 83, 64, 0.7);
             color: white;
@@ -203,59 +153,46 @@
             justify-content: center;
             z-index: 1;
         }
-        
         .arrow:hover {
             background: rgba(179, 83, 64, 0.9);
         }
-        
-        /* Flecha izquierda */
         .left-arrow {
             left: 10px;
         }
-        
-        /* Flecha derecha */
         .right-arrow {
             right: 10px;
+        }
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <!-- Barra superior con logo y título -->
     <div class="top-bar">
         <img src="https://i.imgur.com/WW384uk.png" alt="Logo Bake Data" class="logo">
         <img src="https://i.imgur.com/piX2hC1.png" alt="Icono adicional" class="icon-right">
         Bake Data
     </div>
     
-    <!-- Barra de navegación -->
     <div class="nav-bar">
         <a href="#">Realizar Pedido</a>
         <a href="#">Sucursales</a>
         <a href="#">Conócenos</a>
     </div>
     
-    <!-- Contenido principal -->
     <div class="container">
         <h1 class="title-gray">Conoce nuestros productos:</h1>
         
-        <!-- Script que genera dinámicamente las secciones de productos -->
         <script>
-            // Lista de categorías de productos
-            const categories = [
-                "Panes", "Gelatinas y flanes", "Galletas", "Pasteles", "Postres", "Pan de temporada"
-            ];
-            
-            // Objeto para guardar el estado de cada carrusel
+            const categories = ["Panes", "Gelatinas y flanes", "Galletas", "Pasteles", "Postres", "Pan de temporada"];
             const carouselStates = {};
-            
-            // Genera el HTML para cada categoría
+
             document.write(categories.map(category => {
                 const categoryId = category.replace(/\s/g, '');
                 carouselStates[categoryId] = { currentIndex: 0 };
                 
                 let options = "";
                 
-                // Opciones específicas para cada categoría
                 if (category === "Panes") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
@@ -269,44 +206,48 @@
                         <option value="PAN SURTIDO">PAN SURTIDO</option>
                         <option value="PAN RELLENO">PAN RELLENO</option>
                         <option value="PAN POSTRE">PAN POSTRE</option>
-                        <option value="PAN BLANCO">PAN BLANCO</option>`;
+                        <option value="PAN BLANCO">PAN BLANCO</option>
+                        <option value="PANQUÉ NATA">PANQUÉ NATA</option>
+                        <option value="BROWNIE">BROWNIE</option>`;
                 } else if (category === "Galletas") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
-                        <option value="PASTISETA">PASTISETA</option>
-                        <option value="PASTISETA PIÑA">PASTISETA PIÑA</option>
-                        <option value="PASTISETA FRESA">PASTISETA FRESA</option>
-                        <option value="PASTISETA CHOCOLATE">PASTISETA CHOCOLATE</option>
-                        <option value="GALLETA NATA">GALLETA NATA</option>
-                        <option value="GALLETA CHOCOLATE CHISPAS">GALLETA CHOCOLATE CHISPAS</option>
-                        <option value="GALLETA BICOLOR">GALLETA BICOLOR</option>
-                        <option value="CUERNITO">CUERNITO</option>
-                        <option value="GALLETA SURTIDO">GALLETA SURTIDO</option>
-                        <option value="GARABATO">GARABATO</option>
-                        <option value="COLORES">COLORES</option>
-                        <option value="DELICIOSA">DELICIOSA</option>
-                        <option value="CAJA DE GALLETA">CAJA DE GALLETA</option>
-                        <option value="ALFAJORES">ALFAJORES</option>`;
+                        <option value="Galleta surtido">Galleta surtido</option>
+                        <option value="Galleta nata">Galleta nata</option>
+                        <option value="Galleta Sur. mini">Galleta Sur. mini</option>
+                        <option value="Garabato">Garabato</option>
+                        <option value="Pastiseta">Pastiseta</option>
+                        <option value="Pastiseta chica">Pastiseta chica</option>
+                        <option value="Pastiseta de fresa">Pastiseta de fresa</option>
+                        <option value="Pastiseta de piña">Pastiseta de piña</option>
+                        <option value="Colores">Colores</option>
+                        <option value="Cuernito">Cuernito</option>
+                        <option value="Chips almendra">Chips almendra</option>
+                        <option value="Bicolor">Bicolor</option>
+                        <option value="Bicolor chocolate blanco">Bicolor chocolate blanco</option>
+                        <option value="Galleta de chocolate con chispas">Galleta de chocolate con chispas</option>
+                        <option value="Deliciosa">Deliciosa</option>
+                        <option value="Caja de galletas">Caja de galletas</option>
+                        <option value="Alfajores">Alfajores</option>
+                        <option value="Orejita">Orejita</option>
+                        <option value="Galleta de nata">Galleta de nata</option>`;
                 } else if (category === "Gelatinas y flanes") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
-                        <option value="GELATINA DE LECHE">GELATINA DE LECHE</option>
-                        <option value="GELATINA DE AGUA">GELATINA DE AGUA</option>
-                        <option value="FLAN CHICO">FLAN CHICO</option>
-                        <option value="GELATINA AGUA">GELATINA AGUA</option>
-                        <option value="GELATINA">GELATINA</option>
-                        <option value="GELATINA YOGUR">GELATINA YOGUR</option>
-                        <option value="GELATINA ROMPOPE">GELATINA ROMPOPE</option>
-                        <option value="GELATINA DE ANIMAL">GELATINA DE ANIMAL</option>
-                        <option value="GELATINA DE M. CH.">GELATINA DE M. CH.</option>
-                        <option value="GELATINA GDE.">GELATINA GDE.</option>
-                        <option value="G. MOSAICO DE NUEZ">G. MOSAICO DE NUEZ</option>
-                        <option value="GELATINA CHICA NUEZ">GELATINA CHICA NUEZ</option>
-                        <option value="FLAN MOSAICO">FLAN MOSAICO</option>
-                        <option value="FLAN CHICO">FLAN CHICO</option>
-                        <option value="GEL. ANIMAL GDE.">GEL. ANIMAL GDE.</option>
-                        <option value="GEL. ANIMAL MINI">GEL. ANIMAL MINI</option>
-                        <option value="GELATINA TARRO">GELATINA TARRO</option>`;
+                        <option value="Gelatina de agua">Gelatina de agua</option>
+                        <option value="Gelatina">Gelatina</option>
+                        <option value="Gelatina de yogurt">Gelatina de yogurt</option>
+                        <option value="Gelatina de rompope">Gelatina de rompope</option>
+                        <option value="Gelatina de animal">Gelatina de animal</option>
+                        <option value="Gelatina De M. Chica">Gelatina De M. Chica</option>
+                        <option value="Gelatina Grande">Gelatina Grande</option>
+                        <option value="Gelatina de mosaico de nuez">Gelatina de mosaico de nuez</option>
+                        <option value="Gelatina de nuez Chica">Gelatina de nuez Chica</option>
+                        <option value="Flan mosaico">Flan mosaico</option>
+                        <option value="Flan chico">Flan chico</option>
+                        <option value="Gelatina de animal Grande">Gelatina de animal Grande</option>
+                        <option value="Gelatina de animal Mini">Gelatina de animal Mini</option>
+                        <option value="Gelatina tarro">Gelatina tarro</option>`;
                 } else if (category === "Pan de temporada") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
@@ -315,39 +256,41 @@
                 } else if (category === "Pasteles") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
-                        <option value="P.CHICO BAILEYS">P.CHICO BAILEYS</option>
-                        <option value="OREO">OREO</option>
-                        <option value="2 CHOCOLATE">2 CHOCOLATE</option>
-                        <option value="MARIAS">MARIAS</option>
-                        <option value="SELVA NEGRA">SELVA NEGRA</option>
-                        <option value="TRUFA">TRUFA</option>
-                        <option value="PIÑA COCO">PIÑA COCO</option>
-                        <option value="CHOCOLATE">CHOCOLATE</option>
-                        <option value="NUTELA">NUTELA</option>
-                        <option value="FRESAS C/CREMA">FRESAS C/CREMA</option>
-                        <option value="ZARZAMORA">ZARZAMORA</option>
-                        <option value="MOKA">MOKA</option>
-                        <option value="BAYLEYS jueves">BAYLEYS jueves</option>
-                        <option value="ZANAHORIA">ZANAHORIA</option>
-                        <option value="PASTEL OPERA">PASTEL OPERA</option>
-                        <option value="PASTEL * KILO">PASTEL * KILO</option>
-                        <option value="PASTEL MIL HOJAS CH.">PASTEL MIL HOJAS CH.</option>
-                        <option value="MIL HOJAS REB">MIL HOJAS REB</option>
-                        <option value="NIÑO ENVUELTO">NIÑO ENVUELTO</option>
-                        <option value="N.E. CHOCOLATE">N.E. CHOCOLATE</option>
-                        <option value="N.E. FRESA">N.E. FRESA</option>
-                        <option value="N.E. BAILEYS">N.E. BAILEYS</option>`;
+                        <option value="Pastel Chico Baileys">Pastel Chico Baileys</option>
+                        <option value="Oreo">Oreo</option>
+                        <option value="2 Chocolate">2 Chocolate</option>
+                        <option value="Marias">Marias</option>
+                        <option value="Selva Negra">Selva Negra</option>
+                        <option value="Trufa">Trufa</option>
+                        <option value="Piña Coco">Piña Coco</option>
+                        <option value="Chocolate">Chocolate</option>
+                        <option value="Nutela">Nutela</option>
+                        <option value="Fresas con crema">Fresas con crema</option>
+                        <option value="Zarzamora">Zarzamora</option>
+                        <option value="Moka">Moka</option>
+                        <option value="Bayleys Jueves">Bayleys Jueves</option>
+                        <option value="Pastel de zanahoria">Pastel de zanahoria</option>
+                        <option value="Pastel opera">Pastel opera</option>
+                        <option value="Pastel por Kilo">Pastel por Kilo</option>
+                        <option value="Pastel mil hojas Ch.">Pastel mil hojas Ch.</option>
+                        <option value="Mil Hojas Reb">Mil Hojas Reb</option>
+                        <option value="Niño Envuelto">Niño Envuelto</option>
+                        <option value="N.E. Chocolate">N.E. Chocolate</option>
+                        <option value="N.E. Fresa">N.E. Fresa</option>
+                        <option value="N.E. Baileys">N.E. Baileys</option>`;
                 } else if (category === "Postres") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
-                        <option value="CARLOTA C/PASTELER">CARLOTA C/PASTELER</option>
-                        <option value="FRESAS C/CREMA">FRESAS C/CREMA</option>
-                        <option value="ARROZ C/CREMA">ARROZ C/CREMA</option>
-                        <option value="TARTA CH.">TARTA CH.</option>
-                        <option value="TARTA GDE.">TARTA GDE.</option>
-                        <option value="PAY DE LIMÓN">PAY DE LIMÓN</option>
-                        <option value="MOSAICO">MOSAICO</option>
-                        <option value="CHEESECAKE MINI">CHEESECAKE MINI</option>`;
+                        <option value="Carlota crema pastelera">Carlota crema pastelera</option>
+                        <option value="Fresas con crema">Fresas con crema</option>
+                        <option value="Arroz con leche">Arroz con leche</option>
+                        <option value="Tarta Chica">Tarta Chica</option>
+                        <option value="Tarta Grande">Tarta Grande</option>
+                        <option value="Pay De Limón">Pay De Limón</option>
+                        <option value="Mosaico">Mosaico</option>
+                        <option value="Cheesecake mini">Cheesecake mini</option>
+                        <option value="Rol">Rol</option>
+                        <option value="Rol 3 leches">Rol 3 leches</option>`;
                 } else {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
@@ -355,8 +298,7 @@
                         <option value="producto2">Producto 2</option>`;
                 }
                 
-                // Estructura HTML para cada categoría
-                if (category === "Galletas") {
+                if (category === "Panes") {
                     return `
                         <div class="product-section">
                             <div class="left-section">
@@ -372,44 +314,84 @@
                         <div class="carousel-container">
                             <button class="arrow left-arrow" onclick="moveSlide(-1, '${categoryId}')">&#10094;</button>
                             <div class="carousel" id="carousel-${categoryId}">
-                                <div class="carousel-item" onclick="mostrarDetalles('Pastiseta', 'Galletas')">
+                                <div class="carousel-item" data-name="Panqué nata" onclick="mostrarDetalles('Panqué nata', 'Panes')">
+                                    <img src="https://i.imgur.com/CYlGSk8.jpg" alt="Panqué nata">
+                                    <p class="product-name">Panqué nata</p>
+                                    <p class="product-price">Precio por unidad: $60</p>
+                                </div>
+                                <div class="carousel-item" data-name="Brownie" onclick="mostrarDetalles('Brownie', 'Panes')">
+                                    <img src="https://i.imgur.com/GqIwyaU.jpg" alt="Brownie">
+                                    <p class="product-name">Brownie</p>
+                                    <p class="product-price">Precio por unidad: $18</p>
+                                </div>
+                            </div>
+                            <button class="arrow right-arrow" onclick="moveSlide(1, '${categoryId}')">&#10095;</button>
+                        </div>
+                    `;
+                } else if (category === "Galletas") {
+                    return `
+                        <div class="product-section">
+                            <div class="left-section">
+                                <h2 class="title-black">${category}</h2>
+                            </div>
+                            <div class="right-section">
+                                <select class="search-dropdown" id="search-${categoryId}" onchange="filterProducts('${categoryId}')">
+                                    ${options}
+                                </select>
+                                <button class="view-all-btn" onclick="showAllProducts('${categoryId}')">Ver todo</button>
+                            </div>
+                        </div>
+                        <div class="carousel-container">
+                            <button class="arrow left-arrow" onclick="moveSlide(-1, '${categoryId}')">&#10094;</button>
+                            <div class="carousel" id="carousel-${categoryId}">
+                                <div class="carousel-item" data-name="Pastiseta" onclick="mostrarDetalles('Pastiseta', 'Galletas')">
                                     <img src="https://i.imgur.com/StQ449q.jpg" alt="Pastiseta">
                                     <p class="product-name">Pastiseta</p>
                                     <p class="product-price">Precio por unidad: $3</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Pastiseta de piña', 'Galletas')">
+                                <div class="carousel-item" data-name="Pastiseta de piña" onclick="mostrarDetalles('Pastiseta de piña', 'Galletas')">
                                     <img src="https://i.imgur.com/RkS25Kh.jpg" alt="Pastiseta de piña">
                                     <p class="product-name">Pastiseta de piña</p>
                                     <p class="product-price">Precio por unidad: $3</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Pastiseta de fresa', 'Galletas')">
+                                <div class="carousel-item" data-name="Pastiseta de fresa" onclick="mostrarDetalles('Pastiseta de fresa', 'Galletas')">
                                     <img src="https://i.imgur.com/0pDri6p.jpg" alt="Pastiseta de fresa">
                                     <p class="product-name">Pastiseta de fresa</p>
                                     <p class="product-price">Precio por unidad: $3</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Pastiseta de chocolate', 'Galletas')">
-                                    <img src="https://i.imgur.com/4ohl17f.jpg" alt="Pastiseta de chocolate">
-                                    <p class="product-name">Pastiseta de chocolate</p>
-                                    <p class="product-price">Precio por unidad: $3</p>
-                                </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Galleta de nata', 'Galletas')">
+                                <div class="carousel-item" data-name="Galleta de nata" onclick="mostrarDetalles('Galleta de nata', 'Galletas')">
                                     <img src="https://i.imgur.com/Y3NlWzh.jpg" alt="Galleta de nata">
                                     <p class="product-name">Galleta de nata</p>
                                     <p class="product-price">Precio por unidad: $3</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Galleta de chocolate con chispas', 'Galletas')">
+                                <div class="carousel-item" data-name="Galleta de chocolate con chispas" onclick="mostrarDetalles('Galleta de chocolate con chispas', 'Galletas')">
                                     <img src="https://i.imgur.com/zUb5oXj.jpg" alt="Galleta de chocolate con chispas">
                                     <p class="product-name">Galleta de chocolate con chispas</p>
                                     <p class="product-price">Precio por unidad: $3</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Galleta bicolor', 'Galletas')">
-                                    <img src="https://i.imgur.com/YLkxzDw.jpg" alt="Galleta bicolor">
-                                    <p class="product-name">Galleta bicolor</p>
-                                    <p class="product-price">Precio por unidad: $3</p>
-                                </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Cuernito', 'Galletas')">
+                                <div class="carousel-item" data-name="Cuernito" onclick="mostrarDetalles('Cuernito', 'Galletas')">
                                     <img src="https://i.imgur.com/Dhjqtq0.jpg" alt="Cuernito">
                                     <p class="product-name">Cuernito</p>
+                                    <p class="product-price">Precio por unidad: $3</p>
+                                </div>
+                                <div class="carousel-item" data-name="Orejita" onclick="mostrarDetalles('Orejita', 'Galletas')">
+                                    <img src="https://i.imgur.com/w7SYTmF.jpg" alt="Orejita">
+                                    <p class="product-name">Orejita</p>
+                                    <p class="product-price">Precio por unidad: $3</p>
+                                </div>
+                                <div class="carousel-item" data-name="Garabato" onclick="mostrarDetalles('Garabato', 'Galletas')">
+                                    <img src="https://i.imgur.com/PRq25WC.jpg" alt="Garabato">
+                                    <p class="product-name">Garabato</p>
+                                    <p class="product-price">Precio por unidad: $3</p>
+                                </div>
+                                <div class="carousel-item" data-name="Chips almendra" onclick="mostrarDetalles('Chips almendra', 'Galletas')">
+                                    <img src="https://i.imgur.com/ejS2xcw.jpg" alt="Chips almendra">
+                                    <p class="product-name">Chips almendra</p>
+                                    <p class="product-price">Precio por unidad: $3</p>
+                                </div>
+                                <div class="carousel-item" data-name="Bicolor chocolate blanco" onclick="mostrarDetalles('Bicolor chocolate blanco', 'Galletas')">
+                                    <img src="https://i.imgur.com/jW7uvBP.jpg" alt="Bicolor chocolate blanco">
+                                    <p class="product-name">Bicolor chocolate blanco</p>
                                     <p class="product-price">Precio por unidad: $3</p>
                                 </div>
                             </div>
@@ -423,29 +405,39 @@
                                 <h2 class="title-black">${category}</h2>
                             </div>
                             <div class="right-section">
-                                <select class="search-dropdown" id="search-${categoryId}">
+                                <select class="search-dropdown" id="search-${categoryId}" onchange="filterProducts('${categoryId}')">
                                     ${options}
                                 </select>
-                                <button class="view-all-btn">Ver todo</button>
+                                <button class="view-all-btn" onclick="showAllProducts('${categoryId}')">Ver todo</button>
                             </div>
                         </div>
                         <div class="carousel-container">
                             <button class="arrow left-arrow" onclick="moveSlide(-1, '${categoryId}')">&#10094;</button>
                             <div class="carousel" id="carousel-${categoryId}">
-                                <div class="carousel-item" onclick="mostrarDetalles('Gelatina de leche', 'Gelatinas y flanes')">
+                                <div class="carousel-item" data-name="Gelatina de leche" onclick="mostrarDetalles('Gelatina de leche', 'Gelatinas y flanes')">
                                     <img src="https://i.imgur.com/dC5CANn.jpg" alt="Gelatina de leche">
                                     <p class="product-name">Gelatina de leche</p>
                                     <p class="product-price">Precio por unidad: $15</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Gelatina de agua', 'Gelatinas y flanes')">
+                                <div class="carousel-item" data-name="Gelatina de agua" onclick="mostrarDetalles('Gelatina de agua', 'Gelatinas y flanes')">
                                     <img src="https://i.imgur.com/pm1vcji.jpg" alt="Gelatina de agua">
                                     <p class="product-name">Gelatina de agua</p>
                                     <p class="product-price">Precio por unidad: $12</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Flan chico', 'Gelatinas y flanes')">
+                                <div class="carousel-item" data-name="Flan chico" onclick="mostrarDetalles('Flan chico', 'Gelatinas y flanes')">
                                     <img src="https://i.imgur.com/Zv7p2yG.jpg" alt="Flan chico">
                                     <p class="product-name">Flan chico</p>
                                     <p class="product-price">Precio por unidad: $22</p>
+                                </div>
+                                <div class="carousel-item" data-name="Gelatina de yogurt" onclick="mostrarDetalles('Gelatina de yogurt', 'Gelatinas y flanes')">
+                                    <img src="https://via.placeholder.com/200" alt="Gelatina de yogurt">
+                                    <p class="product-name">Gelatina de yogurt</p>
+                                    <p class="product-price">Precio por unidad: $18</p>
+                                </div>
+                                <div class="carousel-item" data-name="Gelatina de rompope" onclick="mostrarDetalles('Gelatina de rompope', 'Gelatinas y flanes')">
+                                    <img src="https://via.placeholder.com/200" alt="Gelatina de rompope">
+                                    <p class="product-name">Gelatina de rompope</p>
+                                    <p class="product-price">Precio por unidad: $18</p>
                                 </div>
                             </div>
                             <button class="arrow right-arrow" onclick="moveSlide(1, '${categoryId}')">&#10095;</button>
@@ -458,23 +450,63 @@
                                 <h2 class="title-black">${category}</h2>
                             </div>
                             <div class="right-section">
-                                <select class="search-dropdown" id="search-${categoryId}">
+                                <select class="search-dropdown" id="search-${categoryId}" onchange="filterProducts('${categoryId}')">
                                     ${options}
                                 </select>
-                                <button class="view-all-btn">Ver todo</button>
+                                <button class="view-all-btn" onclick="showAllProducts('${categoryId}')">Ver todo</button>
                             </div>
                         </div>
                         <div class="carousel-container">
                             <button class="arrow left-arrow" onclick="moveSlide(-1, '${categoryId}')">&#10094;</button>
                             <div class="carousel" id="carousel-${categoryId}">
-                                <div class="carousel-item" onclick="mostrarDetalles('Pastel de zanahoria', 'Pasteles')">
+                                <div class="carousel-item" data-name="Pastel de zanahoria" onclick="mostrarDetalles('Pastel de zanahoria', 'Pasteles')">
                                     <img src="https://i.imgur.com/vI4ZD2S.jpg" alt="Pastel de zanahoria">
                                     <p class="product-name">Pastel de zanahoria</p>
                                     <p class="product-price">Precio por unidad: $17</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Pastel de chocolate', 'Pasteles')">
+                                <div class="carousel-item" data-name="Pastel de chocolate" onclick="mostrarDetalles('Pastel de chocolate', 'Pasteles')">
                                     <img src="https://via.placeholder.com/200" alt="Pastel de chocolate">
                                     <p class="product-name">Pastel de chocolate</p>
+                                    <p class="product-price">Precio por unidad: $15</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pastel Chico Baileys" onclick="mostrarDetalles('Pastel Chico Baileys', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Pastel Chico Baileys">
+                                    <p class="product-name">Pastel Chico Baileys</p>
+                                    <p class="product-price">Precio por unidad: $25</p>
+                                </div>
+                                <div class="carousel-item" data-name="Oreo" onclick="mostrarDetalles('Oreo', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Oreo">
+                                    <p class="product-name">Oreo</p>
+                                    <p class="product-price">Precio por unidad: $20</p>
+                                </div>
+                                <div class="carousel-item" data-name="2 Chocolate" onclick="mostrarDetalles('2 Chocolate', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="2 Chocolate">
+                                    <p class="product-name">2 Chocolate</p>
+                                    <p class="product-price">Precio por unidad: $22</p>
+                                </div>
+                                <div class="carousel-item" data-name="Marias" onclick="mostrarDetalles('Marias', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Marias">
+                                    <p class="product-name">Marias</p>
+                                    <p class="product-price">Precio por unidad: $18</p>
+                                </div>
+                                <div class="carousel-item" data-name="Selva Negra" onclick="mostrarDetalles('Selva Negra', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Selva Negra">
+                                    <p class="product-name">Selva Negra</p>
+                                    <p class="product-price">Precio por unidad: $23</p>
+                                </div>
+                                <div class="carousel-item" data-name="Trufa" onclick="mostrarDetalles('Trufa', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Trufa">
+                                    <p class="product-name">Trufa</p>
+                                    <p class="product-price">Precio por unidad: $24</p>
+                                </div>
+                                <div class="carousel-item" data-name="Piña Coco" onclick="mostrarDetalles('Piña Coco', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Piña Coco">
+                                    <p class="product-name">Piña Coco</p>
+                                    <p class="product-price">Precio por unidad: $19</p>
+                                </div>
+                                <div class="carousel-item" data-name="Chocolate" onclick="mostrarDetalles('Chocolate', 'Pasteles')">
+                                    <img src="https://via.placeholder.com/200" alt="Chocolate">
+                                    <p class="product-name">Chocolate</p>
                                     <p class="product-price">Precio por unidad: $15</p>
                                 </div>
                             </div>
@@ -488,39 +520,64 @@
                                 <h2 class="title-black">${category}</h2>
                             </div>
                             <div class="right-section">
-                                <select class="search-dropdown" id="search-${categoryId}">
+                                <select class="search-dropdown" id="search-${categoryId}" onchange="filterProducts('${categoryId}')">
                                     ${options}
                                 </select>
-                                <button class="view-all-btn">Ver todo</button>
+                                <button class="view-all-btn" onclick="showAllProducts('${categoryId}')">Ver todo</button>
                             </div>
                         </div>
                         <div class="carousel-container">
                             <button class="arrow left-arrow" onclick="moveSlide(-1, '${categoryId}')">&#10094;</button>
                             <div class="carousel" id="carousel-${categoryId}">
-                                <div class="carousel-item" onclick="mostrarDetalles('Tarta Chica', 'Postres')">
+                                <div class="carousel-item" data-name="Tarta Chica" onclick="mostrarDetalles('Tarta Chica', 'Postres')">
                                     <img src="https://i.imgur.com/m3xVdLD.jpg" alt="Tarta Chica">
                                     <p class="product-name">Tarta Chica</p>
                                     <p class="product-price">Precio por unidad: $22</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Pay de limón', 'Postres')">
+                                <div class="carousel-item" data-name="Pay de limón" onclick="mostrarDetalles('Pay de limón', 'Postres')">
                                     <img src="https://i.imgur.com/sK2h3f2.jpg" alt="Pay de limón">
                                     <p class="product-name">Pay de limón</p>
                                     <p class="product-price">Precio por unidad: $22</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Fresas con crema', 'Postres')">
+                                <div class="carousel-item" data-name="Fresas con crema" onclick="mostrarDetalles('Fresas con crema', 'Postres')">
                                     <img src="https://i.imgur.com/fkx0ooE.jpg" alt="Fresas con crema">
                                     <p class="product-name">Fresas con crema</p>
                                     <p class="product-price">Precio por unidad: $22</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Carlota', 'Postres')">
-                                    <img src="https://i.imgur.com/jD94j9f.jpg" alt="Carlota">
-                                    <p class="product-name">Carlota</p>
-                                    <p class="product-price">Precio por unidad: $22</p>
+                                <div class="carousel-item" data-name="Carlota crema pastelera" onclick="mostrarDetalles('Carlota crema pastelera', 'Postres')">
+                                    <img src="https://i.imgur.com/jD94j9f.jpg" alt="Carlota crema pastelera">
+                                    <p class="product-name">Carlota crema pastelera</p>
+                                    <p class="product-price">Precio por unidad: $25</p>
                                 </div>
-                                <div class="carousel-item" onclick="mostrarDetalles('Arroz con leche', 'Postres')">
+                                <div class="carousel-item" data-name="Arroz con leche" onclick="mostrarDetalles('Arroz con leche', 'Postres')">
                                     <img src="https://i.imgur.com/otOFCSD.jpg" alt="Arroz con leche">
                                     <p class="product-name">Arroz con leche</p>
                                     <p class="product-price">Precio por unidad: $16</p>
+                                </div>
+                                <div class="carousel-item" data-name="Rol 3 leches" onclick="mostrarDetalles('Rol 3 leches', 'Postres')">
+                                    <img src="https://i.imgur.com/8WaHTT5.jpg" alt="Rol 3 leches">
+                                    <p class="product-name">Rol 3 leches</p>
+                                    <p class="product-price">Precio por unidad: $17</p>
+                                </div>
+                                <div class="carousel-item" data-name="Cheesecake mini" onclick="mostrarDetalles('Cheesecake mini', 'Postres')">
+                                    <img src="https://i.imgur.com/JV1bTw1.jpg" alt="Cheesecake mini">
+                                    <p class="product-name">Cheesecake mini</p>
+                                    <p class="product-price">Precio por unidad: $80</p>
+                                </div>
+                                <div class="carousel-item" data-name="Mosaico" onclick="mostrarDetalles('Mosaico', 'Postres')">
+                                    <img src="https://via.placeholder.com/200" alt="Mosaico">
+                                    <p class="product-name">Mosaico</p>
+                                    <p class="product-price">Precio por unidad: $18</p>
+                                </div>
+                                <div class="carousel-item" data-name="Tarta Grande" onclick="mostrarDetalles('Tarta Grande', 'Postres')">
+                                    <img src="https://via.placeholder.com/200" alt="Tarta Grande">
+                                    <p class="product-name">Tarta Grande</p>
+                                    <p class="product-price">Precio por unidad: $35</p>
+                                </div>
+                                <div class="carousel-item" data-name="Rol" onclick="mostrarDetalles('Rol', 'Postres')">
+                                    <img src="https://via.placeholder.com/200" alt="Rol">
+                                    <p class="product-name">Rol</p>
+                                    <p class="product-price">Precio por unidad: $15</p>
                                 </div>
                             </div>
                             <button class="arrow right-arrow" onclick="moveSlide(1, '${categoryId}')">&#10095;</button>
@@ -556,24 +613,19 @@
 
             function moveSlide(direction, categoryId) {
                 const carousel = document.getElementById(`carousel-${categoryId}`);
-                const items = carousel.querySelectorAll('.carousel-item');
-                const itemWidth = items[0].offsetWidth + 20; // Ancho del elemento + margen
+                const items = carousel.querySelectorAll('.carousel-item:not(.hidden)');
+                const itemWidth = items[0].offsetWidth + 20;
                 const containerWidth = carousel.parentElement.offsetWidth;
                 const visibleItems = Math.floor(containerWidth / itemWidth);
                 const totalItems = items.length;
                 
-                // Actualizar el índice actual
                 carouselStates[categoryId].currentIndex += direction;
-                
-                // Asegurarse de que el índice no sea menor que 0 ni mayor que el máximo permitido
                 const maxIndex = Math.max(totalItems - visibleItems, 0);
                 carouselStates[categoryId].currentIndex = Math.max(0, Math.min(carouselStates[categoryId].currentIndex, maxIndex));
                 
-                // Calcular el desplazamiento
                 const offset = -carouselStates[categoryId].currentIndex * itemWidth;
                 carousel.style.transform = `translateX(${offset}px)`;
                 
-                // Ocultar/mostrar flechas según la posición
                 updateArrows(categoryId, carouselStates[categoryId].currentIndex, maxIndex);
             }
 
@@ -587,10 +639,65 @@
 
             function mostrarDetalles(nombreProducto, categoria) {
                 alert(`Producto: ${nombreProducto}\nCategoría: ${categoria}`);
-                // Implementa aquí la lógica para mostrar detalles
             }
 
-            // Inicializar flechas al cargar la página
+            function filterProducts(categoryId) {
+                const select = document.getElementById(`search-${categoryId}`);
+                const selectedProduct = select.value;
+                const carousel = document.getElementById(`carousel-${categoryId}`);
+                const items = carousel.querySelectorAll('.carousel-item');
+                
+                if (!selectedProduct) {
+                    showAllProducts(categoryId);
+                    return;
+                }
+                
+                // Ocultar todos los elementos primero
+                items.forEach(item => {
+                    item.classList.add('hidden');
+                });
+                
+                // Mostrar solo el elemento seleccionado
+                const selectedItems = carousel.querySelectorAll(`.carousel-item[data-name="${selectedProduct}"]`);
+                if (selectedItems.length > 0) {
+                    selectedItems.forEach(item => {
+                        item.classList.remove('hidden');
+                    });
+                    // Mover el carrusel para mostrar el producto seleccionado
+                    carouselStates[categoryId].currentIndex = 0;
+                    carousel.style.transform = 'translateX(0)';
+                } else {
+                    // Si no se encuentra el producto, mostrar todos
+                    showAllProducts(categoryId);
+                    alert('Producto no encontrado');
+                }
+                
+                updateArrows(categoryId, 0, 0);
+            }
+
+            function showAllProducts(categoryId) {
+                const carousel = document.getElementById(`carousel-${categoryId}`);
+                const items = carousel.querySelectorAll('.carousel-item');
+                const select = document.getElementById(`search-${categoryId}`);
+                
+                select.value = '';
+                items.forEach(item => {
+                    item.classList.remove('hidden');
+                });
+                
+                // Restablecer la posición del carrusel
+                carousel.style.transform = 'translateX(0)';
+                carouselStates[categoryId].currentIndex = 0;
+                
+                // Actualizar flechas
+                const itemWidth = items[0].offsetWidth + 20;
+                const containerWidth = carousel.parentElement.offsetWidth;
+                const visibleItems = Math.floor(containerWidth / itemWidth);
+                const totalItems = items.length;
+                const maxIndex = Math.max(totalItems - visibleItems, 0);
+                updateArrows(categoryId, 0, maxIndex);
+            }
+
             window.addEventListener('load', () => {
                 categories.forEach(category => {
                     const categoryId = category.replace(/\s/g, '');
