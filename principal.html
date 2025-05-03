@@ -165,6 +165,15 @@
         .hidden {
             display: none !important;
         }
+        .subcategory-title {
+            color: #b35340;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #d8a394;
+            padding-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -196,19 +205,148 @@
                 if (category === "Panes") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
-                        <option value="PAN MANTECA">PAN MANTECA</option>
-                        <option value="PAN POLVORON">PAN POLVORON</option>
-                        <option value="PAN DONAS Y FRITAS">PAN DONAS Y FRITAS</option>
-                        <option value="PAN DANES">PAN DANES</option>
-                        <option value="PAN CONCHA">PAN CONCHA</option>
-                        <option value="PAN FEITE">PAN FEITE</option>
-                        <option value="PAN OTROS">PAN OTROS</option>
-                        <option value="PAN SURTIDO">PAN SURTIDO</option>
-                        <option value="PAN RELLENO">PAN RELLENO</option>
-                        <option value="PAN POSTRE">PAN POSTRE</option>
-                        <option value="PAN BLANCO">PAN BLANCO</option>
-                        <option value="PANQUÉ NATA">PANQUÉ NATA</option>
-                        <option value="BROWNIE">BROWNIE</option>`;
+                        <optgroup label="Pan manteca">
+                            <option value="Mantecada grande">Mantecada grande</option>
+                            <option value="Mantecada chica">Mantecada chica</option>
+                            <option value="Chinos">Chinos</option>
+                            <option value="Panquecitos">Panquecitos</option>
+                            <option value="Ojos">Ojos</option>
+                            <option value="Marmoleado">Marmoleado</option>
+                            <option value="Panqué nata">Panqué nata</option>
+                            <option value="Pan chocolate">Pan chocolate</option>
+                            <option value="Panque elote">Panque elote</option>
+                            <option value="Pan piña colada">Pan piña colada</option>
+                            <option value="Pan marmoleado">Pan marmoleado</option>
+                            <option value="Pan vino tinto">Pan vino tinto</option>
+                            <option value="Pan zanahoria">Pan zanahoria</option>
+                            <option value="Panqué nuez">Panqué nuez</option>
+                            <option value="Panqué naranja">Panqué naranja</option>
+                            <option value="Panqué plátano">Panqué plátano</option>
+                            <option value="Panqué">Panqué</option>
+                        </optgroup>
+                        <optgroup label="Pan polvoron">
+                            <option value="Polvoron naranja">Polvoron naranja</option>
+                            <option value="Polvoron chocolate">Polvoron chocolate</option>
+                            <option value="Polvoron cacahu">Polvoron cacahu</option>
+                            <option value="Polvoron bicolo">Polvoron bicolo</option>
+                            <option value="Polvoron tricol">Polvoron tricol</option>
+                        </optgroup>
+                        <optgroup label="Pan donas y fritas">
+                            <option value="Donas chocolate Y azucar">Donas chocolate Y azucar</option>
+                            <option value="Bola de Berlin">Bola de Berlin</option>
+                            <option value="Nidos Bubulubu">Nidos Bubulubu</option>
+                            <option value="Nidos snickers">Nidos snickers</option>
+                            <option value="Nidos Oreo">Nidos Oreo</option>
+                            <option value="Nidos moka">Nidos moka</option>
+                            <option value="Trenza frita">Trenza frita</option>
+                            <option value="Rol de canela">Rol de canela</option>
+                            <option value="Donitas">Donitas</option>
+                            <option value="Donas glaseadas">Donas glaseadas</option>
+                            <option value="Churros">Churros</option>
+                            <option value="Buñuelos">Buñuelos</option>
+                            <option value="Napolitano">Napolitano</option>
+                        </optgroup>
+                        <optgroup label="Pan danés">
+                            <option value="Cuernitos">Cuernitos</option>
+                            <option value="Bigotes">Bigotes</option>
+                            <option value="Negritos">Negritos</option>
+                            <option value="Barquillos">Barquillos</option>
+                            <option value="Novia">Novia</option>
+                            <option value="Trenzas Higo">Trenzas Higo</option>
+                            <option value="Hilos Mermelada">Hilos Mermelada</option>
+                            <option value="Hojaldra">Hojaldra</option>
+                            <option value="S. Holandesa">S. Holandesa</option>
+                        </optgroup>
+                        <optgroup label="Pan concha">
+                            <option value="Conchas">Conchas</option>
+                            <option value="Rebanada mante">Rebanada mante</option>
+                            <option value="Bollos">Bollos</option>
+                            <option value="Chorreada">Chorreada</option>
+                            <option value="Tapado">Tapado</option>
+                            <option value="Borregos">Borregos</option>
+                            <option value="Athe">Athe</option>
+                            <option value="Calvos/Calabaza">Calvos/Calabaza</option>
+                            <option value="Cemas">Cemas</option>
+                            <option value="Enjambres">Enjambres</option>
+                            <option value="Malvaviscos">Malvaviscos</option>
+                            <option value="Nata">Nata</option>
+                        </optgroup>
+                        <optgroup label="Pan feite">
+                            <option value="Orejas">Orejas</option>
+                            <option value="Abanicos">Abanicos</option>
+                            <option value="Rollos de crema">Rollos de crema</option>
+                            <option value="Tacos">Tacos</option>
+                            <option value="Banderillas">Banderillas</option>
+                            <option value="Coronas">Coronas</option>
+                            <option value="Plumas">Plumas</option>
+                            <option value="Campechana">Campechana</option>
+                            <option value="Brocas">Brocas</option>
+                            <option value="Cuadro coco">Cuadro coco</option>
+                            <option value="Sacristan">Sacristan</option>
+                            <option value="Barquillo feite">Barquillo feite</option>
+                            <option value="Mini oreja">Mini oreja</option>
+                            <option value="Paño feite kilo">Paño feite kilo</option>
+                            <option value="Croissant">Croissant</option>
+                        </optgroup>
+                        <optgroup label="Pan otros">
+                            <option value="Bisquet">Bisquet</option>
+                            <option value="Bisquet arandano">Bisquet arandano</option>
+                            <option value="Bisquet philadelfia">Bisquet philadelfia</option>
+                            <option value="Besos">Besos</option>
+                            <option value="Magdalena">Magdalena</option>
+                            <option value="Grillos">Grillos</option>
+                            <option value="Pay de queso">Pay de queso</option>
+                            <option value="Tartaleta pay">Tartaleta pay</option>
+                            <option value="Cubilete queso">Cubilete queso</option>
+                            <option value="Budin">Budin</option>
+                            <option value="Piedra">Piedra</option>
+                            <option value="Conde">Conde</option>
+                            <option value="Tabasqueña">Tabasqueña</option>
+                            <option value="Brownie">Brownie</option>
+                            <option value="Chusxs">Chusxs</option>
+                        </optgroup>
+                        <optgroup label="Pan Surtido">
+                            <option value="Pan cacahuate">Pan cacahuate</option>
+                            <option value="Pan agua">Pan agua</option>
+                            <option value="Pan mini">Pan mini</option>
+                            <option value="Pan de canela">Pan de canela</option>
+                            <option value="Pan pilonsillo">Pan pilonsillo</option>
+                        </optgroup>
+                        <optgroup label="Pan Relleno">
+                            <option value="Cuernitos rellenos">Cuernitos rellenos</option>
+                            <option value="Empanadas guiso">Empanadas guiso</option>
+                            <option value="Tacos rellenos">Tacos rellenos</option>
+                            <option value="Volovan chivo">Volovan chivo</option>
+                        </optgroup>
+                        <optgroup label="Pan Postre">
+                            <option value="Rol 3 leches">Rol 3 leches</option>
+                            <option value="Rol glaseada">Rol glaseada</option>
+                            <option value="Tiramisú">Tiramisú</option>
+                            <option value="Pinguinos">Pinguinos</option>
+                            <option value="Borrachos">Borrachos</option>
+                            <option value="Gansitos">Gansitos</option>
+                            <option value="Chocotorroz">Chocotorroz</option>
+                            <option value="Huevitos">Huevitos</option>
+                            <option value="R.Naranja/P.Cola">R.Naranja/P.Cola</option>
+                            <option value="Rosca Nata">Rosca Nata</option>
+                        </optgroup>
+                        <optgroup label="Pan Blanco">
+                            <option value="Bolillo">Bolillo</option>
+                            <option value="Telera">Telera</option>
+                            <option value="Mini bolillo telera">Mini bolillo telera</option>
+                            <option value="Baguet">Baguet</option>
+                            <option value="Baguetin">Baguetin</option>
+                            <option value="Bco. Tanto y medio">Bco. Tanto y medio</option>
+                            <option value="Pan multigrano">Pan multigrano</option>
+                            <option value="Pan de caja Grande">Pan de caja Grande</option>
+                            <option value="Pan rustico">Pan rustico</option>
+                            <option value="Pambazo">Pambazo</option>
+                            <option value="Pan molido bolillo 500 Gr">Pan molido bolillo 500 Gr</option>
+                            <option value="Masa bolillo 1 Kg">Masa bolillo 1 Kg</option>
+                            <option value="Baguet rustico">Baguet rustico</option>
+                            <option value="Chapata">Chapata</option>
+                            <option value="Chapata chica">Chapata chica</option>
+                        </optgroup>`;
                 } else if (category === "Galletas") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
@@ -248,11 +386,6 @@
                         <option value="Gelatina de animal Grande">Gelatina de animal Grande</option>
                         <option value="Gelatina de animal Mini">Gelatina de animal Mini</option>
                         <option value="Gelatina tarro">Gelatina tarro</option>`;
-                } else if (category === "Pan de temporada") {
-                    options = `
-                        <option value="">BUSCAR POR NOMBRE</option>
-                        <option value="PAN TEMPORADA ROSCA REYES">PAN TEMPORADA ROSCA REYES</option>
-                        <option value="PAN TEMPORADA MUERTO">PAN TEMPORADA MUERTO</option>`;
                 } else if (category === "Pasteles") {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
@@ -291,6 +424,28 @@
                         <option value="Cheesecake mini">Cheesecake mini</option>
                         <option value="Rol">Rol</option>
                         <option value="Rol 3 leches">Rol 3 leches</option>`;
+                } else if (category === "Pan de temporada") {
+                    options = `
+                        <option value="">BUSCAR POR NOMBRE</option>
+                        <optgroup label="Rosca de reyes">
+                            <option value="Rosca de reyes Individual">Rosca de reyes Individual</option>
+                            <option value="Rosca de reyes Mini">Rosca de reyes Mini</option>
+                            <option value="Rosca de reyes Chica">Rosca de reyes Chica</option>
+                            <option value="Rosca de reyes Mediana">Rosca de reyes Mediana</option>
+                            <option value="Rosca de reyes Grande">Rosca de reyes Grande</option>
+                            <option value="Rosca de reyes rellena">Rosca de reyes rellena</option>
+                        </optgroup>
+                        <optgroup label="Pan de muerto">
+                            <option value="Pan de muerto Mini">Pan de muerto Mini</option>
+                            <option value="Pan de muerto Chico">Pan de muerto Chico</option>
+                            <option value="Pan de muerto normal">Pan de muerto normal</option>
+                            <option value="Pan de muerto relleno">Pan de muerto relleno</option>
+                            <option value="Pan de muerto Cuarto">Pan de muerto Cuarto</option>
+                            <option value="Pan de muerto Ajonjoli">Pan de muerto Ajonjoli</option>
+                            <option value="Pan de muerto Medio">Pan de muerto Medio</option>
+                            <option value="Pan de muerto de chocolate">Pan de muerto de chocolate</option>
+                            <option value="Pan de muerto de chocolate Mini">Pan de muerto de chocolate Mini</option>
+                        </optgroup>`;
                 } else {
                     options = `
                         <option value="">BUSCAR POR NOMBRE</option>
@@ -305,24 +460,126 @@
                                 <h2 class="title-black">${category}</h2>
                             </div>
                             <div class="right-section">
-                                <select class="search-dropdown" id="search-${categoryId}">
+                                <select class="search-dropdown" id="search-${categoryId}" onchange="filterProducts('${categoryId}')">
                                     ${options}
                                 </select>
-                                <button class="view-all-btn">Ver todo</button>
+                                <button class="view-all-btn" onclick="showAllProducts('${categoryId}')">Ver todo</button>
                             </div>
                         </div>
                         <div class="carousel-container">
                             <button class="arrow left-arrow" onclick="moveSlide(-1, '${categoryId}')">&#10094;</button>
                             <div class="carousel" id="carousel-${categoryId}">
+                                <!-- Subcategoría: Pan manteca -->
+                                <div class="subcategory-title">Pan manteca</div>
+                                <div class="carousel-item" data-name="Mantecada grande" onclick="mostrarDetalles('Mantecada grande', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Mantecada grande">
+                                    <p class="product-name">Mantecada grande</p>
+                                    <p class="product-price">Precio: $25</p>
+                                </div>
+                                <div class="carousel-item" data-name="Mantecada chica" onclick="mostrarDetalles('Mantecada chica', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Mantecada chica">
+                                    <p class="product-name">Mantecada chica</p>
+                                    <p class="product-price">Precio: $15</p>
+                                </div>
                                 <div class="carousel-item" data-name="Panqué nata" onclick="mostrarDetalles('Panqué nata', 'Panes')">
                                     <img src="https://i.imgur.com/CYlGSk8.jpg" alt="Panqué nata">
                                     <p class="product-name">Panqué nata</p>
-                                    <p class="product-price">Precio por unidad: $60</p>
+                                    <p class="product-price">Precio: $60</p>
                                 </div>
+                                <div class="carousel-item" data-name="Pan chocolate" onclick="mostrarDetalles('Pan chocolate', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan chocolate">
+                                    <p class="product-name">Pan chocolate</p>
+                                    <p class="product-price">Precio: $30</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan polvoron -->
+                                <div class="subcategory-title">Pan polvoron</div>
+                                <div class="carousel-item" data-name="Polvoron naranja" onclick="mostrarDetalles('Polvoron naranja', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Polvoron naranja">
+                                    <p class="product-name">Polvoron naranja</p>
+                                    <p class="product-price">Precio: $18</p>
+                                </div>
+                                <div class="carousel-item" data-name="Polvoron chocolate" onclick="mostrarDetalles('Polvoron chocolate', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Polvoron chocolate">
+                                    <p class="product-name">Polvoron chocolate</p>
+                                    <p class="product-price">Precio: $18</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan donas y fritas -->
+                                <div class="subcategory-title">Pan donas y fritas</div>
+                                <div class="carousel-item" data-name="Donas chocolate Y azucar" onclick="mostrarDetalles('Donas chocolate Y azucar', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Donas chocolate Y azucar">
+                                    <p class="product-name">Donas chocolate Y azucar</p>
+                                    <p class="product-price">Precio: $12</p>
+                                </div>
+                                <div class="carousel-item" data-name="Bola de Berlin" onclick="mostrarDetalles('Bola de Berlin', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Bola de Berlin">
+                                    <p class="product-name">Bola de Berlin</p>
+                                    <p class="product-price">Precio: $15</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan danés -->
+                                <div class="subcategory-title">Pan danés</div>
+                                <div class="carousel-item" data-name="Cuernitos" onclick="mostrarDetalles('Cuernitos', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Cuernitos">
+                                    <p class="product-name">Cuernitos</p>
+                                    <p class="product-price">Precio: $20</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan concha -->
+                                <div class="subcategory-title">Pan concha</div>
+                                <div class="carousel-item" data-name="Conchas" onclick="mostrarDetalles('Conchas', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Conchas">
+                                    <p class="product-name">Conchas</p>
+                                    <p class="product-price">Precio: $12</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan feite -->
+                                <div class="subcategory-title">Pan feite</div>
+                                <div class="carousel-item" data-name="Orejas" onclick="mostrarDetalles('Orejas', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Orejas">
+                                    <p class="product-name">Orejas</p>
+                                    <p class="product-price">Precio: $16</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan otros -->
+                                <div class="subcategory-title">Pan otros</div>
                                 <div class="carousel-item" data-name="Brownie" onclick="mostrarDetalles('Brownie', 'Panes')">
                                     <img src="https://i.imgur.com/GqIwyaU.jpg" alt="Brownie">
                                     <p class="product-name">Brownie</p>
-                                    <p class="product-price">Precio por unidad: $18</p>
+                                    <p class="product-price">Precio: $18</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan Surtido -->
+                                <div class="subcategory-title">Pan Surtido</div>
+                                <div class="carousel-item" data-name="Pan cacahuate" onclick="mostrarDetalles('Pan cacahuate', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan cacahuate">
+                                    <p class="product-name">Pan cacahuate</p>
+                                    <p class="product-price">Precio: $15</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan Relleno -->
+                                <div class="subcategory-title">Pan Relleno</div>
+                                <div class="carousel-item" data-name="Cuernitos rellenos" onclick="mostrarDetalles('Cuernitos rellenos', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Cuernitos rellenos">
+                                    <p class="product-name">Cuernitos rellenos</p>
+                                    <p class="product-price">Precio: $25</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan Postre -->
+                                <div class="subcategory-title">Pan Postre</div>
+                                <div class="carousel-item" data-name="Rol 3 leches" onclick="mostrarDetalles('Rol 3 leches', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Rol 3 leches">
+                                    <p class="product-name">Rol 3 leches</p>
+                                    <p class="product-price">Precio: $30</p>
+                                </div>
+                                
+                                <!-- Subcategoría: Pan Blanco -->
+                                <div class="subcategory-title">Pan Blanco</div>
+                                <div class="carousel-item" data-name="Bolillo" onclick="mostrarDetalles('Bolillo', 'Panes')">
+                                    <img src="https://via.placeholder.com/200" alt="Bolillo">
+                                    <p class="product-name">Bolillo</p>
+                                    <p class="product-price">Precio: $8</p>
                                 </div>
                             </div>
                             <button class="arrow right-arrow" onclick="moveSlide(1, '${categoryId}')">&#10095;</button>
@@ -578,6 +835,106 @@
                                     <img src="https://via.placeholder.com/200" alt="Rol">
                                     <p class="product-name">Rol</p>
                                     <p class="product-price">Precio por unidad: $15</p>
+                                </div>
+                            </div>
+                            <button class="arrow right-arrow" onclick="moveSlide(1, '${categoryId}')">&#10095;</button>
+                        </div>
+                    `;
+                } else if (category === "Pan de temporada") {
+                    return `
+                        <div class="product-section">
+                            <div class="left-section">
+                                <h2 class="title-black">${category}</h2>
+                            </div>
+                            <div class="right-section">
+                                <select class="search-dropdown" id="search-${categoryId}" onchange="filterProducts('${categoryId}')">
+                                    ${options}
+                                </select>
+                                <button class="view-all-btn" onclick="showAllProducts('${categoryId}')">Ver todo</button>
+                            </div>
+                        </div>
+                        <div class="carousel-container">
+                            <button class="arrow left-arrow" onclick="moveSlide(-1, '${categoryId}')">&#10094;</button>
+                            <div class="carousel" id="carousel-${categoryId}">
+                                <div class="subcategory-title">Rosca de reyes</div>
+                                <!-- Productos de Rosca de reyes -->
+                                <div class="carousel-item" data-name="Rosca de reyes Individual" onclick="mostrarDetalles('Rosca de reyes Individual', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Rosca de reyes Individual">
+                                    <p class="product-name">Rosca de reyes Individual</p>
+                                    <p class="product-price">Precio: $50</p>
+                                </div>
+                                <div class="carousel-item" data-name="Rosca de reyes Mini" onclick="mostrarDetalles('Rosca de reyes Mini', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Rosca de reyes Mini">
+                                    <p class="product-name">Rosca de reyes Mini</p>
+                                    <p class="product-price">Precio: $30</p>
+                                </div>
+                                <div class="carousel-item" data-name="Rosca de reyes Chica" onclick="mostrarDetalles('Rosca de reyes Chica', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Rosca de reyes Chica">
+                                    <p class="product-name">Rosca de reyes Chica</p>
+                                    <p class="product-price">Precio: $80</p>
+                                </div>
+                                <div class="carousel-item" data-name="Rosca de reyes Mediana" onclick="mostrarDetalles('Rosca de reyes Mediana', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Rosca de reyes Mediana">
+                                    <p class="product-name">Rosca de reyes Mediana</p>
+                                    <p class="product-price">Precio: $120</p>
+                                </div>
+                                <div class="carousel-item" data-name="Rosca de reyes Grande" onclick="mostrarDetalles('Rosca de reyes Grande', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Rosca de reyes Grande">
+                                    <p class="product-name">Rosca de reyes Grande</p>
+                                    <p class="product-price">Precio: $180</p>
+                                </div>
+                                <div class="carousel-item" data-name="Rosca de reyes rellena" onclick="mostrarDetalles('Rosca de reyes rellena', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Rosca de reyes rellena">
+                                    <p class="product-name">Rosca de reyes rellena</p>
+                                    <p class="product-price">Precio: $200</p>
+                                </div>
+                                
+                                <div class="subcategory-title">Pan de muerto</div>
+                                <!-- Productos de Pan de muerto -->
+                                <div class="carousel-item" data-name="Pan de muerto Mini" onclick="mostrarDetalles('Pan de muerto Mini', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto Mini">
+                                    <p class="product-name">Pan de muerto Mini</p>
+                                    <p class="product-price">Precio: $15</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto Chico" onclick="mostrarDetalles('Pan de muerto Chico', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto Chico">
+                                    <p class="product-name">Pan de muerto Chico</p>
+                                    <p class="product-price">Precio: $25</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto normal" onclick="mostrarDetalles('Pan de muerto normal', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto normal">
+                                    <p class="product-name">Pan de muerto normal</p>
+                                    <p class="product-price">Precio: $35</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto relleno" onclick="mostrarDetalles('Pan de muerto relleno', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto relleno">
+                                    <p class="product-name">Pan de muerto relleno</p>
+                                    <p class="product-price">Precio: $40</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto Cuarto" onclick="mostrarDetalles('Pan de muerto Cuarto', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto Cuarto">
+                                    <p class="product-name">Pan de muerto Cuarto</p>
+                                    <p class="product-price">Precio: $20</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto Ajonjoli" onclick="mostrarDetalles('Pan de muerto Ajonjoli', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto Ajonjoli">
+                                    <p class="product-name">Pan de muerto Ajonjoli</p>
+                                    <p class="product-price">Precio: $38</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto Medio" onclick="mostrarDetalles('Pan de muerto Medio', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto Medio">
+                                    <p class="product-name">Pan de muerto Medio</p>
+                                    <p class="product-price">Precio: $30</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto de chocolate" onclick="mostrarDetalles('Pan de muerto de chocolate', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto de chocolate">
+                                    <p class="product-name">Pan de muerto de chocolate</p>
+                                    <p class="product-price">Precio: $45</p>
+                                </div>
+                                <div class="carousel-item" data-name="Pan de muerto de chocolate Mini" onclick="mostrarDetalles('Pan de muerto de chocolate Mini', 'Pan de temporada')">
+                                    <img src="https://via.placeholder.com/200" alt="Pan de muerto de chocolate Mini">
+                                    <p class="product-name">Pan de muerto de chocolate Mini</p>
+                                    <p class="product-price">Precio: $20</p>
                                 </div>
                             </div>
                             <button class="arrow right-arrow" onclick="moveSlide(1, '${categoryId}')">&#10095;</button>
