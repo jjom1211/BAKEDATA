@@ -93,7 +93,7 @@ def ventas():
 
 @app.route('/limpieza.html')
 def limpieza():
-    return render_template('limpieza.html')
+    return render_template('limpieza.jinja2')
 
 
 @app.route('/limDia.html')

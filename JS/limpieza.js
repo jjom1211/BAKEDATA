@@ -8,6 +8,7 @@ function limpiezaDelDia() {
 }
 function registrarLimpieza() {
     alert("Registrando limpieza...");
+    window.location.href = "limRegistrarLimpieza.jinja2";
 }
 function actualizarFechaDeLimpieza() {
     alert("Actualizando limpieza del dia...");

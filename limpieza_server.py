@@ -22,6 +22,24 @@ def login():
 def limDia():
     return render_template('limDia.html')
 
+
+@app.route('/limRegistrarLimpieza.jinja2')
+def limRegistrarLimpieza():
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor() as cursor:
+            query = "SELECT lim_actividad FROM limpieza"
+            cursor.execute(query)
+            resultados = cursor.fetchall()
+            actividades_limpieza = [fila[0] for fila in resultados]
+    except Exception as e:
+        print(f"Error: {e}")
+        actividades_limpieza = []
+    finally:
+        connection.close()
+    return render_template('limRegistrarLimpieza.jinja2', actividades_limpieza=actividades_limpieza)
+
+
 @app.route('/limCalendario.jinja2')
 def limCalendario():
     try:

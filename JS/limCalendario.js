@@ -32,12 +32,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (diasConLimpieza.includes(fechaStr)) {
                 dayElement.classList.add('event'); // aplica el estilo púrpura
             }
-    
+            const hoy = new Date();
+            if (
+                fechaActual.getFullYear() === hoy.getFullYear() &&
+                fechaActual.getMonth() === hoy.getMonth() &&
+                fechaActual.getDate() === hoy.getDate()
+            ) {
+            dayElement.classList.add('actualday'); // estilo para el dia actual
+            }
             dayElement.addEventListener('click', () => {
                 mostrarTareasDelDia(fechaStr);
             });
             
-    
             calendarGrid.appendChild(dayElement);
         }
     }
@@ -76,6 +82,7 @@ function mostrarTareasDelDia(fechaStr) {
         .then(data => {
             const tareasDiv = document.getElementById('tareasDelDia');
             tareasDiv.innerHTML = `<h3>Tareas para ${fechaStr}</h3>`;
+
             if (data.length === 0) {
                 tareasDiv.innerHTML += "<p>No hay tareas registradas.</p>";
             } else {
@@ -87,6 +94,12 @@ function mostrarTareasDelDia(fechaStr) {
                 });
                 tareasDiv.appendChild(lista);
             }
+            // Mostrar el div siempre que se selecciona un día
+            tareasDiv.style.display = 'block';
         })
-        .catch(error => console.error('Error al obtener tareas:', error));
+        .catch(error => {
+            console.error('Error al obtener tareas:', error);
+            // En caso de error, ocultamos el div por precaución
+            document.getElementById('tareasDelDia').style.display = 'none';
+        });
 }
