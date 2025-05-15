@@ -31,8 +31,12 @@
 <div class="subinterface">
     <h2>Limpieza del día</h2>
     <ul id="taskList"></ul>
-<div class="input-container autocomplete-container">
+
+<div class="input-container autocomplete-container-row">
     <input type="text" id="taskSelect" name="actividad" placeholder="Buscar actividad..." autocomplete="off" oninput="filtrarActividades()" />
+    <button id="toggleAllBtn" onclick="toggleMostrarTodas()">
+        <img src="https://i.imgur.com/smPDt4w.png" alt="Toggle" />
+    </button>
     <ul id="autocompleteList" class="autocomplete-list"></ul>
     <button onclick="addSelectedTask()">Agregar</button>
 </div>
