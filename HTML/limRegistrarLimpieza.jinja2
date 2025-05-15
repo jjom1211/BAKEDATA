@@ -1,55 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Limpieza del día</title>
-    <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
-    <link rel="stylesheet" href="../CSS/limRegistrarLimpieza.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Limpieza del día</title>
+<link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16"/>
+<link rel="stylesheet" href="../CSS/limRegistrarLimpieza.css" />
 </head>
 <body>
-    <!-- Botón para abrir/cerrar la sidebar -->
-    <button class="open-sidebar" onclick="toggleSidebar()">☰</button>
+<button class="open-sidebar" onclick="toggleSidebar()">☰</button>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-background"></div>
-        <div class="sidebar-content">
-            <img src="https://i.imgur.com/WW384uk.png" alt="Gerencia" class="sidebar-logo" sizes="16x16">
-            <button class="button admin-only" onclick="window.location.href='almacen.html'">Almacén</button>
-            <button class="button admin-only" onclick="window.location.href='reparto.html'">Reparto</button>
-            <button class="button admin-only" onclick="window.location.href='usuario.html'">Usuario</button>
-            <button class="button admin-only" onclick="window.location.href='produccion.html'">Producción</button>
-            <button class="button admin-only" onclick="window.location.href='ventas.html'">Ventas</button>
-            <button class="button admin-only" onclick="window.location.href='limpieza.html'">Limpieza</button>
-            <button class="button admin-only" onclick="window.location.href='reportes.html'">Reportes</button>
-            <button class="button admin-only" onclick="window.location.href='gerente.html'">Gerente</button>
-            <button class="button return-login" onclick="window.location.href='login.html'">
-                <img src="https://i.imgur.com/ft5fWsY.png" alt="Regresar al Inicio" class="return-icon">
-            </button>
-        </div>
+<div class="sidebar">
+    <div class="sidebar-background"></div>
+    <div class="sidebar-content">
+    <img src="https://i.imgur.com/WW384uk.png" alt="Gerencia" class="sidebar-logo" sizes="16x16">
+    <button class="button admin-only" onclick="window.location.href='almacen.html'">Almacén</button>
+    <button class="button admin-only" onclick="window.location.href='reparto.html'">Reparto</button>
+    <button class="button admin-only" onclick="window.location.href='usuario.html'">Usuario</button>
+    <button class="button admin-only" onclick="window.location.href='produccion.html'">Producción</button>
+    <button class="button admin-only" onclick="window.location.href='ventas.html'">Ventas</button>
+    <button class="button admin-only" onclick="window.location.href='limpieza.html'">Limpieza</button>
+    <button class="button admin-only" onclick="window.location.href='reportes.html'">Reportes</button>
+    <button class="button admin-only" onclick="window.location.href='gerente.html'">Gerente</button>
+    <button class="button return-login" onclick="window.location.href='login.html'">
+        <img src="https://i.imgur.com/ft5fWsY.png" alt="Regresar al Inicio" class="return-icon">
+    </button>
     </div>
+</div>
 
-    <div class="subinterface">
-        <h2>Limpieza del día</h2>
-        <ul id="taskList">
-            <!-- Aquí se cargan tareas desde localStorage -->
-        </ul>
-        <h3>Seleccionar actividad</h3>
-        <div class="input-container">
-            <input list="actividades" id="taskSelect" name="actividad" placeholder="Buscar o seleccionar actividad" autocomplete="off">
-            <datalist id="actividades">
-                {% for actividad in actividades_limpieza %}
-                    <option value="{{ actividad }}"></option>
-                {% endfor %}
-            </datalist>
-            <button onclick="addSelectedTask()">Agregar</button>
-        </div>
-        <div class="button-group">
-            <button onclick="goBack()">Regresar</button>
-            <button onclick="confirmTasks()">Confirmar</button>
-        </div>
+<div class="subinterface">
+    <h2>Limpieza del día</h2>
+    <ul id="taskList"></ul>
+<div class="input-container autocomplete-container">
+    <input type="text" id="taskSelect" name="actividad" placeholder="Buscar actividad..." autocomplete="off" oninput="filtrarActividades()" />
+    <ul id="autocompleteList" class="autocomplete-list"></ul>
+    <button onclick="addSelectedTask()">Agregar</button>
+</div>
+
+    <div class="button-group">
+    <button onclick="goBack()">Regresar</button>
+    <button onclick="confirmTasks()">Confirmar</button>
     </div>
-    <script src="../JS/limRegistrarLimpieza.js"></script>
+</div>
+
+<script>
+    const actividadesDesdeServidor = {{ actividades_limpieza | tojson }};
+</script>
+<script src="../JS/limRegistrarLimpieza.js"></script>
 </body>
 </html>

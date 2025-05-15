@@ -14,11 +14,11 @@ body {
 
 .taskSelect{
     color:#d35400;
-    size: 80%;
+    size: 100%;
 }
 
 input[list] {
-    width: 80%;
+    width: 60%;
     padding: 10px;
     border: 2px solid #ccc;
     border-radius: 5px;
@@ -27,6 +27,7 @@ input[list] {
 }
 
 .subinterface {
+    size: 80%;
     background: #fff;
     padding: 20px;
     border-radius: 10px;
@@ -36,7 +37,9 @@ input[list] {
 }
 h2,h3{
     color: #d35400;
+    text-size-adjust: 30px;
 }
+
 ul {
     list-style: none;
     padding: 0;
@@ -75,8 +78,49 @@ select {
     margin-top: 15px;
 }
 
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
 
-/* Sidebar */
+.autocomplete-container {
+    width: 100%;
+    position: relative;
+}
+
+.autocomplete-list {
+    width: 1000px; /* mismo que .subinterface */
+    max-height: 200px;
+    overflow-y: auto;
+    background: white;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 5px;
+    position: relative; /* ya no flota */
+}
+
+.autocomplete-list li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.autocomplete-list li:hover {
+    background-color: #f0f0f0;
+}
+
+
+
+
+
+
+
+
+
+
+/*<--------------------- Sidebar ---------------------------->*/
 .sidebar {
     height: 100%;
     width: 250px;

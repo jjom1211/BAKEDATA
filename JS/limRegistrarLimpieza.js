@@ -22,8 +22,6 @@ function loadTasks() {
 
 function addTask(task) {
     let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-
-    // Evita duplicados
     if (!tasks.includes(task)) {
         tasks.push(task);
         localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -35,9 +33,12 @@ function addSelectedTask() {
     const selectedInput = document.getElementById("taskSelect");
     const selectedTask = selectedInput.value.trim();
 
-    if (selectedTask) {
+    if (selectedTask && actividadesDesdeServidor.includes(selectedTask)) {
         addTask(selectedTask);
         selectedInput.value = "";
+        clearAutocomplete();
+    } else {
+        alert("Por favor, selecciona una actividad válida.");
     }
 }
 
@@ -53,13 +54,36 @@ function confirmTasks() {
 }
 
 function goBack() {
-    alert("Regresando a la pantalla anterior.");
     window.history.back();
 }
 
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
-    const content = document.querySelector('.content');
     sidebar.classList.toggle('active');
-    content.classList.toggle('active');
+}
+
+function filtrarActividades() {
+    const input = document.getElementById("taskSelect").value.toLowerCase();
+    const autocompleteList = document.getElementById("autocompleteList");
+    autocompleteList.innerHTML = "";
+
+    if (input === "") return;
+
+    const filtradas = actividadesDesdeServidor.filter(act =>
+        act.toLowerCase().includes(input)
+    );
+
+    filtradas.forEach(act => {
+        const li = document.createElement("li");
+        li.textContent = act;
+        li.onclick = () => {
+            document.getElementById("taskSelect").value = act;
+            clearAutocomplete();
+        };
+        autocompleteList.appendChild(li);
+    });
+}
+
+function clearAutocomplete() {
+    document.getElementById("autocompleteList").innerHTML = "";
 }
