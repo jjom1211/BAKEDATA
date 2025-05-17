@@ -1,0 +1,118 @@
+body {
+    font-family: 'Quicksand', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fffaf0;
+}
+.top-bar {
+    background-color: #b35340;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    position: relative;
+}
+.logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 50px;
+    height: auto;
+}
+.icon-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 100px;
+    height: auto;
+}
+.nav-bar {
+    display: flex;
+    justify-content: center;
+    background-color: #4f4f4f;
+    padding: 10px;
+}
+.nav-bar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 18px;
+}
+.nav-bar a:hover {
+    background-color: #3d3d3d;
+    border-radius: 5px;
+}
+.container {
+    text-align: justify;
+    padding: 50px;
+}
+.title-gray {
+    color: #847c84;
+    font-size: 28px;
+    font-weight: bold;
+}
+.title-black {
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+}
+.product-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.view-all-btn {
+    background-color: #d8a394;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.carousel-container {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+}
+.carousel {
+    display: flex;
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+.carousel div {
+    text-align: center;
+    min-width: 200px;
+    flex: 0 0 auto;
+}
+.carousel img {
+    width: 200px;
+    height: auto;
+    margin: 10px;
+    border-radius: 5px;
+}
+.product-name {
+    font-size: 20px;
+    font-weight: bold;
+}
+.product-price {
+    font-size: 16px;
+}
+.arrow {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.left-arrow {
+    left: 10px;
+}
+.right-arrow {
+    right: 10px;
+}

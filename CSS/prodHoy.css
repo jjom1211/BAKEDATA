@@ -1,0 +1,47 @@
+/* Estilos para la tabla de producción */
+#tablaProduccion {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white; /* Fondo blanco solo para la tabla */
+}
+
+#tablaProduccion th, #tablaProduccion td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#tablaProduccion th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+#tablaProduccion tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#tablaProduccion tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilo para el botón Volver */
+.button.volver {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #ff8c00; /* Naranja */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: auto; /* Alinear al centro */
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Limpiar el float para evitar desbordamientos */
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
