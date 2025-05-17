@@ -1,0 +1,20 @@
+/* Estilos básicos para la sidebar */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: -250px;
+    transition: left 0.3s;
+    background: #f4f4f4;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.open-sidebar {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 1000;
+}

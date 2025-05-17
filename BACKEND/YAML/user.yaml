@@ -1,0 +1,21 @@
+usuarios:
+  - usu_id:
+      type: decimal(10,0)
+      null: false
+      key: PRI
+  - usu_nombre:
+      type: varchar(50)
+      null: false
+  - usu_apellido:
+      type: varchar(50)
+      null: false
+  - usu_correo:
+      type: varchar(45)
+      null: false
+      key: UNI
+  - usu_contrasenia:
+      type: varchar(45)
+      null: false
+  - usu_telefono:
+      type: varchar(10)
+      null: false

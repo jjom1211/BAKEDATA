@@ -1,0 +1,26 @@
+employees:
+  columns:
+    emp_id:
+      type: decimal(6,0)
+      primary_key: true
+      null: false
+    emp_nombre:
+      type: varchar(50)
+      null: false
+    emp_apellido:
+      type: varchar(60)
+      null: false
+    emp_contrat:
+      type: date
+      null: false
+    emp_correo:
+      type: varchar(50)
+      unique: true
+      null: false
+    emp_contrasenia:
+      type: varchar(50)
+      null: false
+    emp_telefono:
+      type: varchar(13)
+      unique: true
+      null: false

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Producción</title>
+    <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
+    <link rel="stylesheet" href="../CSS/gen.css">
+    <link rel="stylesheet" href="../CSS/produccion.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Registrar Producción</h1>
+        <form id="formRegistrarProduccion">
+            <input type="text" id="producto" placeholder="Nombre del producto" required>
+            <input type="number" id="cantidad" placeholder="Cantidad" required>
+            <button type="button" onclick="registrarProduccion()">Registrar</button>
+        </form>
+        <button class="button volver" onclick="window.location.href='produccion.html'">Volver</button>
+    </div>
+
+    <script src="../JS/produccion.js"></script>
+</body>
+</html>

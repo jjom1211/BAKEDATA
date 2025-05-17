@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materias Primas</title>
+    <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
+    <link rel="stylesheet" href="../CSS/gen.css"> <!-- Mantenemos gen.css para consistencia -->
+    <link rel="stylesheet" href="../CSS/materias_primas.css">
+</head>
+<body>
+    <!-- Botón para abrir/cerrar la sidebar -->
+    <button class="open-sidebar" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar completa como en producción -->
+    <div class="sidebar">
+        <div class="sidebar-background"></div>
+        <div class="sidebar-content">
+            <img src="https://i.imgur.com/WW384uk.png" alt="Logo" class="sidebar-logo">
+            
+            <!-- Menú completo igual a producción -->
+            <button class="button admin-only" onclick="window.location.href='almacen.html'">Almacén</button>
+            <button class="button admin-only" onclick="window.location.href='reparto.html'">Reparto</button>
+            <button class="button admin-only" onclick="window.location.href='usuario.html'">Usuario</button>
+            <button class="button admin-only" onclick="window.location.href='produccion.html'">Producción</button>
+            <button class="button admin-only" onclick="window.location.href='ventas.html'">Ventas</button>
+            <button class="button admin-only" onclick="window.location.href='limpieza.html'">Limpieza</button>
+            <button class="button admin-only" onclick="window.location.href='reportes.html'">Reportes</button>
+            <button class="button admin-only" onclick="window.location.href='gerente.html'">Gerente</button>
+            
+            <!-- Botón de regreso mejorado -->
+            <button class="button return-login" onclick="window.location.href='produccion.html'">
+                <img src="https://i.imgur.com/ft5fWsY.png" alt="Regresar" class="return-icon">
+                Volver a Producción
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Materias Primas Disponibles</h1>
+        <!-- Tabla de materias primas -->
+        <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Unidad</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for materia in materias %}
+                <tr>
+                  <td>{{ materia.id }}</td>
+                  <td>{{ materia.nombre }}</td>
+                  <td>{{ materia.unidad }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>          
+    </div>
+
+    <!-- Scripts -->
+    <script src="../JS/sidebar.js"></script>
+    <script>
+        // Función para la sidebar (compatible con produccion.js)
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
