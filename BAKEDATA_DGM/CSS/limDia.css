@@ -1,0 +1,174 @@
+body {
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    background-size: 100%;
+    background-repeat: repeat;
+    background-position: top left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+.subinterface {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+h2,h3{
+    color: #d35400;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f2d7d5;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+button {
+    background-color: #d35400;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+button:hover {
+    background-color: #e67e22;
+}
+select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+
+/* Sidebar */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    /* Oculta la sidebar por defecto */
+    background-color: rgba(51, 51, 51, 0.9);
+    /* Fondo semitransparente */
+    padding-top: 20px;
+    transition: left 0.3s ease;
+    /* Animación suave */
+    z-index: 1000;
+}
+
+.sidebar-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+    /* Ajusta la opacidad de la imagen */
+    z-index: -1;
+}
+
+.sidebar-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+/* Estilo para la imagen en la sidebar (más pequeña) */
+.sidebar-logo {
+    width: 110px;
+    /* Tamaño pequeño */
+    height: center;
+    /* Mantiene la proporción */
+    margin-bottom: 10px;
+    /* Espacio debajo de la imagen */
+}
+
+.sidebar .button {
+    display: block;
+    width: 90%;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.return-icon {
+    width: 40px;
+    height: auto;
+    vertical-align: middle;
+}
+
+/* Botón para abrir/cerrar la sidebar */
+.open-sidebar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.open-sidebar:hover {
+    background-color: #575757;
+}
+
+/* Contenido principal */
+.content {
+    margin-left: 0;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+    /* Animación suave */
+}
+
+/* Cuando la sidebar está abierta */
+.sidebar.active {
+    left: 0;
+}
+
+.return-icon {
+    margin-right: 10px;
+}
+
+.content.active {
+    margin-left: 250px;
+}

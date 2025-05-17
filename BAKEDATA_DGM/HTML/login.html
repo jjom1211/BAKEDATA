@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bake Data: Login</title>
+    <link rel="icon" href="https://i.imgur.com/ub3kCNp.png" type="image/png" sizes="16x16">
+    <link rel="stylesheet" href ="../CSS/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h1>Iniciar Sesión</h1>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="contraseña">Contraseña:</label>
+                <div class="password-container">
+                    <input type="password" id="contraseña" name="contraseña" required>
+                    <span class="toggle-password" onclick="togglePassword('contraseña')">👁‍🗨</span>
+                </div>
+            </div>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <p class="register-text">¿No tienes cuenta?</p>
+        <button id="registerButton" onclick="window.location.href='register.html'">Registrarse</button>
+        <p id="error-message" class="error-message"></p>
+    </div>
+    <script src="../JS/login.js"></script>
+</body>
+</html>

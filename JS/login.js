@@ -4,6 +4,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     let username = document.getElementById("username").value;
     let password = document.getElementById("contraseña").value;
 
+<<<<<<< HEAD
     $.ajax({
         url: "/login",
         method: "POST",
@@ -33,9 +34,30 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
             alert("Error, usuario no existente o contraseña equivocada");
         }
     });
+=======
+    const users = {
+        "admin": "gerente.html",
+        "user": "usuario.html",
+        "sale": "ventas.html",
+        "alm": "almacen.html",
+        "rep": "reparto.html",
+        "lim": "limpieza.html",
+        "prod": "produccion.html"
+    };
+
+    if (users[username]) {
+        window.location.href = users[username]; 
+    } else {
+        document.getElementById("error-message").innerText = "Usuario o contraseña incorrectos.";
+    }
+>>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2
 });
 
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     input.type = input.type === "password" ? "text" : "password";
+<<<<<<< HEAD
 }  
+=======
+}
+>>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2
