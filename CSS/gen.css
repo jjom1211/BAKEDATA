@@ -58,9 +58,10 @@ h2{
 }
 
 
-
-/* Sidebar */
+/* Sidebar  y submenus */
 .sidebar {
+    overflow-y: auto; /* permite scroll vertical */
+    max-height: 100vh;
     height: 100%;
     width: 250px;
     position: fixed;
@@ -167,4 +168,60 @@ h2{
 
 .content.active {
     margin-left: 250px;
+}
+
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+/* Estilo para el icono de la barra lateral */
+.icono-sidebar {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+}
+
+.menu-item.doble-opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+}
+
+.menu-item.doble-opcion .ir-produccion-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.menu-item.doble-opcion .toggle-submenu {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 25px; /* Tamaño del la flecha que espliegua el submenú*/
+    cursor: pointer;
+}
+
+.menu-item.doble-opcion .ir-produccion {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Estilo para el menú desplegable producción */
+.menu-item.doble-opcion .submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.menu-item.doble-opcion .submenu .button {
+    color: white;
+    margin: 3px 0;
+    font-size: 14px;
 }

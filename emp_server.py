@@ -91,7 +91,7 @@ def produccion():
 def ventas():
     return render_template('ventas.html')
 
-@app.route('/limpieza.html')
+@app.route('/limpieza.jinja2')
 def limpieza():
     return render_template('limpieza.jinja2')
 
@@ -100,9 +100,13 @@ def limpieza():
 def limDia():
     return render_template('limDia.html')
 
-@app.route('/limCalendario.html')
+@app.route('/limCalendario.jinja2')
 def limCalendario():
-    return render_template('limCalendario.html')
+    return render_template('limCalendario.jinja2')
+
+@app.route('/limRegistrarLimpieza.jinja2')
+def limRegistrarLimpieza():
+    return render_template('limRegistrarLimpieza.jinja2')
 
 if __name__ == '__main__':
     app.run(debug=True)
