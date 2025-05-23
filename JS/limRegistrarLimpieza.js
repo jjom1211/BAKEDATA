@@ -69,8 +69,44 @@ function removeTask(index) {
 }
 
 function confirmTasks() {
-    alert("Actividades confirmadas.");
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    if (tasks.length === 0) {
+        alert("No hay actividades para registrar.");
+        return;
+    }
+
+    fetch("/registrar_limpieza", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ actividades: tasks })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Error al registrar limpieza.");
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.omitidas && data.omitidas.length === tasks.length) {
+            alert(`Ninguna actividad fue registrada.\nTodas ya estaban registradas hoy:\n\n- ${data.omitidas.join("\n")}`);
+        } else if (data.omitidas && data.omitidas.length > 0) {
+            alert(`${data.mensaje}\n\n${data.advertencia}\n\nOmitidas:\n- ${data.omitidas.join("\n")}`);
+        } else {
+            alert(data.mensaje || "Limpieza registrada exitosamente.");
+        }
+
+        localStorage.removeItem("tasks");
+        loadTasks();  // actualiza la lista mostrada
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Error al registrar la limpieza.");
+    });
 }
+
 
 function goBack() {
     window.history.back();

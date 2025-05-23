@@ -4,7 +4,7 @@ function verCalendario() {
 }
 function limpiezaDelDia() {
     alert("Viendo limpieza del dia...");
-    window.location.href = "limDia.html";
+    window.location.href = "limDia.jinja2";
 }
 function registrarLimpieza() {
     alert("Registrando limpieza...");

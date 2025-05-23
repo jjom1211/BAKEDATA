@@ -1,136 +1,234 @@
-
+/* Fondo general y tipografía */
 body {
-    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
-    background-size: 100%;
-    background-repeat: repeat;
-    background-position: top left;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
+  background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+  background-size: 100%;
+  background-repeat: repeat;
+  background-position: top left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #222;
 }
 
 
-/* Sidebar */
+/* Sub-interfaz: fondo, bordes y centrado */
+.subinterface {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  margin: 20px auto;
+}
+
+/* Ajuste al contenido principal para eliminar su propio padding y usar la sub-interfaz */
+.content {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Títulos dentro de la sub-interfaz */
+.subinterface h1 {
+  margin-top: 0;
+  font-size: 2em;
+  text-align: center;
+}
+
+.subinterface h2 {
+  margin: 8px 0 20px;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+/* Lista de actividades: cada fila es un flex con espacio entre texto y check */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.actividad {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(240,240,240,0.8);
+  border-radius: 5px;
+}
+
+/* Texto de la actividad sin margen extra */
+.actividad p {
+  margin: 0;
+  font-size: 1em;
+  color: #333;
+}
+
+/* Checkbox en lugar de botón */
+.actividad input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #28a745;
+  cursor: pointer;
+}
+
+/* Agrupa los botones de pie para que estén lado a lado */
+.bottom-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+/* Estilo botones Regresar y Confirmar avance */
+.bottom-buttons button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.bottom-buttons button:hover {
+  background-color: #f0f0f0;
+}
+
+
+
+/* Sidebar y submenús */
 .sidebar {
-    height: 100%;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: -250px;
-    /* Oculta la sidebar por defecto */
-    background-color: rgba(51, 51, 51, 0.9);
-    /* Fondo semitransparente */
-    padding-top: 20px;
-    transition: left 0.3s ease;
-    /* Animación suave */
-    z-index: 1000;
+  overflow-y: auto;
+  max-height: 100vh;
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  top: 0;
+  left: -250px;
+  background-color: rgba(51, 51, 51, 0.9);
+  padding-top: 20px;
+  transition: left 0.3s ease;
+  z-index: 1000;
 }
 
 .sidebar-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.5;
-    /* Ajusta la opacidad de la imagen */
-    z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.5;
+  z-index: -1;
 }
 
 .sidebar-content {
-    position: relative;
-    z-index: 1;
-    text-align: center;
+  position: relative;
+  z-index: 1;
+  text-align: center;
 }
 
-/* Estilo para la imagen en la sidebar (más pequeña) */
 .sidebar-logo {
-    width: 110px;
-    /* Tamaño pequeño */
-    height: center;
-    /* Mantiene la proporción */
-    margin-bottom: 10px;
-    /* Espacio debajo de la imagen */
+  width: 110px;
+  margin-bottom: 10px;
 }
 
 .sidebar .button {
-    display: block;
-    width: 90%;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: transparent;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: left;
-    transition: background-color 0.3s ease;
+  display: block;
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: left;
+  transition: background-color 0.3s ease;
 }
 
 .sidebar .button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.return-icon {
-    width: 40px;
-    height: auto;
-    vertical-align: middle;
+/* Iconos de la sidebar */
+.icono-sidebar {
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
 }
 
-/* Botón para abrir/cerrar la sidebar */
+/* Menús desplegables */
+.menu-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.menu-item.doble-opcion {
+  display: flex;
+  flex-direction: column;
+}
+
+.ir-produccion-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-submenu {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.ir-produccion {
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.submenu {
+  display: none;
+  flex-direction: column;
+  margin-left: 25px;
+}
+
+.submenu .button {
+  font-size: 14px;
+  margin: 3px 0;
+}
+
+/* Botón abrir/cerrar sidebar */
 .open-sidebar {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 1001;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1001;
 }
 
 .open-sidebar:hover {
-    background-color: #575757;
+  background-color: #575757;
 }
-
-/* Contenido principal */
-.content {
-    margin-left: 0;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-    /* Animación suave */
-}
-
-/* Cuando la sidebar está abierta */
-.sidebar.active {
-    left: 0;
-}
-
-.return-icon {
-    margin-right: 10px;
-}
-
-.content.active {
-    margin-left: 250px;
-}
-
-
-
-.tareas-del-dia {
-    color: white;
-    margin-top: 20px;
-    background: #fc9d78;
-    padding: 15px;
-    border-radius: 10px;
-}
-

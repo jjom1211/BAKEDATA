@@ -163,23 +163,36 @@
     </div>
     <!-- SLIDEBAR Y SUBMENUS FIN-->
 
-    <div class="subinterface">
-        <h2>Limpieza del día</h2>
-        <ul id="taskList">
-            <!-- Aquí se cargarán las tareas desde la BD -->
-        </ul>
-        <input type="text" id="newTask" placeholder="Nueva actividad">
-        <button onclick="addTask()">Agregar</button>
-        
-        <h3>Seleccionar actividad</h3>
-        <select id="taskSelect">
-            <!-- Opciones dinámicas desde la BD -->
-        </select>
-    <div class="button-group">
-        <button onclick="goBack()">Regresar</button>
-        <button onclick="confirmTasks()">Confirmar</button>
+<div class="content">
+<div class="subinterface">
+    <h1>Limpieza</h1>
+    <h2>Actividades del día</h2>
+<div class="container" id="lista-actividades">
+  {% if actividades%}
+    {% for act in actividades %}
+      <div class="actividad">
+        <p>{{ act.actividades_limpieza }}</p>
+        <label>
+<input type="checkbox"
+    name="actividad"
+    value="{{ act.actividades_limpieza }}"
+    {% if act.limdia_act_estado == 'C' %} checked disabled {% endif %}
+/>
+
+        </label>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No hay actividades programadas para hoy.</p>
+  {% endif %}
+</div>
+
+    <div class="bottom-buttons">
+    <button onclick="goBack()">Regresar</button>
+    <button onclick="confirmarLimpieza()">Confirmar avance</button>
     </div>
-    </div>
+</div>
+</div>
     <script src="../JS/limDia.js"></script>
 </body>
 </html>
