@@ -1,35 +1,26 @@
 <!DOCTYPE html>
-<!-- Declaración del tipo de documento HTML5 -->
 <html lang="es">
-<!-- Define el idioma principal como español -->
 <head>
-    <!-- Metadatos y recursos externos -->
+    <!-- Configuración básica del documento HTML -->
     <meta charset="UTF-8">
-    <!-- Configuración de codificación de caracteres -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Viewport para diseño responsive -->
-    <title>Error</title>
-    <!-- Título de la pestaña del navegador -->
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Importa la fuente Quicksand de Google Fonts -->
+    <title>Sucursales - Bake Data</title>
+    
+    <!-- Favicon y fuentes de Google -->
     <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png">
-    <!-- Favicon de la página -->
-
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos CSS internos -->
     <style>
-        /* Estilos CSS para toda la página */
-
-        /* Reset básico y estilos generales */
-        html, body {
-            height: 100%;
+        /* Estilos generales del cuerpo del documento */
+        body {
+            font-family: 'Quicksand', sans-serif;
             margin: 0;
             padding: 0;
-            font-family: 'Quicksand', sans-serif;
             background-color: #fffaf0;
-            color: #4f4f4f;
-            overflow: hidden;
         }
-
-        /* Barra superior con logo y título */
+        
+        /* Barra superior con logo, título e icono derecho */
         .top-bar {
             background-color: #b35340;
             color: white;
@@ -39,24 +30,8 @@
             font-weight: bold;
             position: relative;
         }
-
-        /* Línea decorativa gruesa */
-        .separator-line {
-            height: 14px;
-            background-color: #b35340;
-            margin: 0;
-            border: none;
-        }
-
-        /* Línea decorativa delgada */
-        .gray-line {
-            height: 5px;
-            background-color: #4f4f4f;
-            margin: 0;
-            border: none;
-        }
-
-        /* Estilos para el logo en la barra superior */
+        
+        /* Posicionamiento del logo en la barra superior */
         .logo {
             position: absolute;
             top: 10px;
@@ -64,8 +39,8 @@
             width: 50px;
             height: auto;
         }
-
-        /* Estilos para el icono derecho en la barra */
+        
+        /* Posicionamiento del icono derecho en la barra superior */
         .icon-right {
             position: absolute;
             top: 10px;
@@ -73,61 +48,154 @@
             width: 100px;
             height: auto;
         }
-
-        /* Contenedor principal del mensaje de error */
-        .error-container {
+        
+        /* Barra de navegación horizontal */
+        .nav-bar {
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            height: calc(100% - 38px - 5px);
-            text-align: center;
+            background-color: #4f4f4f;
             padding: 10px;
-            box-sizing: border-box;
         }
-
-        /* Estilos para la imagen de error */
-        .error-image {
-            width: 40vh;
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
+        
+        /* Estilo de los enlaces de navegación */
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 40px;
+            font-size: 18px;
         }
-
-        /* Estilos para el título del error */
-        .error-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #b35340;
-            margin-bottom: 15px;
+        
+        /* Efecto hover en los enlaces de navegación */
+        .nav-bar a:hover {
+            background-color: #3d3d3d;
+            border-radius: 5px;
         }
-
-        /* Estilos para el mensaje descriptivo */
-        .error-message {
-            font-size: 1.1rem;
-            line-height: 1.4;
-            margin-bottom: 5px;
-            max-width: 90%;
+        
+        /* Contenedor principal del contenido */
+        .container {
+            text-align: justify;
+            padding: 50px;
+        }
+        
+        /* Estilo del título principal de la página */
+        .title-gray {
+            color: #847c84;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        /* Contenedor flexible para las tarjetas de sucursales */
+        .branches-section {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        /* Estilo de cada tarjeta de sucursal */
+        .branch-card {
+            width: 300px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        /* Estilo de la imagen dentro de cada tarjeta */
+        .branch-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        /* Estilo del nombre de la sucursal */
+        .branch-card h3 {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        
+        /* Estilo del texto de dirección */
+        .branch-card p {
+            font-size: 18px;
+            margin: 15px 0 10px;
+        }
+        
+        /* Estilo del botón para ver en Google Maps */
+        .map-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #b35340;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        /* Efecto hover en el botón de Google Maps */
+        .map-btn:hover {
+            background-color: #8f2f26;
         }
     </style>
 </head>
 <body>
-    <!-- Barra superior con branding -->
+    <!-- Barra superior con logo, título e icono -->
     <div class="top-bar">
         <img src="https://i.imgur.com/WW384uk.png" alt="Logo Bake Data" class="logo">
         <img src="https://i.imgur.com/piX2hC1.png" alt="Icono adicional" class="icon-right">
         Bake Data
     </div>
-
-    <!-- Líneas decorativas -->
-    <hr class="separator-line">
-    <hr class="gray-line">
-
-    <!-- Contenido principal de error -->
-    <div class="error-container">
-        <img src="https://imgur.com/g6cd9bQ.png" alt="Error" class="error-image">
-        <h1 class="error-title">Lo sentimos, ha ocurrido un error</h1>
-        <p class="error-message">Estamos trabajando para solucionarlo. Por favor, intenta nuevamente más tarde.</p>
+    
+    <!-- Barra de navegación con enlaces -->
+    <div class="nav-bar">
+        <a href="#">Realizar Pedido</a>
+        <a href="#">Sucursales</a>
+        <a href="#">Conócenos</a>
+    </div>
+    
+    <!-- Contenido principal de la página -->
+    <div class="container">
+        <!-- Título de la sección de sucursales -->
+        <h1 class="title-gray">Nuestras Sucursales</h1>
+        
+        <!-- Contenedor de todas las tarjetas de sucursales -->
+        <div class="branches-section">
+            <!-- Tarjeta individual para sucursal 1 -->
+            <div class="branch-card">
+                <img src="https://i.imgur.com/M0qlVQk.jpeg" alt="Sucursal 1">
+                <h3>Grace Piramides</h3>
+                <p><strong>Dirección:</strong> Av. Pirámide de la Luna 279, Fracc. Pirámides, El Pueblito, Corregidora, Querétaro.</p>
+                <a class="map-btn" href="https://www.google.com/maps/@20.5418019,-100.4526088,3a,75y,141.53h,79.04t/data=!3m7!1e1!3m5!1sZAd9w3ir12oiU5mqSAD1dg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D10.959999999999994%26panoid%3DZAd9w3ir12oiU5mqSAD1dg%26yaw%3D141.53!7i16384!8i8192?entry=ttu" target="_blank">Ver en Google Maps</a>
+            </div>
+            
+            <!-- Tarjeta individual para sucursal 2 -->
+            <div class="branch-card">
+                <img src="https://i.imgur.com/Ed2kZb5.jpeg" alt="Sucursal 2">
+                <h3>Grace Santuarios</h3>
+                <p><strong>Dirección:</strong> Andamaxei 19, Santuarios Residencial, CP 76900, El Pueblito, Querétaro.</p>
+                <a class="map-btn" href="https://www.google.com.mx/maps/place/Panader%C3%ADa+y+Reposter%C3%ADa+Grace+%EF%B8%8F/@20.5536693,-100.4480573,3a,75y,271.72h,77.36t/data=!3m7!1e1!3m5!1sPxOzPeNrhStfOpqQf-2NjQ!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D12.64%26panoid%3DPxOzPeNrhStfOpqQf-2NjQ%26yaw%3D271.72!7i16384!8i8192" target="_blank">Ver en Google Maps</a>
+            </div>
+            
+            <!-- Tarjeta individual para sucursal 3 -->
+            <div class="branch-card">
+                <img src="https://i.imgur.com/jXlrrLk.jpeg" alt="Sucursal 3">
+                <h3>Grace Puerta Real</h3>
+                <p><strong>Dirección:</strong> Miguel Hidalgo 149. Fracc. Puerta Real, CP 76900, El Pueblito, Querétaro.</p>
+                <a class="map-btn" href="https://www.google.com.mx/maps/place/Grace+Panader%C3%ADa+y+Reposter%C3%ADa/@20.5579386,-100.4333949,3a,75y,241.12h,59.12t/data=!3m7!1e1!3m5!1s8vBQod0-Qr1gOhcdvg6ZCA!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D30.880000000000003%26panoid%3D8vBQod0-Qr1gOhcdvg6ZCA%26yaw%3D241.12!7i16384!8i8192" target="_blank">Ver en Google Maps</a>
+            </div>
+            
+            <!-- Tarjeta individual para sucursal 4 -->
+            <div class="branch-card">
+                <img src="https://i.imgur.com/K9XijrQ.jpeg" alt="Sucursal 4">
+                <h3>Grace Paseos de Bosque</h3>
+                <p><strong>Dirección:</strong> Av. Santuario de Guadalupe 1101, Santuarios del Cerrito, Santuarios Residencial, CP 7600, El Pueblito, Corregidora, Querétaro.</p>
+                <a class="map-btn" href="https://www.google.com.mx/maps/@20.5565958,-100.4499079,3a,75y,190.12h,88.49t/data=!3m7!1e1!3m5!1ssC8u-g5l-w9X8wZZr3SMIg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D1.5100000000000051%26panoid%3DsC8u-g5l-w9X8wZZr3SMIg%26yaw%3D190.12!7i16384!8i8192?entry=ttu" target="_blank">Ver en Google Maps</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
