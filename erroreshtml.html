@@ -1,12 +1,24 @@
 <!DOCTYPE html>
+<!-- Declaración del tipo de documento HTML5 -->
 <html lang="es">
+<!-- Define el idioma principal como español -->
 <head>
+    <!-- Metadatos y recursos externos -->
     <meta charset="UTF-8">
+    <!-- Configuración de codificación de caracteres -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Viewport para diseño responsive -->
     <title>Error</title>
+    <!-- Título de la pestaña del navegador -->
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Importa la fuente Quicksand de Google Fonts -->
     <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png">
+    <!-- Favicon de la página -->
+
     <style>
+        /* Estilos CSS para toda la página */
+
+        /* Reset básico y estilos generales */
         html, body {
             height: 100%;
             margin: 0;
@@ -17,6 +29,7 @@
             overflow: hidden;
         }
 
+        /* Barra superior con logo y título */
         .top-bar {
             background-color: #b35340;
             color: white;
@@ -27,6 +40,7 @@
             position: relative;
         }
 
+        /* Línea decorativa gruesa */
         .separator-line {
             height: 14px;
             background-color: #b35340;
@@ -34,6 +48,7 @@
             border: none;
         }
 
+        /* Línea decorativa delgada */
         .gray-line {
             height: 5px;
             background-color: #4f4f4f;
@@ -41,6 +56,7 @@
             border: none;
         }
 
+        /* Estilos para el logo en la barra superior */
         .logo {
             position: absolute;
             top: 10px;
@@ -49,6 +65,7 @@
             height: auto;
         }
 
+        /* Estilos para el icono derecho en la barra */
         .icon-right {
             position: absolute;
             top: 10px;
@@ -57,6 +74,7 @@
             height: auto;
         }
 
+        /* Contenedor principal del mensaje de error */
         .error-container {
             display: flex;
             flex-direction: column;
@@ -68,6 +86,7 @@
             box-sizing: border-box;
         }
 
+        /* Estilos para la imagen de error */
         .error-image {
             width: 40vh;
             max-width: 100%;
@@ -75,6 +94,7 @@
             margin-bottom: 20px;
         }
 
+        /* Estilos para el título del error */
         .error-title {
             font-size: 2rem;
             font-weight: 700;
@@ -82,6 +102,7 @@
             margin-bottom: 15px;
         }
 
+        /* Estilos para el mensaje descriptivo */
         .error-message {
             font-size: 1.1rem;
             line-height: 1.4;
@@ -91,15 +112,18 @@
     </style>
 </head>
 <body>
+    <!-- Barra superior con branding -->
     <div class="top-bar">
         <img src="https://i.imgur.com/WW384uk.png" alt="Logo Bake Data" class="logo">
         <img src="https://i.imgur.com/piX2hC1.png" alt="Icono adicional" class="icon-right">
         Bake Data
     </div>
 
+    <!-- Líneas decorativas -->
     <hr class="separator-line">
     <hr class="gray-line">
 
+    <!-- Contenido principal de error -->
     <div class="error-container">
         <img src="https://imgur.com/g6cd9bQ.png" alt="Error" class="error-image">
         <h1 class="error-title">Lo sentimos, ha ocurrido un error</h1>
