@@ -69,12 +69,6 @@ document.getElementById('confirmButton').addEventListener('click', () => {
     alert('Envio de requerimiento de limpieza completado.');
 });
 
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const content = document.querySelector('.content');
-    sidebar.classList.toggle('active');
-    content.classList.toggle('active');
-}
 
 function mostrarTareasDelDia(fechaStr) {
     fetch(`/tareas_por_fecha/${fechaStr}`)

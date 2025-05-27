@@ -107,16 +107,6 @@ function confirmTasks() {
     });
 }
 
-
-function goBack() {
-    window.history.back();
-}
-
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('active');
-}
-
 function filtrarActividades() {
     const input = document.getElementById("taskSelect").value.toLowerCase();
     const autocompleteList = document.getElementById("autocompleteList");
@@ -179,6 +169,12 @@ function mostrarTodasActividades() {
 function clearAutocomplete() {
     document.getElementById("autocompleteList").innerHTML = "";
 }
+
+function goBack() {
+    window.history.back();
+}
+
+
 
 // FUNCIÓN PARA EL SUBMENÚ DE LA BARRA LATERAL
 function toggleSidebar() {

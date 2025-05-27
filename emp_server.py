@@ -3,6 +3,7 @@ import pymysql
 from datetime import datetime
 import pytz
 
+#Inicializacion de la aplicación de los endpoints
 app = Flask(__name__, template_folder='HTML')
 
 # Configuración de la base de datos
@@ -61,7 +62,6 @@ def serve_css(filename):
 def serve_js(filename):
     return send_from_directory('JS', filename)
 
-
 @app.route('/gerente.html')
 def gerente():
     return render_template('gerente.html')
@@ -82,6 +82,10 @@ def reparto():
 def repCalendario():
     return render_template('repCalendario.html')
 
+
+@app.route('/register.html')
+def registro():
+    return render_template('register.html')
 
 @app.route('/produccion.html')
 def produccion():
@@ -107,6 +111,10 @@ def limCalendario():
 @app.route('/limRegistrarLimpieza.jinja2')
 def limRegistrarLimpieza():
     return render_template('limRegistrarLimpieza.jinja2')
+
+@app.route('/limActualizarFechaLimpieza.jinja2')
+def limActualizarFechaLimpieza():
+    return render_template('limActualizarFechaLimpieza.jinja2')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -12,6 +12,7 @@ function registrarLimpieza() {
 }
 function actualizarFechaDeLimpieza() {
     alert("Actualizando limpieza del dia...");
+    window.location.href = "limActualizarFechaLimpieza.jinja2";
 }
 
 // FUNCIÓN PARA EL SUBMENÚ DE LA BARRA LATERAL

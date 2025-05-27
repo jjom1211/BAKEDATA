@@ -220,6 +220,86 @@ def tareas_por_fecha(fecha):
     finally:
         connection.close()
 
+
+
+
+@app.route('/limActualizarFechaLimpieza.jinja2')
+def limActualizarFechaLimpieza():
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor() as cursor:
+            query = "SELECT DATE(limcal_fecha) FROM limpieza_calendario"
+            cursor.execute(query)
+            resultados = cursor.fetchall()
+            dias_limpieza = [fila[0].strftime('%Y-%m-%d') for fila in resultados]
+    except Exception as e:
+        print(f"Error: {e}")
+        dias_limpieza = []
+    finally:
+        connection.close()
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor() as cursor:
+            query = "SELECT lim_actividad FROM limpieza"
+            cursor.execute(query)
+            resultados = cursor.fetchall()
+            actividades_limpieza = [fila[0] for fila in resultados]
+    except Exception as e:
+        print(f"Error: {e}")
+        actividades_limpieza = []
+    finally:
+        connection.close()
+    return render_template('limActualizarFechaLimpieza.jinja2', dias_limpieza=dias_limpieza,actividades_limpieza = actividades_limpieza)
+
+
+
+
+@app.route('/guardar_tareas', methods=['POST'])
+def guardar_tareas():
+    data = request.get_json()
+    fecha = data.get("fecha")
+    tareas = data.get("tareas", [])
+
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor() as cursor:
+            for tarea in tareas:
+                actividad = tarea["actividad"]
+                estado = tarea["estado"]
+
+                # Verificar si ya existe la actividad para esa fecha
+                query = """
+                    SELECT COUNT(*) FROM limpieza_calendario
+                    WHERE lim_actividad = %s AND DATE(limcal_fecha) = %s
+                """
+                cursor.execute(query, (actividad, fecha))
+                existe = cursor.fetchone()[0]
+
+                if existe:
+                    update_query = """
+                        UPDATE limpieza_calendario
+                        SET limcal_estado = %s
+                        WHERE lim_actividad = %s AND DATE(limcal_fecha) = %s
+                    """
+                    cursor.execute(update_query, (estado, actividad, fecha))
+                else:
+                    insert_query = """
+                        INSERT INTO limpieza_calendario (lim_actividad, limcal_estado, limcal_fecha)
+                        VALUES (%s, %s, %s)
+                    """
+                    cursor.execute(insert_query, (actividad, estado, fecha))
+            connection.commit()
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        print(f"Error al guardar tareas: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        connection.close()
+
+
+
+
+
 # Rutas para servir archivos estáticos css
 @app.route('/CSS/<path:filename>')
 def serve_css(filename):

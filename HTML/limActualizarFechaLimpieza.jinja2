@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Limpieza</title>
+    <title>Calendario de la Panadería</title>
     <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
-    <link rel="stylesheet" href ="../CSS/gen.css">
+    <link rel="stylesheet" href="../CSS/limActualizarFechaLimpieza.css">
 </head>
 <body>
     <!-- SLIDEBAR Y SUBMENUS -->
@@ -125,7 +125,7 @@
                 <div class="submenu">
                     <button class="button" onclick="verCalendario()">Calendario</button>
                     <button class="button" onclick="limpiezaDelDia()">Limpieza del Dia</button>
-                    <button class="button admin-only" onclick="registrarLimpieza()">Registrar Limpieza del dia</button>
+                    <button class="button admin-only" onclick="registrarLimpieza()">Registrar Limpieza</button>
                     <button class="button admin-only" onclick="actualizarFechaDeLimpieza()">Actualizar fecha de
                         limpieza</button>
                 </div>
@@ -163,14 +163,65 @@
     </div>
     <!-- SLIDEBAR Y SUBMENUS FIN-->
 
-    <!-- Contenido principal -->
-    <div class="container">
-        <h1>Limpieza</h1>
-        <button class="button" onclick="verCalendario()">Calendario</button>
-        <button class="button" onclick="limpiezaDelDia()">Limpieza del Dia</button>
-        <button class="button admin-only" onclick="registrarLimpieza()">Registrar Limpieza del dia</button>
-        <button class="button admin-only" onclick="actualizarFechaDeLimpieza()">Actualizar fecha de limpieza</button>
+    <h1>Calendario de limpieza</h1>
+    <h2>Seleccione una fecha para realizar los cambios</h2>
+    <div class="calendar">
+        <div class="header">
+            <button id="prevMonth">&lt;</button>
+            <h3 id="currentMonth"></h3>
+            <button id="nextMonth">&gt;</button>
+        </div>
+        <div class="days">
+            <div class="day">Dom</div>
+            <div class="day">Lun</div>
+            <div class="day">Mar</div>
+            <div class="day">Mié</div>
+            <div class="day">Jue</div>
+            <div class="day">Vie</div>
+            <div class="day">Sáb</div>
+        </div>
+        <div id="calendarGrid" class="grid"></div>
     </div>
-    <script src="../JS/limpieza.js"></script>
+<div class="buttons">
+    <button id="backButton">Regresar</button>
+    <button id="confirmButton">Confirmar limpieza</button>
+</div>
+
+<!-- Fondo oscuro -->
+<div id="modalOverlay" style="display: none;"></div>
+<!-- Contenedor del popup -->
+<div id="popupTareas" role="dialog" aria-modal="true" style="display: none;">
+    <button id="cerrarPopupBtn" aria-label="Cerrar ventana">✖</button>
+    <div id="contenidoPopup">
+        <!-- TAREAS DEL DÍA -->
+        <div id="tareasDelDiaContainer" class="tareas-del-dia">
+            <h2>Tareas del Día</h2>
+            <div id="listaTareasDia"></div>
+        </div>
+
+        <!-- INTERFAZ DE BUSQUEDA Y AGREGADO -->
+        <div class="autocomplete-container-row">
+            <input type="text" id="taskSelect" placeholder="Buscar o seleccionar tarea..." autocomplete="off">
+            <button id="addTaskBtn">+</button>
+            <button id="toggleAllBtn" title="Mostrar tareas del servidor">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828778.png" alt="toggle">
+            </button>
+        </div>
+
+        <!-- TAREAS DEL SERVIDOR -->
+        <div id="contenedorServidor" class="contenedor-servidor" style="display: none;">
+            <h3>Tareas Disponibles</h3>
+            <ul id="tareasServidorLista" class="autocomplete-list"></ul>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        const diasConLimpieza = {{ dias_limpieza | tojson | safe }};
+        const actividadesDesdeServidor = {{ actividades_limpieza | tojson }};
+    </script>
+    
+    <script src="../JS/limActualizarFechaLimpieza.js"></script>
 </body>
 </html>
