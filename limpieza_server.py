@@ -296,10 +296,6 @@ def guardar_tareas():
     finally:
         connection.close()
 
-
-
-
-
 # Rutas para servir archivos estáticos css
 @app.route('/CSS/<path:filename>')
 def serve_css(filename):

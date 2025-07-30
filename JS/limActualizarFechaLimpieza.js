@@ -426,6 +426,10 @@ window.addSelectedTask = function (fecha) {
         }
     };
 
+document.getElementById('backButton').addEventListener('click', () => {
+    window.history.back(); // Regresa a la página anterior
+});
+
     // Sidebar
     window.toggleSidebar = function () {
         document.querySelector('.sidebar')?.classList.toggle('active');

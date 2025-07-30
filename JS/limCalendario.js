@@ -65,10 +65,6 @@ document.getElementById('backButton').addEventListener('click', () => {
     window.history.back(); // Regresa a la página anterior
 });
 
-document.getElementById('confirmButton').addEventListener('click', () => {
-    alert('Envio de requerimiento de limpieza completado.');
-});
-
 
 function mostrarTareasDelDia(fechaStr) {
     fetch(`/tareas_por_fecha/${fechaStr}`)
