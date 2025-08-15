@@ -20,14 +20,17 @@ def login():
     return render_template('limpieza.jinja2')
 
     """
+    FUNCIONALIDAD DENTRO DE: LIMPIEZA DEL DIA
+    
     Muestra las actividades de limpieza programadas para el día actual,
     incluyendo su estado (pendiente o confirmada).
+    
     """
 @app.route("/limDia.jinja2")
 def ver_limpieza_dia():
     fecha = datetime.now(pytz.timezone("America/Mexico_City")).strftime('%Y-%m-%d 00:00:00')
-
     connection = pymysql.connect(**db_config)
+    #Conexion para obtener las actividades existentes en la base de datos
     with connection.cursor(pymysql.cursors.DictCursor) as cursor:
         cursor.execute("""
             SELECT l.lim_actividad AS actividades_limpieza,
@@ -36,30 +39,29 @@ def ver_limpieza_dia():
             JOIN limpieza l ON ld.limdia_lim_fk = l.lim_id
             WHERE ld.limdia_limcal_fecha = %s
         """, (fecha,))
-        actividades = cursor.fetchall()
+        actividades = cursor.fetchall() #Captura todos los elementos encontrados dentro de una lista
     connection.close()
-
-    return render_template("limDia.jinja2", actividades=actividades)
+    return render_template("limDia.jinja2", actividades=actividades) #Manda las actividades a un render de otro recurso
 
     """
+    FUNCIONALIDAD DENTRO DE: LIMPIEZA DEL DIA
+    
     Confirma actividades de limpieza marcadas como completadas (estado 'C').
     Actualiza el estado en la tabla `limpieza_dia` usando la fecha actual.
+    
     """
 @app.route('/confirmarLimpieza', methods=['POST'])
 def confirmar_actividades():
     datos = request.get_json()
     actividades = datos.get("actividades", [])
-
+    #Si no se selecciona nada
     if not actividades:
         return jsonify({"message": "No se seleccionó ninguna actividad"}), 400
-
     # Obtener la fecha actual con hora 00:00:00
     fecha = datetime.now(pytz.timezone("America/Mexico_City")).strftime('%Y-%m-%d 00:00:00')
-
     try:
         connection = pymysql.connect(**db_config)
         cursor = connection.cursor()
-
         # 1. Buscar los lim_id correspondientes a las actividades seleccionadas
         placeholders = ','.join(['%s'] * len(actividades))
         query_ids = f"""
@@ -68,36 +70,33 @@ def confirmar_actividades():
             WHERE lim_actividad IN ({placeholders})
         """
         cursor.execute(query_ids, actividades)
-        ids_limpieza = [row[0] for row in cursor.fetchall()]
-
+        ids_limpieza = [row[0] for row in cursor.fetchall()]#dentro del fetch (como tabla temporal) toma la primera fila (el ID)
+        #Si no se encuentran actividades en la base de datos
         if not ids_limpieza:
             return jsonify({"message": "No se encontraron actividades válidas"}), 400
-
         # 2. Actualizar limpieza_dia con esos lim_id y la fecha actual
-        placeholders_ids = ','.join(['%s'] * len(ids_limpieza))
+        placeholders_ids = ','.join(['%s'] * len(ids_limpieza)) #se aplica un REGEX para construir una lista con los IDs separados con comas
         query_update = f"""
             UPDATE limpieza_dia 
             SET limdia_act_estado = 'C' 
             WHERE limdia_limcal_fecha = %s 
-            AND limdia_lim_fk IN ({placeholders_ids})
-        """
+            AND limdia_lim_fk IN ({placeholders_ids}) 
+        """ #En base a las actividades seleccionadas se utilizan los campos para actualizar
         cursor.execute(query_update, [fecha] + ids_limpieza)
         connection.commit()
-
-        return jsonify({"message": "Actividades actualizadas correctamente"})
-    
+        return jsonify({"message": "Actividades actualizadas correctamente"}) #Si se pudo actualizar en BD
     except Exception as e:
         print("Error:", e)
-        return jsonify({"message": "Ocurrió un error al actualizar actividades"}), 500
-    
+        return jsonify({"message": "Ocurrió un error al actualizar actividades"}), 500 #Si no se pudo actualizar en BD
     finally:
         connection.close()
 
 
 
     """
+    FUNCIONALIDAD DENTRO DE: REGISTRAR LIMPIEZA DEL DIA
     Muestra una lista de todas las actividades de limpieza disponibles 
-    para que el usuario seleccione cuáles se programarán.
+    para que el encargado seleccione cuáles se programarán.
     """
 @app.route('/limRegistrarLimpieza.jinja2')
 def limRegistrarLimpieza():
@@ -107,16 +106,17 @@ def limRegistrarLimpieza():
             query = "SELECT lim_actividad FROM limpieza"
             cursor.execute(query)
             resultados = cursor.fetchall()
-            actividades_limpieza = [fila[0] for fila in resultados]
+            actividades_limpieza = [fila[0] for fila in resultados] 
     except Exception as e:
         print(f"Error: {e}")
-        actividades_limpieza = []
+        actividades_limpieza = [] #Excepcion para evitar desbordamiento, se manda una lista vacia si no hay coincidencias
     finally:
         connection.close()
-    return render_template('limRegistrarLimpieza.jinja2', actividades_limpieza=actividades_limpieza)
+    return render_template('limRegistrarLimpieza.jinja2', actividades_limpieza=actividades_limpieza) #Se envia la lista de actividades de la BD junto con el render del recurso
 
 
     """
+    FUNCIONALIDAD DENTRO DE: REGISTRAR LIMPIEZA DEL DIA
     Registra las actividades seleccionadas para la fecha actual.
     Verifica si la fecha ya existe en el calendario, la inserta si no.
     Luego registra las actividades si aún no han sido registradas.
@@ -171,6 +171,7 @@ def registrar_limpieza():
 
 
     """
+    FUNCIONALIDAD DENTRO DE: CALENDARIO
     Muestra las fechas disponibles en el calendario de limpieza
     en las que se han registrado actividades.
     """
@@ -191,6 +192,7 @@ def limCalendario():
     return render_template('limCalendario.jinja2', dias_limpieza=dias_limpieza)
 
     """
+    FUNCIONALIDAD DENTRO DE: CALENDARIO
     Devuelve en formato JSON las actividades de limpieza 
     registradas para una fecha específica, incluyendo su estado.
     """
@@ -212,17 +214,20 @@ def tareas_por_fecha(fecha):
             """
             cursor.execute(query, (fecha,))
             tareas = cursor.fetchall()
-            resultado = [{'actividad': t[0], 'estado': t[1]} for t in tareas]
+            resultado = [{'actividad': t[0], 'estado': t[1]} for t in tareas] #Toma de la pseudotabla los valores de la primera y segunda fila
             return jsonify(resultado)
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e)}), 500 #Si hay errores de conexion a la BD
     finally:
         connection.close()
-
-
-
-
+        
+    """
+    FUNCIONALIDAD DENTRO DE: ACTUALIZAR FECHA DE LIMPIEZA
+    Actualizacion para añadir, cambiar o modificar una fecha o registro de limpieza
+    dentro de un calendario
+    """
+    
 @app.route('/limActualizarFechaLimpieza.jinja2')
 def limActualizarFechaLimpieza():
     try:
@@ -252,8 +257,10 @@ def limActualizarFechaLimpieza():
     return render_template('limActualizarFechaLimpieza.jinja2', dias_limpieza=dias_limpieza,actividades_limpieza = actividades_limpieza)
 
 
-
-
+    """
+    FUNCIONALIDAD DENTRO DE: ACTUALIZAR FECHA DE LIMPIEZA
+    Actualizacion de las tareas, como agregar, eliminar o cambiar estados de las mismas
+    """
 @app.route('/guardar_tareas', methods=['POST'])
 def guardar_tareas():
     data = request.get_json()
@@ -295,6 +302,7 @@ def guardar_tareas():
         return jsonify({"status": "error", "message": str(e)}), 500
     finally:
         connection.close()
+
 
 # Rutas para servir archivos estáticos css
 @app.route('/CSS/<path:filename>')
