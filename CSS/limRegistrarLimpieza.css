@@ -354,3 +354,20 @@ select {
     margin: 3px 0;
     font-size: 14px;
 }
+
+.confirmar-btn {
+  position: absolute;     /* lo posicionamos fijo dentro del modal */
+  bottom: 15px;           /* distancia desde abajo */
+  left: 15px;             /* distancia desde la izquierda */
+  background-color: #4CAF50; /* verde confirmación */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.confirmar-btn:hover {
+    background-color: #45a049;
+}

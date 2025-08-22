@@ -261,48 +261,62 @@ def limActualizarFechaLimpieza():
     FUNCIONALIDAD DENTRO DE: ACTUALIZAR FECHA DE LIMPIEZA
     Actualizacion de las tareas, como agregar, eliminar o cambiar estados de las mismas
     """
-@app.route('/guardar_tareas', methods=['POST'])
-def guardar_tareas():
+@app.route('/actualizar_tareas', methods=['POST'])
+def actualizar_tareas():
     data = request.get_json()
-    fecha = data.get("fecha")
+    fecha_str = data.get("fecha")
     tareas = data.get("tareas", [])
-
+    if not fecha_str:
+        return jsonify({"status": "error", "message": "Falta la fecha (YYYY-MM-DD)."}), 400
+    fecha = f"{fecha_str} 00:00:00"  # normalizamos a DATETIME
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor() as cursor:
-            for tarea in tareas:
-                actividad = tarea["actividad"]
-                estado = tarea["estado"]
-
-                # Verificar si ya existe la actividad para esa fecha
-                query = """
-                    SELECT COUNT(*) FROM limpieza_calendario
-                    WHERE lim_actividad = %s AND DATE(limcal_fecha) = %s
-                """
-                cursor.execute(query, (actividad, fecha))
-                existe = cursor.fetchone()[0]
-
-                if existe:
-                    update_query = """
-                        UPDATE limpieza_calendario
-                        SET limcal_estado = %s
-                        WHERE lim_actividad = %s AND DATE(limcal_fecha) = %s
-                    """
-                    cursor.execute(update_query, (estado, actividad, fecha))
+            # 🔹 Garantiza que exista el registro de fecha en limpieza_calendario
+            cursor.execute("SELECT 1 FROM limpieza_calendario WHERE limcal_fecha = %s", (fecha,))
+            if not cursor.fetchone():
+                cursor.execute(
+                    "INSERT INTO limpieza_calendario (limcal_fecha, limcal_estado) VALUES (%s, %s)",
+                    (fecha, 'N')
+                )
+            # 🔹 Actualiza/Inserta cada tarea
+            for t in tareas:
+                actividad = t.get("actividad")
+                estado = t.get("estado", "N")
+                if not actividad:
+                    continue
+                # Busca el ID en limpieza
+                cursor.execute("SELECT lim_id FROM limpieza WHERE lim_actividad = %s", (actividad,))
+                row = cursor.fetchone()
+                if not row:
+                    continue
+                lim_id = row[0]
+                # Verifica si ya existe para la fecha
+                cursor.execute("""
+                    SELECT 1
+                    FROM limpieza_dia
+                    WHERE limdia_limcal_fecha = %s AND limdia_lim_fk = %s
+                """, (fecha, lim_id))
+                if cursor.fetchone():
+                    # Actualiza
+                    cursor.execute("""
+                        UPDATE limpieza_dia
+                        SET limdia_act_estado = %s
+                        WHERE limdia_limcal_fecha = %s AND limdia_lim_fk = %s
+                    """, (estado, fecha, lim_id))
                 else:
-                    insert_query = """
-                        INSERT INTO limpieza_calendario (lim_actividad, limcal_estado, limcal_fecha)
+                    # Inserta
+                    cursor.execute("""
+                        INSERT INTO limpieza_dia (limdia_limcal_fecha, limdia_lim_fk, limdia_act_estado)
                         VALUES (%s, %s, %s)
-                    """
-                    cursor.execute(insert_query, (actividad, estado, fecha))
+                    """, (fecha, lim_id, estado))
             connection.commit()
         return jsonify({"status": "success"}), 200
     except Exception as e:
-        print(f"Error al guardar tareas: {e}")
+        print(f"Error en /actualizar_tareas: {e}")
         return jsonify({"status": "error", "message": str(e)}), 500
     finally:
         connection.close()
-
 
 # Rutas para servir archivos estáticos css
 @app.route('/CSS/<path:filename>')

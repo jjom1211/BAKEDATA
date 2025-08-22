@@ -122,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function () { //Funcion principal 
                     table.appendChild(row);
                 });
                 contenido.appendChild(table);//Espacio para la tabla compleata
-
                 //controles de búsqueda y agregar 
                 const input = document.createElement("input");
                 input.id = "taskSelect";
@@ -150,11 +149,17 @@ document.addEventListener('DOMContentLoaded', function () { //Funcion principal 
                 img.src = "https://i.imgur.com/smPDt4w.png";
                 img.style.width = "20px";
                 botonMostrarTodas.appendChild(img);
+                const botonGuardar = document.createElement("button");
+                botonGuardar.textContent = "Confirmar";   // ✅ fuerza el texto
+                botonGuardar.type = "button";
+                botonGuardar.classList.add("confirmar-btn");
+                botonGuardar.onclick = () => guardarCambiosTareas(fechaStr);
                 const divControles = document.createElement("div");
                 divControles.classList.add('autocomplete-container-row'); // Clase para el contenedor
                 divControles.appendChild(input);
                 divControles.appendChild(botonAgregar);
                 divControles.appendChild(botonMostrarTodas);
+                divControles.appendChild(botonGuardar);
                 divControles.appendChild(list);
                 contenido.appendChild(divControles); // Añadir los controles aquí
                 mostrarTodasActividades(); // Llama a esto para poblar la lista de autocompletado si está activa
@@ -165,24 +170,37 @@ document.addEventListener('DOMContentLoaded', function () { //Funcion principal 
                 contenido.innerHTML = "<p>Error al cargar las tareas.</p>";
             });
     }
-    //Listener para crear una lista en base a los cambios en las actividades y sus estados
-    confirmBtn.addEventListener('click', () => {
-        const selects = document.querySelectorAll('#contenidoPopup select');
-        const cambios = Array.from(selects).map(select => ({
-            actividad: select.dataset.actividad,
-            estado: select.value
-        }));
-        //Se mandan los cambios al endpoint
-        fetch(`/actualizar_estados/${fechaSeleccionada}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(cambios)
-        })
-        .then(res => res.ok ? alert("Estados actualizados.") : alert("Error actualizando."))
-        .finally(cerrarModal);
+        function guardarCambiosTareas(fecha) {
+    const selects = document.querySelectorAll('#contenidoPopup select.estado-select');
+    const tareas = Array.from(selects).map(select => ({
+        actividad: select.dataset.actividad, // viene del dataset que ya asignas
+        estado: select.value                 // "C", "N" o "P"
+    }));
+
+    // Log para verificar lo que se envía
+    console.log('Payload a /actualizar_tareas:', { fecha, tareas });
+
+    fetch("/actualizar_tareas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fecha, tareas })
+    })
+    .then(async res => {
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.status === "success") {
+        alert("Tareas actualizadas correctamente.");
+        cerrarModal();
+        } else {
+        console.error("Respuesta del servidor:", data);
+        alert("Error al guardar: " + (data.message || res.statusText));
+        }
+    })
+    .catch(err => {
+        console.error("Error en fetch /actualizar_tareas:", err);
+        alert("Hubo un error al guardar.");
     });
+    }
+    
     //Limpieza del autocompletado de la barra de busqueda de actividades
     window.clearAutocomplete = function () {
         document.getElementById("autocompleteList").innerHTML = "";
