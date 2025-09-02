@@ -19,35 +19,38 @@ db_config = {
 def login():
     return render_template('login.html')
 
-# Ruta para manejar el inicio de sesión
 @app.route('/login', methods=['POST'])
 def handle_login():
     data = request.json
-    username = data.get('username')
+    correo = data.get('correo')
     password = data.get('contraseña')
 
     # Conectar a la base de datos
     conn = pymysql.connect(**db_config)
     try:
-        with conn.cursor() as cursor:
-            # Consulta para verificar el usuario y la contraseña
-            sql = "SELECT * FROM empleados WHERE emp_nombre = %s AND emp_contrasenia = %s"
-            cursor.execute(sql, (username, password))
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Consulta: trae nombre y rol principal
+            sql = "SELECT emp_nombre, emp_rol_principal FROM empleados WHERE emp_correo = %s AND emp_contrasenia = %s"
+            cursor.execute(sql, (correo, password))
             result = cursor.fetchone()
 
             if result:
-                # Obtener la hora local de México Centro
+                nombre = result['emp_nombre']
+                rol_principal = result['emp_rol_principal']
+
+                # Saludo según hora
                 tz = pytz.timezone('America/Mexico_City')
                 hora_actual = datetime.now(tz).hour
-
                 if 5 <= hora_actual < 12:
-                    saludo = '¡Buenos días ' + username + ' !'
+                    saludo = f'¡Buenos días {nombre}!'
                 elif 12 <= hora_actual < 19:
-                    saludo = '¡Buenas tardes ' + username + ' !'
+                    saludo = f'¡Buenas tardes {nombre}!'
                 else:
-                    saludo = '¡Buenas noches ' + username + ' !'
+                    saludo = f'¡Buenas noches {nombre}!'
 
-                return jsonify({'message': f'{saludo} , ¡Bienvenido!'}), 200
+                # Retorna nombre y rol principal al frontend
+                return jsonify({'message': f'{saludo} , ¡Bienvenido!',
+                                'rol_principal': rol_principal}), 200
             else:
                 return jsonify({'error': 'Usuario o contraseña no válidos'}), 401
     finally:
