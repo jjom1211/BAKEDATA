@@ -1,3 +1,4 @@
+// --- Guardar roles al iniciar sesión ---
 document.getElementById("loginForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -15,7 +16,11 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
             } else {
                 alert(respuesta.message);
 
-                // Mapear rol a la página HTML
+                // Guardar en sessionStorage
+                sessionStorage.setItem('rol_principal', respuesta.rol_principal);
+                sessionStorage.setItem('roles', JSON.stringify(respuesta.roles));
+
+                // Redirigir según rol principal
                 const rolesMap = {
                     "G": "gerente.html",
                     "U": "usuario.html",
@@ -25,7 +30,6 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
                     "L": "/limpieza.jinja2",
                     "P": "produccion.html"
                 };
-
                 const pagina = rolesMap[respuesta.rol_principal];
                 if (pagina) {
                     window.location.href = pagina;

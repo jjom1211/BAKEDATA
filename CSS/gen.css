@@ -1,4 +1,6 @@
-
+/* ---------------------------
+    Mantén tu CSS global (body, h1, h2, etc.)
+   --------------------------- */
 body {
     background-image: url("https://i.imgur.com/mGwWm4L.jpg");
     background-size: 40%;
@@ -14,103 +16,74 @@ body {
     overflow-x: hidden;
 }
 
-
-h1{
-    display: inline; 
+h1 {
+    display: inline;
     font-weight: bold;
-    color: #E7A59A ;
+    color: #E7A59A;
     padding: 5px;
-    font-size:100px;
+    font-size: 100px;
     -webkit-text-stroke: 2px #9d6363;
 }
 
-h2{
+h2 {
     font-weight: bold;
-    color: #000000 ;
+    color: #000000;
     padding: 5px;
-    font-size:60px;
+    font-size: 60px;
 }
-.container {
-    margin-top: 50px;
-}
+
+/* ---------------------------
+    Botón base (fuera del sidebar)
+   --------------------------- */
 .button {
     display: block;
     width: 250px;
     margin: 10px auto;
     padding: 15px;
     background-color: #DA6049;
-    color: white;
+    color: rgb(255, 255, 255);
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    font-size: large;
     font-weight: bold;
+    transition: all 0.18s ease;
 }
 .button:hover {
     background-color: #eb816c;
 }
-.admin-only {
-    background-color: #000000;
-}
-.admin-only:hover {
-    background-color: #2c2c2c;
-}
 
-
-/* Sidebar  y submenus */
+/* ---------------------------
+    Sidebar: estructura
+   --------------------------- */
 .sidebar {
-    overflow-y: auto; /* permite scroll vertical */
+    overflow-y: auto;
     max-height: 100vh;
     height: 100%;
     width: 250px;
     position: fixed;
     top: 0;
     left: -250px;
-    /* Oculta la sidebar por defecto */
     background-color: rgba(51, 51, 51, 0.9);
-    /* Fondo semitransparente */
     padding-top: 20px;
     transition: left 0.3s ease;
-    /* Animación suave */
     z-index: 1000;
 }
+.sidebar-background { position:absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; opacity:.5; z-index:-1; }
+.sidebar-content { position:relative; z-index:1; text-align:center; }
+.sidebar-logo { width:110px; margin-bottom:10px; }
 
-.sidebar-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.5;
-    /* Ajusta la opacidad de la imagen */
-    z-index: -1;
-}
-
-.sidebar-content {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-}
-
-/* Estilo para la imagen en la sidebar (más pequeña) */
-.sidebar-logo {
-    width: 110px;
-    /* Tamaño pequeño */
-    height: center;
-    /* Mantiene la proporción */
-    margin-bottom: 10px;
-    /* Espacio debajo de la imagen */
-}
-
+/* ---------------------------
+    Botones DENTRO del sidebar
+    - Nota: estos botones empiezan transparentes (para overlay),
+    pero los botones 'slide-button-*' tendrán su color propio
+   --------------------------- */
 .sidebar .button {
     display: block;
     width: 90%;
     margin: 10px 0;
     padding: 10px;
-    background-color: transparent;
+    background-color: transparent; /* neutral por defecto */
     color: white;
     border: none;
     border-radius: 5px;
@@ -118,110 +91,49 @@ h2{
     font-size: 16px;
     font-weight: bold;
     text-align: left;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.08s ease;
+}
+/* -> Hover genérico **solo** para botones que NO son slide-button-* */
+.sidebar .button:not([class*="slide-button-"]):hover {
+    background-color: rgba(255,255,255,0.08);
+    color: inherit;
+}
+/* ---------------------------
+    HOVER por departamento (opcional / ajustable)
+   --------------------------- */
+.sidebar .button.slide-button-almacen:hover { background-color: #2ecc71; color: #fff; }
+.sidebar .button.slide-button-reparto:hover { background-color: #e74c3c; color: #fff; }
+.sidebar .button.slide-button-usuario:hover { background-color: #3498db; color: #fff; }
+.sidebar .button.slide-button-produccion:hover { background-color: #e67e22; color: #fff; }
+.sidebar .button.slide-button-ventas:hover { background-color: #edb620; color: #fff; }
+.sidebar .button.slide-button-limpieza:hover { background-color: #1abc9c; color: #fff; }
+
+/* ---------------------------
+    REGLA ÚNICA para TODOS los botones admin
+    (captura cualquier clase que contenga "-admin")
+    - esta regla asegura fondo blanco y texto negro al hacer hover
+   --------------------------- */
+.sidebar .button[class*="-admin"]:hover {
+    background-color: #ffffff !important;
+    color: #000000 !important;
 }
 
-.sidebar .button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
+/* ---------------------------
+    Resto (menús, íconos y wrappers)
+   --------------------------- */
+.return-icon { width:40px; height:auto; vertical-align:middle; margin-right:10px; }
+.open-sidebar { position:fixed; top:10px; left:10px; background-color:#333; color:white; border:none; padding:10px; font-size:20px; cursor:pointer; z-index:1001; }
+.open-sidebar:hover { background-color:#575757; }
 
-.return-icon {
-    width: 40px;
-    height: auto;
-    vertical-align: middle;
-}
+.content { margin-left:0; padding:20px; transition: margin-left 0.3s ease; }
+.sidebar.active { left:0; } .content.active { margin-left:250px; }
 
-/* Botón para abrir/cerrar la sidebar */
-.open-sidebar {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 1001;
-}
+.menu-item { display:flex; align-items:center; margin:5px 0; }
+.icono-sidebar { width:40px; height:40px; margin-right:5px; }
 
-.open-sidebar:hover {
-    background-color: #575757;
-}
-
-/* Contenido principal */
-.content {
-    margin-left: 0;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-    /* Animación suave */
-}
-
-/* Cuando la sidebar está abierta */
-.sidebar.active {
-    left: 0;
-}
-
-.return-icon {
-    margin-right: 10px;
-}
-
-.content.active {
-    margin-left: 250px;
-}
-
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    margin: 5px 0;
-}
-
-/* Estilo para el icono de la barra lateral */
-.icono-sidebar {
-    width: 40px;
-    height: 40px;
-    margin-right: 5px;
-}
-
-.menu-item.doble-opcion {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    position: relative;
-}
-
-.menu-item.doble-opcion .ir-produccion-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-.menu-item.doble-opcion .toggle-submenu {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 25px; /* Tamaño del la flecha que espliegua el submenú*/
-    cursor: pointer;
-}
-
-.menu-item.doble-opcion .ir-produccion {
-    background-color: transparent;
-    border: none;
-    color: white;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-}
-
-/* Estilo para el menú desplegable producción */
-.menu-item.doble-opcion .submenu {
-    display: none;
-    flex-direction: column;
-    margin-left: 20px;
-}
-
-.menu-item.doble-opcion .submenu .button {
-    color: white;
-    margin: 3px 0;
-    font-size: 14px;
-}
+.menu-item.doble-opcion { display:flex; flex-direction:column; align-items:stretch; position:relative; }
+.menu-item.doble-opcion .ir-item-wrapper { display:flex; align-items:center; width:100%; }
+.menu-item.doble-opcion .toggle-submenu { background:none; border:none; color:white; font-size:25px; cursor:pointer; margin-right:5px; }
+.menu-item.doble-opcion .ir-item { background-color:transparent; border:none; color:white; text-align:left; width:100%; cursor:pointer; font-size:16px; }
+.menu-item.doble-opcion .submenu { display:none; flex-direction:column; margin-left:20px; }
+.menu-item.doble-opcion .submenu .button { color:white; margin:3px 0; font-size:14px; }

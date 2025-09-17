@@ -18,41 +18,62 @@ db_config = {
 @app.route('/')
 def login():
     return render_template('login.html')
-
+    # Conectar a la base de datos
 @app.route('/login', methods=['POST'])
 def handle_login():
     data = request.json
     correo = data.get('correo')
     password = data.get('contraseña')
 
-    # Conectar a la base de datos
     conn = pymysql.connect(**db_config)
     try:
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-            # Consulta: trae nombre y rol principal
-            sql = "SELECT emp_nombre, emp_rol_principal FROM empleados WHERE emp_correo = %s AND emp_contrasenia = %s"
+            # Obtener usuario y rol principal
+            sql = "SELECT emp_id, emp_nombre, emp_rol_principal FROM empleados WHERE emp_correo = %s AND emp_contrasenia = %s"
             cursor.execute(sql, (correo, password))
-            result = cursor.fetchone()
+            empleado = cursor.fetchone()
 
-            if result:
-                nombre = result['emp_nombre']
-                rol_principal = result['emp_rol_principal']
-
-                # Saludo según hora
-                tz = pytz.timezone('America/Mexico_City')
-                hora_actual = datetime.now(tz).hour
-                if 5 <= hora_actual < 12:
-                    saludo = f'¡Buenos días {nombre}!'
-                elif 12 <= hora_actual < 19:
-                    saludo = f'¡Buenas tardes {nombre}!'
-                else:
-                    saludo = f'¡Buenas noches {nombre}!'
-
-                # Retorna nombre y rol principal al frontend
-                return jsonify({'message': f'{saludo} , ¡Bienvenido!',
-                                'rol_principal': rol_principal}), 200
-            else:
+            if not empleado:
                 return jsonify({'error': 'Usuario o contraseña no válidos'}), 401
+
+            emp_id = empleado['emp_id']
+            nombre = empleado['emp_nombre']
+            rol_principal = empleado['emp_rol_principal']
+
+            # Buscar roles secundarios en tabla roles
+            cursor.execute("SELECT rolemp FROM roles_empleados WHERE rolemp_emp_fk = %s", (emp_id,))
+            rol_registro = cursor.fetchone()
+            if rol_registro and rol_registro['rolemp']:
+                try:
+                    import json
+                    roles_extra = json.loads(rol_registro['rolemp'])
+                    if not isinstance(roles_extra, list):
+                        roles_extra = [roles_extra]
+                except:
+                    roles_extra = []
+            else:
+                roles_extra = []
+
+            # Si no hay roles extra, usar solo el principal
+            roles_finales = roles_extra if roles_extra else [rol_principal]
+
+            # Saludo según hora
+            from datetime import datetime
+            import pytz
+            tz = pytz.timezone('America/Mexico_City')
+            hora_actual = datetime.now(tz).hour
+            if 5 <= hora_actual < 12:
+                saludo = f'¡Buenos días {nombre}!'
+            elif 12 <= hora_actual < 19:
+                saludo = f'¡Buenas tardes {nombre}!'
+            else:
+                saludo = f'¡Buenas noches {nombre}!'
+
+            return jsonify({
+                'message': f'{saludo} , ¡Bienvenido!',
+                'rol_principal': rol_principal,
+                'roles': roles_finales
+            }), 200
     finally:
         conn.close()
 
