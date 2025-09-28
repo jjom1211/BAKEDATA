@@ -1,0 +1,22 @@
+{% extends "base.jinja2" %}
+{% block title %}Lista de Pedidos{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repPedidos.css') }}">
+{% endblock %}
+{% block content %}
+    <h1>Lista de Pedidos</h1>
+    <table>
+        <tr>
+            <th>#PEDIDO</th>
+            <th>FECHA</th>
+            <th>USUARIO</th>
+            <th>MONTO TOTAL</th>
+            <th>DIRECCION</th>
+            <th>DETALLES</th>
+        </tr>
+    </table>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repPedidos.js') }}"></script>
+{% endblock %}

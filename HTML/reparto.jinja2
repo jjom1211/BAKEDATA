@@ -1,0 +1,16 @@
+{% extends "base.jinja2" %}
+{% block title %}Reparto{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Reparto</h1>
+        <button class="button" data-url="/CalendarioReparto">Calendario</button>
+        <button class="button" data-url="/Pedidos">Pedidos</button>
+        <button class="button admin-only" data-url="/actualizarEntrega">Actualizar Entrega</button>
+        <button class="button admin-only" data-url="/confirmarEntrega">Confirmar entrega</button>
+        <button class="button admin-only" data-url="/agregarEntrega">Agregar entrega</button>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='reparto.js') }}"></script>
+{% endblock %}

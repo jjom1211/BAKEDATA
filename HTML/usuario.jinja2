@@ -1,0 +1,16 @@
+{% extends "base.jinja2" %}
+{% block title %}Usuario{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='usuario.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Usuario</h1>
+        <button class="button" data-url="/verCatalogo">Catálogo</button>
+        <button class="button" data-url="/realizarPedido">Realizar Pedido</button>
+        <button class="button" data-url="/verSucursales">Ver sucursales</button>
+    </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='usuario.js') }}"></script>
+{% endblock %}

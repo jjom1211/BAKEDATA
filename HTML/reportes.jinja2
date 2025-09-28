@@ -1,0 +1,13 @@
+{% extends "base.jinja2" %}
+{% block title %}Reportes{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Reportes</h1>
+        <button class="button admin-only" data-url="/reportes/mensuales">Reportes Mensuales</button>
+        <button class="button admin-only" data-url="/reportes/trimestrales">Reportes Trimestrales</button>
+        <button class="button admin-only" data-url="/reportes/anuales">Reportes Anuales</button>
+    </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='reportes.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.jinja2" %}
+{% block title %}Ventas{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Ventas</h1>
+        <button class="button" data-url="/registrarCliente">Registrar Cliente</button>
+        <button class="button" data-url="/registrarVenta">Registrar Venta</button>
+        <button class="button" data-url="/realizarPedido">Realizar Pedido</button>
+        <button class="button" data-url="/actualizarCaja">Actualizar Caja</button>
+        <button class="button" data-url="/verCatalogo">Ver Catalogo</button>
+        <button class="button" data-url="/verCaja">Ver Caja</button>
+        <button class="button" data-url="/verProductos">Ver Productos</button>
+        <button class="button admin-only" data-url="/solicitarProductos">Solicitar Productos</button>
+        <button class="button admin-only" data-url="/corteDeCaja">Corte de Caja</button>
+        <button class="button admin-only" data-url="/reporteDelDia">Reporte del Día</button>
+        <button class="button admin-only full-width" data-url="/reporteMensual">Reporte Mensual</button>
+    </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='ventas.js') }}"></script>
+{% endblock %}

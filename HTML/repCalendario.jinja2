@@ -1,0 +1,32 @@
+{% extends "base.jinja2" %}
+{% block title %}Calendario de Reparto{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repCalendario.css') }}">
+{% endblock %}
+{% block content %}
+    <h1>Calendario de repartos</h1>
+    <div class="calendar">
+        <div class="header">
+            <button id="prevMonth">&lt;</button>
+            <h2 id="currentMonth"></h2>
+            <button id="nextMonth">&gt;</button>
+        </div>
+        <div class="days">
+            <div class="day">Dom</div>
+            <div class="day">Lun</div>
+            <div class="day">Mar</div>
+            <div class="day">Mié</div>
+            <div class="day">Jue</div>
+            <div class="day">Vie</div>
+            <div class="day">Sáb</div>
+        </div>
+        <div id="calendarGrid" class="grid"></div>
+    </div>
+    <div class="buttons">
+        <button id="backButton">Regresar</button>
+        <button id="confirmButton">Confirmar limpieza</button>
+    </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repCalendario.js') }}"></script>
+{% endblock %}

@@ -1,20 +1,25 @@
-//Funcion para acceder al recurso Calendario
-function verCalendario() {
-    alert("Abriendo calendario...");
-    window.location.href = "limCalendario.jinja2";
-}
-//Funcion para acceder al recurso Limpieza del dia
-function limpiezaDelDia() {
-    alert("Viendo limpieza del dia...");
-    window.location.href = "limDia.jinja2";
-}
-//Funcion para acceder al recurso Registrar limpieza
-function registrarLimpieza() {
-    alert("Registrando limpieza...");
-    window.location.href = "limRegistrarLimpieza.jinja2";
-}
-//Funcion para acceder al recurso Actualizar fecha de Limpieza
-function actualizarFechaDeLimpieza() {
-    alert("Actualizando limpieza del dia...");
-    window.location.href = "limActualizarFechaLimpieza.jinja2";
-}
+document.addEventListener("DOMContentLoaded", () => {
+    // Lógica para ocultar/mostrar botones de admin
+    const roles = JSON.parse(sessionStorage.getItem("roles") || "[]").map(r => r.toUpperCase());
+    
+    // Define los roles con permisos de administrador
+    const esGerente = roles.includes("G");
+    const esEncargado = roles.includes("E");
+    const esEncargadoLimpieza = roles.includes("EL"); // Agregamos el rol de Subgerente
+
+    // Si el usuario tiene alguno de los roles de administrador, muestra los botones
+    if (esGerente || esEncargado || esEncargadoLimpieza) {
+        document.querySelectorAll(".admin-only").forEach(elemento => {
+            elemento.style.display = 'block';
+        });
+    }
+
+    // Lógica para manejar clics en botones con data-url
+    document.querySelectorAll(".container .button").forEach(button => {
+        button.addEventListener("click", () => {
+            if (button.dataset.url) {
+                window.location.href = button.dataset.url;
+            }
+        });
+    });
+});

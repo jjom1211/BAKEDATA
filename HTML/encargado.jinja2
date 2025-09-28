@@ -1,0 +1,13 @@
+{% extends "base.jinja2" %}
+{% block title %}Encargado{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Encargado</h1>
+        <button class="button admin-only" data-url="/gestionPermisos">Gestión de permisos</button>
+        <button class="button admin-only" data-url="/crearCuentaEmpleado">Crear Cuenta de empleado</button>
+        <button class="button admin-only" data-url="/gestionEmpleados">Gestión de empleados</button>
+    </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='encargado.js') }}"></script>
+{% endblock %}

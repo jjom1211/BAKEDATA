@@ -1,0 +1,19 @@
+{% extends "base.jinja2" %}
+{% block title %}Registrar Producción{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='produccion.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>Registrar Producción</h1>
+        <form id="formRegistrarProduccion">
+            <input type="text" id="producto" placeholder="Nombre del producto" required>
+            <input type="number" id="cantidad" placeholder="Cantidad" required>
+            <button type="button" onclick="registrarProduccion()">Registrar</button>
+        </form>
+        <button class="button" data-url="/produccion">Volver</button>
+    </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='registrar-produccion.js') }}"></script>
+{% endblock %}

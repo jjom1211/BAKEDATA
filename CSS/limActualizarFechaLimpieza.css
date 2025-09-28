@@ -4,17 +4,16 @@ body {
     background-size: 100%;
     background-repeat: repeat;
     background-position: top left;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Alinea los elementos en una columna */
 }
 
 h1, h2 {
-    display: inline;
     font-weight: bold;
     color: #ff6d4c;
     padding: 5px;
@@ -30,6 +29,14 @@ h2 {
     font-size: 40px;
 }
 
+/* Nuevo contenedor para centrar el calendario y los botones */
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos hijos (calendario y botones) horizontalmente */
+    text-align: center;
+}
+
 /* ---------- CALENDARIO ---------- */
 .calendar {
     background-color: #fc9d78;
@@ -38,6 +45,7 @@ h2 {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 500px;
     color: #fff;
+    margin-bottom: 20px; /* Espacio entre el calendario y los botones */
 }
 
 .header {
@@ -105,10 +113,10 @@ h2 {
 
 /* ---------- BOTONES ---------- */
 .buttons {
-    margin-top: 20px;
     display: flex;
-    justify-content: space-between;
-    width: 500px;
+    justify-content: center; /* Centra los botones horizontalmente */
+    gap: 20px; /* Espacio entre los botones */
+    width: 500px; /* Alinea los botones con el calendario */
 }
 
 .buttons button {
@@ -126,12 +134,21 @@ h2 {
 }
 
 /* ---------- TAREAS DEL DÍA ---------- */
-.tareas-del-dia {
-    color: white;
-    margin-top: 20px;
-    background: #fc9d78;
-    padding: 15px;
-    border-radius: 10px;
+#tareasDelDiaContainer h2 {
+    font-size: 24px;
+    -webkit-text-stroke-width: 1px;
+}
+
+#tareasDelDiaContainer table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#tareasDelDiaContainer th,
+#tareasDelDiaContainer td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
 }
 
 /* ---------- MODAL / POPUP ---------- */
@@ -148,9 +165,9 @@ h2 {
 #popupTareas {
     display: none;
     position: fixed;
-    top: 10%;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%); /* Centra el popup en la pantalla */
     background: #fff;
     padding: 20px;
     border-radius: 10px;
@@ -158,7 +175,7 @@ h2 {
     z-index: 1000;
     overflow: auto;
     width: 600px;
-    height: 400px;
+    max-height: 80vh;
 }
 
 /* ---------- TABLA EN POPUP ---------- */
@@ -168,6 +185,7 @@ h2 {
     margin-top: 10px;
     background-color: #fff;
     border: 1px solid #ccc;
+    color: #000;
 }
 
 #contenidoPopup th,
@@ -497,4 +515,17 @@ input[list] {
     text-align: left;
     width: 100%;
     cursor: pointer;
+}
+
+/* Estilo para el menú desplegable producción */
+.menu-item.doble-opcion .submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.menu-item.doble-opcion .submenu .button {
+    color: white;
+    margin: 3px 0;
+    font-size: 14px;
 }

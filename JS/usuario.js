@@ -1,18 +1,12 @@
-function verCatalogo() {
-    alert("Abriendo catalogo...");
-    window.location.href = "usuprincipal.html";
-}
-function realizarPedido() {
-    alert("Realizando pedido...");
-}
-function verSucursales() {
-    alert("Abriendo listado de sucursales...");
-    window.location.href = "ususucursales.html";
-}
-function confirmarEntrega() {
-    alert("Confirmando entrega del pedido...");
-}
-
-function promocionesycupones(){
-    alert("Abriendo promociones y cupones disponibles ...");
-}
+document.addEventListener("DOMContentLoaded", () => {
+    // Lógica para ocultar/mostrar botones de admin
+    const roles = JSON.parse(sessionStorage.getItem("roles") || "[]").map(r => r.toUpperCase());
+    // Lógica para manejar clics en botones con data-url
+    document.querySelectorAll(".container .button").forEach(button => {
+        button.addEventListener("click", () => {
+            if (button.dataset.url) {
+                window.location.href = button.dataset.url;
+            }
+        });
+    });
+});

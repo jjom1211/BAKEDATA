@@ -22,13 +22,14 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
 
                 // Redirigir según rol principal
                 const rolesMap = {
-                    "G": "gerente.html",
-                    "U": "usuario.html",
-                    "V": "ventas.html",
-                    "A": "almacen.html",
-                    "R": "reparto.html",
-                    "L": "/limpieza.jinja2",
-                    "P": "produccion.html"
+                    "G": "/gerente",
+                    "U": "/usuario",
+                    "V": "/ventas",
+                    "A": "/almacen",
+                    "R": "/reparto",
+                    "L": "/limpieza",
+                    "P": "/produccion",
+                    "E": "/encargado"
                 };
                 const pagina = rolesMap[respuesta.rol_principal];
                 if (pagina) {

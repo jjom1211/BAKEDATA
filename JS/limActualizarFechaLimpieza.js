@@ -410,20 +410,8 @@ window.addSelectedTask = function (fecha) {
             clearAutocomplete();
         }
     };
-//Funcionalidad del boton de regresar
+});
+//Accion del boton para regresar a la pagina anterior
 document.getElementById('backButton').addEventListener('click', () => {
     window.history.back(); // Regresa a la página anterior
-});
-    // Sidebar
-    window.toggleSidebar = function () {
-        document.querySelector('.sidebar')?.classList.toggle('active');
-        document.querySelector('.content')?.classList.toggle('active');
-    };
-    window.toggleSubmenu = function (btn) {
-        const submenu = btn.closest('.menu-item').querySelector('.submenu');
-        if (submenu) {
-            submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
-            btn.textContent = submenu.style.display === 'flex' ? '▾' : '▸';
-        }
-    };
 });

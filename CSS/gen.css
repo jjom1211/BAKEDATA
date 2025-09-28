@@ -52,6 +52,20 @@ h2 {
 .button:hover {
     background-color: #eb816c;
 }
+.admin-only{
+    display: none;
+    width: 250px;
+    margin: 10px auto;
+    padding: 15px;
+    background-color: #575757;
+    color: rgb(255, 255, 255);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.18s ease;
+}
 
 /* ---------------------------
     Sidebar: estructura
