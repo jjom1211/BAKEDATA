@@ -25,12 +25,12 @@
             </div>
             <div id="calendarGrid" class="grid"></div>
         </div>
-        <div class="buttons">
+        <div id="tareasDelDia" class="tareas-del-dia" style="display: none;"></div>
+    </div>
+            <div class="buttons">
             <button id="backButton">Regresar</button>
         </div>
-        <div id="tareasDelDia" class="tareas-del-dia" style="display: none;"></div>
-    </div> {% endblock %}
-
+{% endblock %}
 {% block extra_scripts %}
     <script>
         const diasConLimpieza = {{ dias_limpieza | tojson | safe }};

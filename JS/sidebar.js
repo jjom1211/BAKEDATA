@@ -14,9 +14,9 @@ const menuData = [
     { name: "Reparto", url: "/reparto", roles: ["R", "ER", "E", "G"], icon: "https://i.imgur.com/dZdUNal.png", submenu: [
         { name: "Calendario", url: "/CalendarioReparto", roles: ["R"] },
         { name: "Pedidos", url: "/Pedidos", roles: ["R"] },
-        { name: "Actualizar Entrega", url: "/actualizarEntrega", roles: ["ER", "E", "G"]},
-        { name: "Confirmar entrega", url: "/confirmarEntrega", roles: ["ER", "E", "G"]},
-        { name: "Agregar entrega", url: "/agregarEntrega", roles: ["ER", "E", "G"] }
+        { name: "Repartos del dia", url: "/repDia", roles: ["R"] },
+        { name: "Actualizar repartos", url: "/actualizarRepartos", roles: ["ER", "E", "G"]},
+        { name: "Agregar repartos", url: "/agregarRepartos", roles: ["ER", "E", "G"] },
     ]},
     { name: "Usuario", url: "/usuario", roles: ["U", "E", "G"], icon: "https://i.imgur.com/WLyck1q.png", submenu: [
         { name: "Catálogo", url: "/verCatalogo", roles: ["U"] },
@@ -50,7 +50,6 @@ const menuData = [
     { name: "Encargado", url: "/encargado", roles: ["E", "G"], icon: "https://i.imgur.com/AU09egm.png", submenu: [
         { name: "Gestión de permisos", url: "/gestionPermisos", roles: ["E", "G"] },
         { name: "Crear Cuenta de empleado", url: "/crearCuentaEmpleado", roles: ["E", "G"] },
-        { name: "Gestión de empleados", url: "/gestionEmpleados", roles: ["E", "G"] }
     ]},
     { name: "Reportes", url: "/reportes", roles: ["G"], icon: "https://i.imgur.com/8b2Igfw.png", submenu: [
         { name: "Reporte del Día", url: "/reporteDelDia", roles: ["G"] },
@@ -61,6 +60,14 @@ const menuData = [
     ]},
     { name: "Gerente", url: "/gerente", roles: ["G"], icon: "https://i.imgur.com/AU09egm.png", submenu: []}
 ];
+
+const roleHierarchy = {
+    "EA": ["A"],  // Encargado de Almacén hereda de Almacenista
+    "ER": ["R"],  // Encargado de Reparto hereda de Repartidor
+    "EP": ["P"],  // Encargado de Producción hereda de Productor
+    "EV": ["V"],  // Encargado de Ventas hereda de Vendedor
+    "EL": ["L"]   // Encargado de Limpieza hereda de Limpiador
+};
 
 const roleToClassMap = {
     "A": "slide-button-almacen",
@@ -93,13 +100,23 @@ function Salir() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    const roles = JSON.parse(sessionStorage.getItem("roles") || "[]").map(r => r.toUpperCase());
-    
-    if (!roles.length) {
+       // Obtenemos los roles base del usuario desde sessionStorage
+    const baseRoles = JSON.parse(sessionStorage.getItem("roles") || "[]").map(r => r.toUpperCase());
+    // si no tiene permisos, lo enviamos al login
+    if (!baseRoles.length) {
         window.location.href = "/";
         return;
     }
-
+    // ---CALCULAR ROLES EFECTIVOS ---
+    const effectiveRoles = new Set(baseRoles); // Usamos un Set para evitar duplicados
+    baseRoles.forEach(role => {
+        // Si el rol del usuario está en nuestro mapa de jerarquía (ej. "ER")
+        if (roleHierarchy[role]) {
+            // Agregamos los roles que hereda (ej. "R") al set
+            roleHierarchy[role].forEach(inheritedRole => effectiveRoles.add(inheritedRole));
+        }
+    });
+    const roles = Array.from(effectiveRoles); // Convertimos el Set de nuevo a un Array
     const esGerente = roles.includes("G");
     const esEncargado = roles.includes("E");
     const sidebarContent = document.querySelector(".sidebar-content");

@@ -1,0 +1,53 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Actualizar Repartos{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repActualizarRepartos.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Actualizar Repartos</h2>
+    <p>Modifica la fecha de entrega o el estado de cualquier reparto existente.</p>
+    <table class="table-repartos">
+        <thead>
+            <tr>
+                <th>ID Reparto</th>
+                <th>Asunto del Pedido</th>
+                <th>Fecha de Entrega</th>
+                <th>Estado del Reparto</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reparto in repartos %}
+            <tr id="reparto-{{ reparto.rep_id }}">
+                <td>{{ reparto.rep_id }}</td>
+                <td>{{ reparto.ped_asunto }}</td>
+                <td>
+                    <input type="date" class="input-fecha" value="{{ reparto.rep_fecha_entrega.strftime('%Y-%m-%d') }}">
+                </td>
+                <td>
+                    <select class="select-estado">
+                        <option value="p" {% if reparto.rep_estado_reparto|lower == 'p' %}selected{% endif %}>Pendiente</option>
+                        <option value="r" {% if reparto.rep_estado_reparto|lower == 'r' %}selected{% endif %}>En Reparto</option>
+                        <option value="e" {% if reparto.rep_estado_reparto|lower == 'e' %}selected{% endif %}>Entregado</option>
+                        <option value="x" {% if reparto.rep_estado_reparto|lower == 'x' %}selected{% endif %}>Cancelado</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="btn-guardar" data-reparto-id="{{ reparto.rep_id }}">Guardar</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="actions-header">
+        <button class="btn-regresar" onclick="goBack()">Regresar</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repActualizarRepartos.js') }}"></script>
+{% endblock %}

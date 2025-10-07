@@ -6,17 +6,46 @@
 {% block content %}
     <h1>Lista de Pedidos</h1>
     <table>
-        <tr>
-            <th>#PEDIDO</th>
-            <th>FECHA</th>
-            <th>USUARIO</th>
-            <th>MONTO TOTAL</th>
-            <th>DIRECCION</th>
-            <th>DETALLES</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>#PEDIDO</th>
+                <th>FECHA</th>
+                <th>MONTO TOTAL</th>
+                <th>SUC. DESTINO</th>
+                <th>ASUNTO</th>
+                <th>DETALLES</th>
+            </tr>
+        </thead>
+        <tbody id="pedidos-table-body">
+        {% for pedido in pedidos %}
+            <tr>
+                <td>{{ pedido.ped_id }}</td>
+                <td>{{ pedido.ped_fecha_pedido.strftime('%Y-%m-%d') }}</td>
+                <td>${{ "%.2f"|format(pedido.ped_monto_total) }}</td>
+                
+                <td>{{ pedido.sucursal_destino_nombre }}</td> 
+                
+                <td>{{ pedido.ped_asunto }}</td>
+                <td>
+                    <button class="btn-detalles" data-id="{{ pedido.ped_id }}" title="{{ pedido.ped_comentarios }}">Ver</button>
+                </td>
+            </tr>
+            {% else %}
+        {% endfor %}
+        </tbody>
     </table>
+        <div class="button-container">
+        <button id="backButton" title="Regresar">←</button>
+    </div>
+        <div id="detalle-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close-button">&times;</span>
+            <h2>Detalles del Pedido</h2>
+            <div id="modal-body-content">
+                </div>
+        </div>
+    </div>
 {% endblock %}
-
 {% block extra_scripts %}
     <script src="{{ url_for('serve_js', filename='repPedidos.js') }}"></script>
-{% endblock %}
+    {% endblock %}

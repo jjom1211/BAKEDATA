@@ -29,7 +29,12 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
                     "R": "/reparto",
                     "L": "/limpieza",
                     "P": "/produccion",
-                    "E": "/encargado"
+                    "E": "/encargado",                    
+                    "EV": "/ventas",
+                    "EA": "/almacen",
+                    "ER": "/reparto",
+                    "EL": "/limpieza",
+                    "EP": "/produccion",
                 };
                 const pagina = rolesMap[respuesta.rol_principal];
                 if (pagina) {
