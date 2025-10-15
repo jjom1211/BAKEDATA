@@ -15,17 +15,13 @@ function confirmarEntrega() {
 function agregarEntrega() {
     alert("Agregando entrega...");
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
-    const content = document.querySelector('.content');
     sidebar.classList.toggle('active');
-    content.classList.toggle('active');
 }
-<<<<<<< HEAD
+function verMateriaPrima() {
+    window.location.href = "/materias_primas";  // Debe coincidir con la ruta en Flask
+}
 function toggleSubmenu(button) {
     const submenu = button.closest('.menu-item').querySelector('.submenu');
     if (submenu) {
@@ -33,5 +29,3 @@ function toggleSubmenu(button) {
         button.textContent = submenu.style.display === 'flex' ? '▾' : '▸';
     }
 }
-=======
->>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2

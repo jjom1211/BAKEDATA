@@ -1,28 +1,23 @@
-/* materias_primas.css - Estilo para la tabla de materias primas */
-
-/* Contenedor principal */
 .container {
     width: 100vw;
     height: 100vh;
-    margin: 0;
-    padding: 20px;
+    margin: 0px;
+    padding: 30px;
     box-sizing: border-box;
-    background-color: #f9f9f9;
-    overflow: auto;
 }
 
 /* Estilo para la tabla */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
+    margin: 0px 0px;
     font-family: Arial, sans-serif;
 }
 
 /* Encabezados de la tabla */
 th {
-    background-color: #2c3e50; /* Azul oscuro */
-    color: white;
+    background-color: #4f4f4f; /* Azul oscuro */
+    color: rgb(255, 255, 255);
     padding: 12px;
     text-align: left;
 }
@@ -30,27 +25,26 @@ th {
 /* Celdas de la tabla */
 td {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #c3c3c3;
 }
 
-/* Filas alternas para mejor legibilidad */
-tr:nth-child(even) {
-    background-color: #f2f2f2;
+/* Estilo de las filas */
+tr {
+    background-color: #e5e3e3;
 }
 
 /* Resaltar fila al pasar el mouse */
 tr:hover {
-    background-color: #e6f7ff;
+    background-color: #fff9e6;
 }
 
 /* Estilo para el título */
 h1 {
-    color: #2c3e50;
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 50px; /* Tamaño más pequeño (ajusta según lo que necesites) */
-    padding: 50px;
+    color: #ca563f;
+    font-size: 70px; /* Tamaño más pequeño (ajusta según lo que necesites) */
+    padding-left: 40px;
 }
+
 
 /* Botón "Volver" (herencia del estilo de producción) */
 .button.volver {

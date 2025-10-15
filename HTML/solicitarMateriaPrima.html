@@ -1,72 +1,91 @@
 <!DOCTYPE html>
-<html lang="es" translate="no">
+<html lang="en">
 
 <head>
+    <!-- Metadatos básicos -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Materias Primas</title>
+    <title>Solicitar Materia Prima</title>
+    <!-- Icono de la página -->
     <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
-    <link rel="stylesheet" href="../CSS/gen.css"> <!-- Mantenemos gen.css para consistencia -->
-    <link rel="stylesheet" href="../CSS/materias_primas.css">
+    <!-- Archivos CSS para el estilo del submenú y los html's-->
+    <link rel="stylesheet" href="../CSS/gen.css">
     <link rel="stylesheet" href="../CSS/produccion.css">
 </head>
 
 <body>
     <!-- Botón para abrir/cerrar la sidebar -->
     <button class="open-sidebar" onclick="toggleSidebar()">☰</button>
-    <!-- Sidebar completa como en producción -->
+    <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Imagen de fondo -->
         <div class="sidebar-background"></div>
         <!-- Contenido de la sidebar -->
         <div class="sidebar-content">
+            <!-- Imagen superior de la slidebar-->
             <img src="https://i.imgur.com/WW384uk.png" alt="Gerencia" class="sidebar-logo">
-            <!-- Almacén -->
+            <!-- Módulo Almacén -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Almacén -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Almacén -->
                     <img src="https://i.imgur.com/vp9A1f3.png" alt="Producción Icon" class="icono-sidebar">
-                    <button class="button admin-only ir-produccion" <button class="button admin-only"
+                    <!-- Botón que redirige a la página de Almacén -->
+                    <button class="button admin-only ir-produccion"
                         onclick="window.location.href='almacen.html'">Almacén</button>
                 </div>
+                <!-- Submenú del módulo Almacén -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
                     <button class="button" onclick="registrarEntradas()">Registrar Entradas</button>
                     <button class="button" onclick="actualizarMateriaPrima()">Actualizar Materia Prima</button>
                     <button class="button" onclick="registrarSalidas()">Registrar Salidas</button>
                     <button class="button" onclick="actualizarProductos()">Actualizar Productos</button>
                     <button class="button" onclick="verProductos()">Ver Productos</button>
-                    <button class="button" onclick="verMateriasPrimas()">Ver Materias Primas</button>
+                    <button class="button" onclick="verMateriaPrima()">Ver Materias Primas</button>
+                    <!-- Botones habilitados sólo para el Administrador-->
                     <button class="button admin-only" onclick="solicitarProductos()">Solicitar Productos</button>
                     <button class="button admin-only" onclick="solicitarMateriaPrima()">Solicitar Materia Prima</button>
                     <button class="button admin-only" onclick="enviarProductosaTienda()">Enviar Productos a
                         Tienda</button>
                 </div>
             </div>
-            <!-- Reparto -->
+            <!-- Módulo Reparto -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Reparto -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Reparto -->
                     <img src="https://i.imgur.com/dZdUNal.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Reparto -->
                     <button class="button admin-only ir-produccion" <button class="button admin-only"
                         onclick="window.location.href='reparto.html'">Reparto</button>
                 </div>
+                <!-- Submenú del módulo Reparto -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
                     <button class="button" onclick="verCalendario()">Calendario</button>
                     <button class="button" onclick="verPedidos()">Pedidos</button>
                     <button class="button" onclick="actualizarEntrega()">Actualizar Entrega</button>
                     <button class="button" onclick="confirmarEntrega()">Confirmar entrega</button>
+                    <!-- Bóton habilitado sólo para el Administrador-->
                     <button class="button admin-only" onclick="agregarEntrega()">Agregar entrega</button>
                 </div>
             </div>
-            <!-- Usuario -->
+            <!-- Módulo Usuario -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Usuario -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Usuario -->
                     <img src="https://i.imgur.com/WLyck1q.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Usuario -->
                     <button class="button admin-only ir-produccion" <button class="button admin-only"
                         onclick="window.location.href='usuario.html'">Usuario</button>
                 </div>
+                <!-- Submenú del módulo Usuario -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
                     <button class="button" onclick="verCatalogo()">Catálogo</button>
                     <button class="button" onclick="realizarPedido()">Realizar Pedido</button>
                     <button class="button" onclick="verSucursales()">Ver sucursales</button>
@@ -74,15 +93,20 @@
                     <button class="button" onclick="promocionesycupones()">Promociones y cupones</button>
                 </div>
             </div>
-            <!-- Producción -->
+            <!-- Módulo Producción -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Producción -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Producción -->
                     <img src="https://i.imgur.com/3cO5Fks.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Producción -->
                     <button class="button admin-only ir-produccion"
                         onclick="window.location.href='produccion.html'">Producción</button>
                 </div>
+                <!-- Submenú del módulo Producción -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
                     <button class="button" onclick="solicitarMateriaPrima()">Solicitar Materia Prima</button>
                     <button class="button" onclick="verMateriaPrima()">Ver Materia Prima</button>
                     <button class="button" onclick="window.location.href='registrar-produccion.html'">Registrar
@@ -91,15 +115,20 @@
                         hoy</button>
                 </div>
             </div>
-            <!-- Ventas -->
+            <!-- Módulo Ventas -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Ventas -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Ventas -->
                     <img src="https://i.imgur.com/aUIJoQt.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Ventas -->
                     <button class="button admin-only ir-produccion"
                         onclick="window.location.href='ventas.html'">Ventas</button>
                 </div>
+                <!-- Submenú del módulo Ventas -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
                     <button class="button" onclick="RegistrarCliente()">Registrar Cliente</button>
                     <button class="button" onclick="RegistrarVenta()">Registrar Venta</button>
                     <button class="button" onclick="RealizarPedido()">Realizar Pedido</button>
@@ -107,6 +136,7 @@
                     <button class="button" onclick="verCatalogo()">Ver Catalogo</button>
                     <button class="button" onclick="VerCaja()">Ver Caja</button>
                     <button class="button" onclick="VerProductos()">Ver Productos</button>
+                    <!-- Bótones habilitados sólo para el Administrador-->
                     <button class="button admin-only" onclick="SolicitarProductos()">Solicitar Productos</button>
                     <button class="button admin-only" onclick="CortedeCaja()">Corte de Caja</button>
                     <button class="button admin-only" onclick="ReportedelDía()">Reporte del Día</button>
@@ -117,149 +147,94 @@
                         hoy</button>
                 </div>
             </div>
-            <!-- Limpieza -->
+            <!-- Módulo Limpieza -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Limpieza -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Limpieza -->
                     <img src="https://i.imgur.com/75aCNcB.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Limpieza -->
                     <button class="button admin-only ir-produccion"
                         onclick="window.location.href='limpieza.html'">Limpieza</button>
                 </div>
+                <!-- Submenú del módulo Limpieza -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirigen al javascript del módulo -->
                     <button class="button" onclick="verCalendario()">Calendario</button>
                     <button class="button" onclick="limpiezaDelDia()">Limpieza del Dia</button>
+                    <!-- Bótones habilitados sólo para el Administrador-->
                     <button class="button admin-only" onclick="registrarLimpieza()">Registrar Limpieza</button>
                     <button class="button admin-only" onclick="actualizarFechaDeLimpieza()">Actualizar fecha de
                         limpieza</button>
                 </div>
             </div>
-
-            <!-- Reportes -->
+            <!-- Módulo Reportes -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Reportes -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Reportes -->
                     <img src="https://i.imgur.com/8b2Igfw.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Bóton habilitado sólo para el Administrador-->
                     <button class="button admin-only ir-produccion"
                         onclick="window.location.href='reporte.html'">Reporte</button>
                 </div>
+                <!-- Submenú del módulo Reportes -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
                 </div>
             </div>
 
-            <!-- Gerente -->
+            <!-- Módulo Gerente -->
             <div class="menu-item doble-opcion">
                 <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Gerente -->
                     <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Gerente -->
                     <img src="https://i.imgur.com/AU09egm.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Bóton habilitado sólo para el Administrador-->
                     <button class="button admin-only ir-produccion"
                         onclick="window.location.href='gerente.html'">Gerente</button>
                 </div>
+                <!-- Submenú del módulo Gerente -->
                 <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
                 </div>
             </div>
-            <!-- Regresar/Login -->
+            <!-- Botón que redirige al loggin del programa -->
             <div class="menu-item">
                 <img src="https://i.imgur.com/ft5fWsY.png" alt="Regresar Icon" class="icono-sidebar">
                 <button class="button return-login" onclick="window.location.href='/'">Salir</button>
             </div>
         </div>
     </div>
-    <div class="container">
-        <h2>Inventario de Materias Primas</h2>
+    <!-- Opciones en la pantalla principal de Producción -->
+    <div id="main-content-wrapper">
+        <div class="busqueda-container">
+            <h1>Solicitar Materia Prima</h1>
+            <input type="text" id="buscador" oninput="buscarMaterias()" placeholder="Buscar materia prima...">
+        </div>
 
-        <select id="sucursal">
-            <option value="">-- Selecciona una sucursal --</option>
-            <option value="1">Paseos del Bosque</option>
-            <option value="2">Santuarios</option>
-            <option value="3">Pirámides</option>
-            <option value="4">Puerta Real</option>
-        </select>
-
-        <table id="tablaInventario">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Unidad</th>
-                    <th>Stock</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="4" style="text-align: center;">
-                        Seleccione una sucursal para ver el inventario
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="resultados-busqueda-container-MatPri" id="contenedor-sugerencias">
+            <ul id="sugerencias"></ul>
+        </div>
+        <div id="seleccionadasContainer" class="seleccionadas-container-MatPri">
+            <ul id="listaSeleccionadas"></ul>
+        </div>
+        <div id="boton-fijo-wrapper">
+            <button onclick="enviarSolicitud()" id="botonEnviar">
+                Confirmar y Registrar Solicitud
+            </button>
+        </div>
+        <div id="boton-volver-wrapper">
+            <button onclick="window.location.href='produccion.html'" id="botonVolver">
+                Regresar
+            </button>
+        </div>
     </div>
-    <div id="boton-volver-wrapper">
-        <button onclick="window.location.href='produccion.html'" id="botonVolver">
-            ⭠ Regresar
-        </button>
-    </div>
-    <!-- Scripts -->
-    <script src="../JS/sidebar.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sucursalSelect = document.getElementById("sucursal");
-            const tbody = document.querySelector("tbody");
-
-            sucursalSelect.addEventListener("change", function () {
-                const sucursalId = this.value;
-                tbody.innerHTML = ""; // Limpia tabla
-
-                if (!sucursalId) {
-                    tbody.innerHTML = `
-                <tr><td colspan="4">Seleccione una sucursal para ver el inventario</td></tr>
-            `;
-                    return;
-                }
-
-                // ✅ Petición al backend Flask
-                fetch(`/api/inventario/${sucursalId}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Error en la respuesta del servidor");
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log("📦 Datos recibidos:", data); // 👈 Mira esto en consola
-                        if (!data || data.length === 0) {
-                            tbody.innerHTML = `
-                        <tr><td colspan="4">No hay materias registradas para esta sucursal</td></tr>
-                    `;
-                            return;
-                        }
-
-                        // ✅ Llena la tabla
-                        data.forEach(item => {
-                            const row = `
-                        <tr>
-                            <td>${item.id}</td>
-                            <td>${item.nombre}</td>
-                            <td>${item.unidad}</td>
-                            <td>${item.stock}</td>
-                        </tr>
-                    `;
-                            tbody.insertAdjacentHTML("beforeend", row);
-                        });
-                    })
-                    .catch(error => {
-                        console.error("❌ Error al cargar inventario:", error);
-                        tbody.innerHTML = `
-                    <tr><td colspan="4">Error al cargar inventario</td></tr>
-                `;
-                    });
-            });
-        });
-        // Función para abrir/cerrar la barra lateral
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        }
-    </script>
-
+    <!-- Script para el funcionamiento de la sidebar y los botones deñ módulo Producción -->
+    <script src="../JS/produccion.js"></script>
 </body>
 
 </html>

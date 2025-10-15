@@ -2,7 +2,8 @@ from flask import Flask, jsonify, request, render_template, send_from_directory
 import pymysql
 from datetime import datetime
 import pytz
-from database import get_materias_primas
+from produccion import get_materias_primas
+from produccion import buscar_materias_primas
 
 app = Flask(__name__, template_folder='HTML')
 
@@ -53,8 +54,8 @@ def handle_login():
     finally:
         conn.close()
 
-@app.route('/materias_primas')
-def materias_primas():
+@app.route('/materias_primas.html')
+def materias_primas_login():
     materias = get_materias_primas()
     return render_template('materias_primas.html', materias=materias)
 
@@ -106,6 +107,19 @@ def limDia():
 @app.route('/limCalendario.html')
 def limCalendario():
     return render_template('limCalendario.html')
+
+@app.route('/solicitarMateriaPrima.html')
+def solicitarMateriaPrima():
+    return render_template('solicitarMateriaPrima.html')
+
+@app.route('/buscar_materias')
+def buscar_materias():
+    query = request.args.get('query', '').strip()
+    if not query:
+        return jsonify([])
+
+    resultados = buscar_materias_primas(query)
+    return jsonify(resultados)
 
 if __name__ == '__main__':
     app.run(debug=True)

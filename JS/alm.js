@@ -10,32 +10,28 @@ function registrarSalidas() {
 function actualizarProductos() {
     alert("Actualizando productos...");
 }
+// ✅ FUNCIÓN CORREGIDA: Redirige a la página que muestra los datos de la BD
 function verProductos() {
-    alert("Viendo productos...");
+    window.location.href = "/productos.html";
 }
-<<<<<<< HEAD
+// Función para redirigir a la página de materias primas
 function verMateriaPrima() {
-    window.location.href = "/materias_primas";  // Debe coincidir con la ruta en Flask
-=======
-function verMateriasPrimas() {
-    alert("Viendo materias primas...");
->>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2
+    // Cambia la URL actual para mostrar la página "materias_primas.html"
+    window.location.href = "/materias_primas.html";
 }
 function solicitarProductos() {
     alert("solicitando productos...");
 }
 function solicitarMateriaPrima() {
-    alert("solicitando materia prima...");
+    window.location.href = "/solicitarMateriaPrima.html";
 }
 function enviarProductosaTienda() {
     alert("Enviando productos a tienda...");
 }
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar');
-    const content = document.querySelector('.content');
+    // Nota: El selector '.content' fue eliminado, el toggle se aplica a 'sidebar'
     sidebar.classList.toggle('active');
-    content.classList.toggle('active');
-<<<<<<< HEAD
 }
 function toggleSubmenu(button) {
     const submenu = button.closest('.menu-item').querySelector('.submenu');
@@ -43,6 +39,4 @@ function toggleSubmenu(button) {
         submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
         button.textContent = submenu.style.display === 'flex' ? '▾' : '▸';
     }
-=======
->>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2
 }

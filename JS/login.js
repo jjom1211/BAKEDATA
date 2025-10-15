@@ -1,16 +1,15 @@
-document.getElementById("loginForm").addEventListener("submit", function(event) {
+document.getElementById("loginForm").addEventListener("submit", function (event) {
     event.preventDefault();
 
     let username = document.getElementById("username").value;
     let password = document.getElementById("contraseña").value;
 
-<<<<<<< HEAD
     $.ajax({
         url: "/login",
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify({ username: username, contraseña: password }),
-        success: function(respuesta) {
+        success: function (respuesta) {
             if (respuesta.error) {
                 document.getElementById("error-message").innerText = respuesta.error;
             } else {
@@ -25,16 +24,15 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
                     "produccion": "produccion.html"
                 };
                 if (users[username]) {
-                    window.location.href = users[username]; 
+                    window.location.href = users[username];
                 }
             }
         },
-        error: function() {
+        error: function () {
             console.log("Error en la petición AJAX")
             alert("Error, usuario no existente o contraseña equivocada");
         }
     });
-=======
     const users = {
         "admin": "gerente.html",
         "user": "usuario.html",
@@ -46,18 +44,13 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     };
 
     if (users[username]) {
-        window.location.href = users[username]; 
+        window.location.href = users[username];
     } else {
         document.getElementById("error-message").innerText = "Usuario o contraseña incorrectos.";
     }
->>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2
 });
 
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     input.type = input.type === "password" ? "text" : "password";
-<<<<<<< HEAD
-}  
-=======
 }
->>>>>>> 43f9cbdbba1d89295e2cf6bd631ed3186e8346d2
