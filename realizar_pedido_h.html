@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realizar Pedido - Bake Data</title>
+    <link rel="icon" href="/static/img/nuevologobkd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/CSS/realizar_pedido_c.css">
+</head>
+<body>
+    
+<div class="top-bar">
+    <a href="/"><img src="/static/img/logos/logo_BAKEDATA.png" alt="Logo Bake Data" class="logo"></a>
+    <a href="/" style="text-decoration:none; color:white;">
+        <span style="font-weight:bold; font-size:24px;">Bake Data</span>
+    </a>
+    <img src="/static/img/logos/logo_GRACE.png" alt="Icono adicional" class="icon-right">
+</div>
+
+<div class="nav-bar">
+    <a href="/realizar_pedido">Realizar Pedido</a>
+    <a href="/sucursales">Sucursales</a>
+    <a href="/conocenos">Conócenos</a>
+</div>
+
+<div class="container">
+    <h1 class="title-gray">Realiza un pedido</h1>
+    
+    <!-- Mensaje informativo -->
+    <div class="info-message">
+        Grace realiza pedidos de Pickup con anticipación de mínimo un día. El pago es en tienda NO en línea.
+    </div>
+    
+    <!-- Instrucción para seleccionar productos -->
+    <div class="select-product-text">
+        Seleccione algún producto:
+    </div>
+    
+    <!-- Sección de categorías -->
+    <div class="categories-section">
+        <div class="categories-container">
+            <div class="categories-grid">
+                <div class="category-card" onclick="navigateToCategory('panes')">
+                    <div class="category-image">
+                        <img src="/static/img/princ_panes_cat/panes.jpg" alt="Panes" class="category-img">
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-name">Panes</h3>
+                        <p class="category-description">Conoce nuestra variedad de panes.</p>
+                    </div>
+                </div>
+
+                <div class="category-card" onclick="navigateToCategory('galletas')">
+                    <div class="category-image">
+                        <img src="/static/img/princ_panes_cat/galletas.png" alt="Galletas" class="category-img">
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-name">Galletas</h3>
+                        <p class="category-description">Deliciosa variedad de galletas y polvorones.</p>
+                    </div>
+                </div>
+
+                <div class="category-card" onclick="navigateToCategory('gelatinas')">
+                    <div class="category-image">
+                        <img src="/static/img/princ_panes_cat/gelatinas.JPG" alt="Gelatinas y Flanes" class="category-img">
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-name">Gelatinas y flanes</h3>
+                        <p class="category-description">Conoce nuestra variedad de gelatinas y deliciosos flanes.</p>
+                    </div>
+                </div>
+
+                <div class="category-card" onclick="navigateToCategory('temporada')">
+                    <div class="category-image">
+                        <img src="/static/img/princ_panes_cat/panestemporada.jpg" alt="Pan de Temporada" class="category-img">
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-name">Pan de temporada</h3>
+                        <p class="category-description">Especialidades de Semana Santa, Pan de Muerto, Roscas de Reyes.</p>
+                    </div>
+                </div>
+
+                <div class="category-card" onclick="navigateToCategory('pasteles')">
+                    <div class="category-image">
+                        <img src="/static/img/princ_panes_cat/pasteles.jpg" alt="Pasteles" class="category-img">
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-name">Pasteles</h3>
+                        <p class="category-description">Los más finos y deliciosos pasteles, tres leches, opera, tiramisú, etc.</p>
+                    </div>
+                </div>
+
+                <div class="category-card" onclick="navigateToCategory('postres')">
+                    <div class="category-image">
+                        <img src="/static/img/princ_panes_cat/postres.jpg" alt="Postres" class="category-img">
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-name">Postres</h3>
+                        <p class="category-description">Los postres más deliciosos.</p>
+                    </div>
+                </div>
+
+                <div class="category-card" onclick="navigateToCategory('pizzas')">
+                    <div class="category-image">
+                        <img src="/static/img/princ_panes_cat/pizzas.png" alt="Pizzas" class="category-img">
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-name">Pizzas</h3>
+                        <p class="category-description">Nuestra variedad de pizzas artesanales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de comentarios del pedido (SIMPLIFICADA) -->
+    <div class="comments-section">
+        <h3 class="comments-title">Comentarios adicionales sobre tu pedido</h3>
+        <p class="comments-subtitle">Si tienes alguna indicación especial para tu pedido, escríbela aquí:</p>
+        
+        <div class="comments-form">
+            <textarea 
+                id="order-comments" 
+                class="comments-textarea" 
+                placeholder="Ejemplo: Por favor, necesito el pedido listo para las 3:00 PM. El pastel debe decir 'Feliz Cumpleaños María'..."
+                maxlength="500"
+            ></textarea>
+            <div class="char-counter">
+                <span id="char-count">0</span>/500 caracteres
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón de enviar pedido (MEJORADO) -->
+    <div class="submit-section">
+        <button class="submit-order-btn" onclick="submitOrder()">
+            Enviar Pedido
+        </button>
+    </div>
+</div>
+
+<script src="/JS/realizar_pedido_j.js"></script>
+</body>
+</html>
