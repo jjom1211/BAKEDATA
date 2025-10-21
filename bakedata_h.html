@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bake Data</title>
+    <link rel="icon" href="/static/img/nuevologobkd.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/CSS/bakedata_c.css">
+</head>
+<body>
+    
+<div class="top-bar">
+    <a href="/"><img src="/static/img/logos/logo_BAKEDATA.png" alt="Logo Bake Data" class="logo"></a>
+    <a href="/" style="text-decoration:none; color:white;">
+        <span style="font-weight:bold; font-size:24px;">Bake Data</span>
+    </a>
+    <img src="/static/img/logos/logo_GRACE.png" alt="Icono adicional" class="icon-right">
+</div>
+
+<div class="nav-bar">
+    <a href="/realizar_pedido">Realizar Pedido</a>
+    <a href="/sucursales">Sucursales</a>
+    <a href="/conocenos">Conócenos</a>
+</div>
+
+<div class="welcome-section">
+    <div class="welcome-content">
+        <div class="welcome-text">
+            <h1 class="welcome-title">Grace Panaderías Querétaro. El mejor <span class="highlight">sabor</span>.</h1>
+            <p class="welcome-subtitle">Bienvenidos a nuestras panaderías, donde la tradición y la calidad se unen para ofrecerte los mejores productos.</p>
+        </div>
+        <div class="welcome-image">
+            <img src="/static/svg/estantes.svg" alt="Panadería Grace" class="animated-image">
+        </div>
+    </div>
+</div>
+
+<div class="categories-section">
+    <div class="container">
+        <h2 class="categories-title">Conoce Nuestras Categorías</h2>
+        <div class="categories-grid">
+            <div class="category-card" onclick="navigateToCategory('panes')">
+                <div class="category-image">
+                    <img src="/static/img/princ_panes_cat/panes.jpg" alt="Panes" class="category-img">
+                </div>
+                <div class="category-content">
+                    <h3 class="category-name">Panes</h3>
+                    <p class="category-description">Conoce nuestra variedad de panes.</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="navigateToCategory('galletas')">
+                <div class="category-image">
+                    <img src="/static/img/princ_panes_cat/galletas.png" alt="Galletas" class="category-img">
+                </div>
+                <div class="category-content">
+                    <h3 class="category-name">Galletas</h3>
+                    <p class="category-description">Deliciosa variedad de galletas y polvorones.</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="navigateToCategory('gelatinas')">
+                <div class="category-image">
+                    <img src="/static/img/princ_panes_cat/gelatinas.JPG" alt="Gelatinas y Flanes" class="category-img">
+                </div>
+                <div class="category-content">
+                    <h3 class="category-name">Gelatinas y flanes</h3>
+                    <p class="category-description">Conoce nuestra variedad de gelatinas y deliciosos flanes.</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="navigateToCategory('temporada')">
+                <div class="category-image">
+                    <img src="/static/img/princ_panes_cat/panestemporada.jpg" alt="Pan de Temporada" class="category-img">
+                </div>
+                <div class="category-content">
+                    <h3 class="category-name">Pan de temporada</h3>
+                    <p class="category-description">Especialidades de Semana Santa, Pan de Muerto, Roscas de Reyes.</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="navigateToCategory('pasteles')">
+                <div class="category-image">
+                    <img src="/static/img/princ_panes_cat/pasteles.jpg" alt="Pasteles" class="category-img">
+                </div>
+                <div class="category-content">
+                    <h3 class="category-name">Pasteles</h3>
+                    <p class="category-description">Los más finos y deliciosos pasteles, tres leches, opera, tiramisú, etc.</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="navigateToCategory('postres')">
+                <div class="category-image">
+                    <img src="/static/img/princ_panes_cat/postres.jpg" alt="Postres" class="category-img">
+                </div>
+                <div class="category-content">
+                    <h3 class="category-name">Postres</h3>
+                    <p class="category-description">Los postres más deliciosos.</p>
+                </div>
+            </div>
+
+            <div class="category-card" onclick="navigateToCategory('pizzas')">
+                <div class="category-image">
+                    <img src="/static/img/princ_panes_cat/pizzas.png" alt="Pizzas" class="category-img">
+                </div>
+                <div class="category-content">
+                    <h3 class="category-name">Pizzas</h3>
+                    <p class="category-description">Nuestra variedad de pizzas artesanales.</p>
+                </div>
+            </div>
+            </div>
+    </div>
+</div>
+
+<script src="/JS/bakedata_j.js"></script>
+</body>
+</html>
