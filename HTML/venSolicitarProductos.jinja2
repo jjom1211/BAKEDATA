@@ -1,0 +1,56 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Solicitar Productos{% endblock %}
+
+{% block head_links %}
+    {# Puedes reutilizar el mismo CSS de registrar_venta si es similar #}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='venSolicitarProductos.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="venta-container">
+    <h1>Solicitar Productos</h1>
+    <p>Selecciona los productos y cantidades que deseas solicitar al almacén central.</p>
+
+    <div class="venta-grid">
+        <div class="productos-columna">
+            <h2>Productos Disponibles</h2>
+            <input type="text" id="buscador-productos" placeholder="Buscar producto por nombre o ID...">
+            <div id="lista-productos" class="lista-items">
+                </div>
+        </div>
+
+        <div class="carrito-columna">
+            <h2>Mi Solicitud</h2>
+            <div id="lista-carrito" class="lista-items">
+                <p>Añade productos desde la lista.</p>
+            </div>
+            <div class="selector-sucursal-origen">
+                <label for="sucursal-origen">Solicitar desde (Origen):</label>
+                <select id="sucursal-origen" required>
+                    <option value="">-- Seleccionar origen --</option>
+                    {% for suc in sucursales %}
+                        <option value="{{ suc.suc_id }}" {% if suc.suc_id == 1 %}selected{% endif %}>
+                            {{ suc.suc_nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="carrito-total">
+                <h3>Costo Total: <span id="carrito-total-monto">$0.00</span></h3>
+            </div>
+            <textarea id="comentarios-solicitud" placeholder="Añadir comentarios (opcional)..."></textarea>
+            <button id="btn-confirmar-solicitud" class="btn-primary" disabled>Finalizar Solicitud</button>
+        </div>
+    </div>
+</div>
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        // Pasamos la lista completa de productos al JS
+        const TODOS_LOS_PRODUCTOS = {{ productos | tojson | safe }};
+    </script>
+    <script src="{{ url_for('serve_js', filename='venSolicitarProductos.js') }}"></script>
+{% endblock %}

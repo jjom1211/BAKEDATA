@@ -1,0 +1,50 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Estado de Caja{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='venVerCaja.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Estado de Caja</h1>
+
+    {# Ya no hay selector de sucursal #}
+
+    <div id="caja-display-container">
+        {# Usamos un bucle por si en el futuro hay más de una caja por sucursal #}
+        {% if cajas %}
+            {% for caja in cajas %}
+                <div class="caja-card">
+                    <h4>Caja ID: {{ caja.caja_id }}</h4>
+                    <div class="caja-item">
+                        <h3>Efectivo</h3>
+                        <p>${{ "%.2f"|format(caja.caja_efectivo) }}</p>
+                    </div>
+                    <div class="caja-item">
+                        <h3>Tarjeta</h3>
+                        <p>${{ "%.2f"|format(caja.caja_tarjeta) }}</p>
+                    </div>
+                    <div class="caja-item total">
+                        <h3>Total del Día</h3>
+                        <p>${{ "%.2f"|format(caja.caja_total_dia) }}</p>
+                    </div>
+                <div class="caja-item">
+                    <h3>Tarjeta</h3>
+                    <p>${{ "%.2f"|format(caja.caja_tarjeta) }}</p> 
+                </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No se encontró información de caja para tu sucursal.</p>
+        {% endif %}
+    </div>
+</div>
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='venVerCaja.js') }}"></script>
+{% endblock %}

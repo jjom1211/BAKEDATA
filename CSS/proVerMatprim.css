@@ -1,0 +1,100 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    margin: 0px;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+/* Estilo para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0px 0px;
+    font-family: Arial, sans-serif;
+}
+
+/* Encabezados de la tabla */
+th {
+    background-color: #4f4f4f; /* Azul oscuro */
+    color: rgb(255, 255, 255);
+    padding: 12px;
+    text-align: left;
+}
+
+/* Celdas de la tabla */
+td {
+    padding: 10px;
+    border-bottom: 1px solid #c3c3c3;
+}
+
+/* Estilo de las filas */
+tr {
+    background-color: #e5e3e3;
+}
+
+/* Resaltar fila al pasar el mouse */
+tr:hover {
+    background-color: #fff9e6;
+}
+
+/* Estilo para el título */
+h1 {
+    color: #ca563f;
+    font-size: 70px; /* Tamaño más pequeño (ajusta según lo que necesites) */
+    padding-left: 40px;
+}
+
+
+/* Botón "Volver" (herencia del estilo de producción) */
+.button.volver {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background-color: #ff8c00; /* Naranja */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Botón adicional para acciones (ej: exportar) */
+.button.accion {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: left;
+    width: auto;
+}
+
+/* Limpieza de floats */
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 8px;
+    }
+    
+    .button.volver, .button.accion {
+        padding: 10px 20px;
+        width: 100%;
+        float: none;
+        margin-bottom: 10px;
+    }
+}

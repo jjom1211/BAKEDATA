@@ -30,16 +30,15 @@ const menuData = [
         { name: "Solicitar Materia Prima", url: "/solicitarMateriaPrima", roles: ["EP", "E", "G"] }
     ]},
     { name: "Ventas", url: "/ventas", roles: ["V", "EV", "E", "G"], icon: "https://i.imgur.com/aUIJoQt.png", submenu: [
-        { name: "Registrar Cliente", url: "/registrarCliente", roles: ["V"] },
+        { name: "Registrar Cliente", url: "/ventas/registrarCliente", roles: ["V"] },
         { name: "Registrar Venta", url: "/registrarVenta", roles: ["V"] },
         { name: "Realizar Pedido", url: "/realizarPedidoVenta", roles: ["V"] },
-        { name: "Actualizar Caja", url: "/actualizarCaja", roles: ["V"] },
         { name: "Ver Caja", url: "/verCaja", roles: ["V"] },
+        { name: "Movmientos de efectivo", url: "/movimientosEfectivo", roles: ["V"] },
         { name: "Ver Productos", url: "/verProductosVenta", roles: ["V"] },
-        { name: "Solicitar Productos", url: "/solicitarProductosVenta", roles: ["EV", "E", "G"] },
+        { name: "Actualizar Caja", url: "/actualizarCaja", roles:  ["EV", "E", "G"]},
+        { name: "Solicitar Productos", url: "/solicitarProductos", roles: ["EV", "E", "G"] },
         { name: "Corte de Caja", url: "/corteDeCaja", roles: ["E", "G"] },
-        { name: "Reporte del Día", url: "/reporteDelDia", roles: ["E", "G"] },
-        { name: "Reporte Mensual", url: "/reporteMensual", roles: ["E", "G"] }
     ]},
     { name: "Limpieza", url: "/limpieza", roles: ["L", "EL", "E", "G"], icon: "https://i.imgur.com/75aCNcB.png", submenu: [
         { name: "Calendario", url: "/limCalendario", roles: ["L"] },

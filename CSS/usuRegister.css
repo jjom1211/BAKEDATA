@@ -1,0 +1,177 @@
+body {
+    background-image: url("https://i.imgur.com/mGwWm4L.jpg");
+    background-size: 40%;
+    background-repeat: repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+}
+
+.register-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* La caja principal que contiene TODO */
+.content-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+
+    /* --- CAMBIO 1: Organizar el contenido --- */
+    /* Usamos Flexbox para apilar y centrar los elementos internos (título, logo, form) */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra todo horizontalmente */
+}
+
+/* El título ya no necesita su propio fondo */
+.content-box h1 {
+    font-weight: bold;
+    color: #eb816c;
+    font-size: 2.2em;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+/* El texto de introducción */
+.content-box span {
+    font-style: italic;
+    color: #555;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* El formulario ocupa todo el ancho del content-box */
+    margin-top: 20px;
+}
+
+/* --- CAMBIO 2: Asegurar que TODAS las etiquetas estén a la izquierda --- */
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: left; /* Esta regla ahora se aplicará correctamente a todas */
+    color: #333;
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
+
+input {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+button {
+    padding: 12px;
+    background-color: #DA6049;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #eb816c;
+}
+
+/* El contenedor de la contraseña ahora solo necesita ser relativo */
+.password-container {
+    position: relative;
+    width: 100%; /* Ocupa todo el ancho del formulario */
+}
+.password-container input {
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%; /* Se centra verticalmente respecto al input */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+}
+
+/* Estilos para los mensajes de Flash */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+.alert-success { color: #155724; background-color: #d4edda; border-color: #c3e6cb; }
+.alert-error { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; }
+
+
+/* --- REEMPLAZA TUS ESTILOS 'button' CON ESTO --- */
+
+/* Contenedor para alinear los botones */
+.form-actions {
+    display: flex;
+    justify-content: center;  
+    gap: 15px; /* Espacio entre los botones */
+    margin-top: 20px;
+}
+
+/* Estilo base compartido por ambos botones */
+.btn-primary, .btn-secondary {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.0em;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Botón de acción principal (Registrar) */
+.btn-primary {
+    background-color: #DA6049;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #eb816c;
+}
+
+/* Botón de acción secundaria (Regresar) */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #5a6268;
+}

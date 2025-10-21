@@ -1,0 +1,95 @@
+/* Archivo: CSS/ver_caja.css */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    border-bottom: 2px solid #fc9d78;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#sucursal {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 30px auto;
+    padding: 12px;
+    font-size: 1.1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#caja-display-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+    text-align: center;
+}
+
+.caja-item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    flex-grow: 1;
+}
+
+.caja-item h3 {
+    margin-top: 0;
+    color: #555;
+    font-size: 1.2em;
+}
+
+.caja-item p {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0;
+}
+
+.caja-item.total p {
+    color: #28a745; /* Verde para el total */
+}
+
+
+#botonRegresarFijo {
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    
+    /* Colores y tipografía */
+    background-color: #7e084b; /* Color principal de tu paleta */
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Otros estilos */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
+}
+
+#botonRegresarFijo:hover {
+    background-color: #411163; /* Color secundario de tu paleta */
+    transform: scale(1.05);
+}

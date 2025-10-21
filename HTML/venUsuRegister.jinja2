@@ -1,0 +1,63 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Registrar Nuevo Cliente{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='usuRegister.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="content-box">
+        <h1>Registrar Nuevo Cliente</h1>
+        <img src="https://i.imgur.com/WW384uk.png" alt="Logo" class="logo">
+
+        {# Esta sección para los mensajes flash ya no es necesaria con el alert, pero no estorba #}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <span><em>Ingresa los datos del nuevo cliente.</em></span>
+        <br>
+        
+        <form method="POST" id="form-registro-venta" data-action="{{ url_for('ventas_registrar_cliente') }}" data-redirect-url="{{ url_for('ventas') }}">
+            
+            <label for="nombre">Nombre(s):</label>
+            <input type="text" id="nombre" name="nombre" required>
+            
+            <label for="apellido">Apellido(s):</label>
+            <input type="text" id="apellido" name="apellido" required>
+
+            <label for="correo">Correo:</label>
+            <input type="email" id="correo" name="correo" required>
+
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" required>
+            
+                <div class="password-container">
+                    <label for="contraseña">Contraseña:</label>
+                    <input type="password" id="contraseña" name="contraseña" required>
+                    <span class="toggle-password">👁‍🗨</span>
+                </div>
+                <div class="password-container">
+                    <label for="confirmacion_de_contraseña">Confirmación de contraseña:</label>
+                    <input type="password" id="confirmacion_de_contraseña" name="confirmacion_de_contraseña" required>
+                    <span class="toggle-password">👁‍🗨</span>
+                </div>
+                        <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="window.location.href='{{ url_for('ventas') }}'">Regresar</button>
+                
+                <button type="submit" class="btn-primary">Registrar Cliente</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='usuRegister.js') }}"></script>
+{% endblock %}

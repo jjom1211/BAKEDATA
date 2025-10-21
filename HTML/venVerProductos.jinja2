@@ -1,0 +1,59 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Inventario de Productos{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='venVerProductos.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="header-container">
+        <h1>Inventario de Productos</h1>
+        <select id="sucursal">
+            <option value="">-- Selecciona otra sucursal --</option>
+            {% for sucursal in sucursales %}
+                <option value="{{ sucursal.suc_id }}" {% if sucursal.suc_id == sucursal_actual_id %}selected{% endif %}>
+                    {{ sucursal.suc_nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <table id="tablaInventario">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Stock</th>
+                <th>Unidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# --- TABLA INICIAL AHORA ES DINÁMICA --- #}
+            {% if inventario_inicial %}
+                {% for item in inventario_inicial %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.stock }}</td>
+                    <td>{{ item.unidad }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" style="text-align: center;">
+                        No hay productos registrados para esta sucursal.
+                    </td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+<button id="botonRegresarFijo" onclick="window.location.href='{{ url_for('ventas') }}'">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    {# Tu JavaScript no necesita cambios, funcionará perfectamente #}
+    <script src="{{ url_for('serve_js', filename='venVerProductos.js') }}"></script>
+{% endblock %}

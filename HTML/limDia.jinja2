@@ -17,9 +17,9 @@
             <p>{{ act.actividades_limpieza }}</p>
             <label>
                 <input type="checkbox"
-                       name="actividad"
-                       value="{{ act.actividades_limpieza }}"
-                       {% if act.limdia_act_estado == 'C' %} checked disabled {% endif %}/>
+                        name="actividad"
+                        value="{{ act.actividades_limpieza }}"
+                        {% if act.limdia_act_estado == 'C' %} checked disabled {% endif %}/>
             </label>
         </div>
         {% endfor %}
