@@ -1,0 +1,60 @@
+{% extends "base.jinja2" %}
+{% block title %}Reporte de Ventas{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repoVentas.css') }}">
+    {# --- AÑADIMOS LA LIBRERÍA DE GRÁFICAS --- #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Reporte de Ventas</h1>
+    
+    <div class="selector-fecha" data-action-url="{{ url_for('api_reporte_ventas_agregado') }}">
+        <label for="fecha-reporte">Selecciona una fecha base:</label>
+        <input type="date" id="fecha-reporte">
+        {# --- NUEVOS BOTONES DE FILTRO --- #}
+        <div class="filtro-botones">
+            <button class="btn-filtro" data-rango="dia">Día</button>
+            <button class="btn-filtro" data-rango="semana">Semana</button>
+            <button class="btn-filtro" data-rango="mes">Mes</button>
+            <button class="btn-filtro" data-rango="ano">Año</button>
+        </div>
+    </div>
+
+    <p id="reporte-mensaje"></p> <div id="resultado-reporte" style="display: none;">
+        
+        {# --- NUEVA GRÁFICA --- #}
+        <div class="grafica-container">
+            <h3>Ventas Totales</h3>
+            <canvas id="graficaVentas"></canvas>
+        </div>
+
+        <div class="resumen-grid">
+            <div class="resumen-item">
+                <p>Total Vendido</p>
+                <span id="reporte-total-vendido">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <p>Número de Tickets</p>
+                <span id="reporte-numero-tickets">0</span>
+            </div>
+            <div class="resumen-item">
+                <p>Ticket Promedio</p>
+                <span id="reporte-ticket-promedio">$0.00</span>
+            </div>
+        </div>
+
+        <h3>Productos Más Vendidos</h3>
+        <table id="tabla-productos-top">
+            <thead> <tr><th>Producto</th><th>Cantidad Vendida</th></tr> </thead>
+            <tbody id="tabla-productos-body"></tbody>
+        </table>
+    </div>
+</div>
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repoVentas.js') }}"></script>
+{% endblock %}

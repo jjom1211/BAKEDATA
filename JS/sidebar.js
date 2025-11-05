@@ -51,11 +51,9 @@ const menuData = [
         { name: "Crear Cuenta de empleado", url: "/crearCuentaEmpleado", roles: ["E", "G"] },
     ]},
     { name: "Reportes", url: "/reportes", roles: ["G"], icon: "https://i.imgur.com/8b2Igfw.png", submenu: [
-        { name: "Reporte del Día", url: "/reporteDelDia", roles: ["G"] },
-        { name: "Reporte Semanal", url: "/reporteDelDia", roles: ["G"] },
-        { name: "Reportes Mensuales", url: "/reportes/mensuales", roles: ["G"] },
-        { name: "Reportes Trimestrales", url: "/reportes/trimestrales", roles: ["G"] },
-        { name: "Reportes Anuales", url: "/reportes/anuales", roles: ["G"] }
+        { name: "Reportes de Ventas", url: "/reporteDeVentas", roles: ["G"] },
+        { name: "Reporte de caja", url: "/reporteDeCaja", roles: ["G"] },
+        { name: "Reporte de inventario", url: "/reporteDeInventario", roles: ["G"] },
     ]},
     { name: "Gerente", url: "/gerente", roles: ["G"], icon: "https://i.imgur.com/AU09egm.png", submenu: []}
 ];
