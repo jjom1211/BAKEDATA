@@ -1,0 +1,17 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Limpieza{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Limpieza</h1>
+    <button class="button" data-url="/limCalendario">Calendario</button>
+    <button class="button" data-url="/limDia">Limpieza del Dia</button>
+    <button class="button admin-only" data-url="/limRegistrarLimpieza">Registrar Limpieza del dia</button>
+    <button class="button admin-only" data-url="/limActualizarFechaLimpieza">Actualizar fecha de limpieza</button>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='limpieza.js') }}"></script>
+{% endblock %}

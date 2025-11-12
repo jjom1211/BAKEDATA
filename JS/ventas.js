@@ -1,44 +1,22 @@
-function RegistrarCliente() {
-    alert("Registrando cliente...");
-}
-function RegistrarVenta() {
-    alert("Registrando venta...");
-}
-function RealizarPedido() {
-    alert("Realizando pedido...");
-}
-function VerProductos() {
-    alert("Viendo productos...");
-}
-function ActualizarCaja() {
-    alert("Actualizando caja...");
-}
-function VerCaja() {
-    alert("Viendo caja...");
-}
-function ReportedelDía() {
-    alert("Reporte del día...");
-}
-function ReporteMensual() {
-    alert("Reporte mensual...");
-}
-function verCatalogo() {
-    alert("Abriendo catalogo...");
-    window.location.href = "usuprincipal.html";
-}
-function verMateriaPrima() {
-    window.location.href = "/materias_primas";  // Debe coincidir con la ruta en Flask
-}
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const content = document.querySelector('.content');
-    sidebar.classList.toggle('active');
-    content.classList.toggle('active');
-}
-function toggleSubmenu(button) {
-    const submenu = button.closest('.menu-item').querySelector('.submenu');
-    if (submenu) {
-        submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
-        button.textContent = submenu.style.display === 'flex' ? '▾' : '▸';
+document.addEventListener("DOMContentLoaded", () => {
+    // Lógica para ocultar/mostrar botones de admin
+    const roles = JSON.parse(sessionStorage.getItem("roles") || "[]").map(r => r.toUpperCase());
+    // Define los roles con permisos de administrador
+    const esGerente = roles.includes("G");
+    const esEncargado = roles.includes("E");
+    const esEncargadoVentas = roles.includes("EV"); // Agregamos el rol de Subgerente
+    // Si el usuario tiene alguno de los roles de administrador, muestra los botones
+    if (esGerente || esEncargado || esEncargadoVentas) {
+        document.querySelectorAll(".admin-only").forEach(elemento => {
+            elemento.style.display = 'block';
+        });
     }
-}
+    // Lógica para manejar clics en botones con data-url
+    document.querySelectorAll(".container .button").forEach(button => {
+        button.addEventListener("click", () => {
+            if (button.dataset.url) {
+                window.location.href = button.dataset.url;
+            }
+        });
+    });
+});

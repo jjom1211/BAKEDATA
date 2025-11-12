@@ -1,0 +1,64 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Actualizar Caja{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='venActualizarCaja.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    
+    <div class="page-header">
+        <h1>Actualizar Efectivo en Caja</h1>
+        <label for="caja_selector">Selecciona la Caja a Modificar:</label>
+        <select id="caja_selector">
+            <option value="">-- Seleccionar Caja --</option>
+            {% for caja in cajas %}
+            <option value="{{ caja.caja_id }}">Caja {{ caja.caja_id }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    {# --- CORRECCIÓN: Se quitó style="display: none;" --- #}
+    <div id="form-container">
+        <div class="info-caja">
+            <h4>Efectivo Actual en Caja</h4>
+            <p class="efectivo-actual">$--.--</p> {# Texto inicial #}
+        </div>
+
+        <form id="form-actualizar-caja" data-action="{{ url_for('api_procesar_ajuste_caja') }}">
+            <input type="hidden" name="caja_id" id="caja_id_hidden" value=""> {# Valor inicial vacío #}
+            
+            <label for="monto">Monto:</label>
+            <input type="number" id="monto" name="monto" step="0.01" min="0.01" placeholder="Ej: 500.00" required>
+            
+            <div class="radio-group">
+                <label><input type="radio" name="tipo_operacion" value="agregar" checked> Agregar</label>
+                <label><input type="radio" name="tipo_operacion" value="retirar"> Retirar</label>
+            </div>
+
+            <label for="motivo">Motivo del Ajuste:</label>
+            <select id="motivo" name="motivo" required>
+                <option value="">-- Seleccionar un motivo --</option>
+                <option value="Fondo inicial de turno">Fondo inicial de turno</option>
+                <option value="Corrección de conteo">Corrección de conteo</option>
+                <option value="Retiro de emergencia">Retiro de emergencia</option>
+                <option value="Gasto menor (insumos, etc.)">Gasto menor (insumos, etc.)</option>
+                <option value="Otro">Otro</option>
+            </select>
+
+            {# Los botones se quedan DENTRO del form #}
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" onclick="window.history.back()">Regresar</button>
+                {# --- CORRECCIÓN: Se quitó el atributo 'hidden' --- #}
+                <button type="submit" class="btn-primary" id="btn-confirmar">Confirmar Ajuste</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='venActualizarCaja.js') }}"></script>
+{% endblock %}

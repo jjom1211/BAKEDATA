@@ -1,0 +1,134 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Corte de Caja{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='venCorteCaja.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Corte de Caja</h1>
+
+    <div class="selector-caja">
+        <label for="caja_selector">1. Selecciona la Caja:</label>
+        <select id="caja_selector">
+            <option value="">-- Seleccionar Caja --</option>
+            {% for caja in cajas %}
+            <option value="{{ caja.caja_id }}">Caja {{ caja.caja_id }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div id="tipo-corte-container" style="display: none;">
+        <label>2. Selecciona el Tipo de Corte:</label>
+        <div class="radio-group-corte">
+            <label><input type="radio" name="tipo_corte" value="turno"> Corte de Turno (Retiro Parcial)</label>
+            <label><input type="radio" name="tipo_corte" value="dia"> Corte de Día (Cierre Final)</label>
+        </div>
+    </div>
+
+    <div id="corte-turno-container" style="display: none;">
+        <div class="info-caja">
+            <h4>Efectivo Actual Estimado</h4>
+            <p class="efectivo-actual">$--.--</p>
+        </div>
+        <form id="form-corte-turno" data-action="{{ url_for('api_procesar_corte_turno') }}">
+            <input type="hidden" name="caja_id" id="caja_id_hidden_turno">
+            <input type="hidden" name="tipo_corte" value="turno">
+            <h4>Dinero a Retirar:</h4>
+            
+            <div class="denominaciones">
+                <div class="denominacion-item">
+                    <label for="b1000">$1000 x </label>
+                    <input type="number" id="b1000" name="b1000" min="0" value="0">
+                </div>
+                <div class="denominacion-item">
+                    <label for="b500">$500 x </label>
+                    <input type="number" id="b500" name="b500" min="0" value="0">
+                </div>
+                <div class="denominacion-item">
+                    <label for="b200">$200 x </label>
+                    <input type="number" id="b200" name="b200" min="0" value="0">
+                </div>
+                <div class="denominacion-item">
+                    <label for="b100">$100 x </label>
+                    <input type="number" id="b100" name="b100" min="0" value="0">
+                </div>
+                <div class="denominacion-item">
+                    <label for="b50">$50 x </label>
+                    <input type="number" id="b50" name="b50" min="0" value="0">
+                </div>
+                <div class="denominacion-item">
+                    <label for="b20">$20 x </label>
+                    <input type="number" id="b20" name="b20" min="0" value="0">
+                </div>
+                <div class="denominacion-item">
+                    <label for="m10">$10 x </label>
+                    <input type="number" id="m10" name="m10" min="0" value="0">
+                </div>
+                <div class="denominacion-item">
+                    <label for="m5">$5 x </label>
+                    <input type="number" id="m5" name="m5" min="0" value="0">
+                </div>
+            </div>
+            <div class="resumen-retiro">
+                <h4>Total a Retirar: <span id="total-retirar">$0.00</span></h4>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Confirmar Corte de Turno</button>
+            </div>
+        </form>
+    </div>
+    
+    <div id="corte-dia-container" style="display: none;">
+        <h3>Resumen del Día</h3>
+        <div class="resumen-grid">
+            <div class="resumen-item">
+                <p>Efectivo Actual en Caja</p>
+                <span id="resumen-efectivo" class="monto-positivo">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <p>Total Tarjeta del Día</p>
+                <span id="resumen-tarjeta" class="monto-positivo">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <p>Total Retiros (Ajustes)</p>
+                <span id="resumen-retiros-ajuste" class="monto-negativo">$0.00</span>
+            </div>
+            
+            <div class="resumen-item">
+                <p>Total Retiros (Cortes Turno)</p>
+                <span id="resumen-cortes-turno" class="monto-negativo">$0.00</span>
+            </div>
+            
+            <div class="resumen-item total-final">
+                <p>Total Final en Caja</p>
+                <span id="resumen-total-dia" class="monto-final">$0.00</span>
+            </div>
+            <div class="resumen-item total-acumulado">
+                <p>Total Acumulado del Día</p>
+                <span id="resumen-total-acumulado" class="monto-final-acumulado">$0.00</span>
+            </div>
+                </div>
+        <div class="alerta-cierre">
+            <p><strong>¡Atención!</strong> Esta acción reseteará la caja a **$0.00**. Confirma que los totales son correctos.</p>
+        </div>
+        <form id="form-corte-dia" data-action="{{ url_for('api_procesar_corte_turno') }}">
+            <input type="hidden" name="caja_id" id="caja_id_hidden_dia">
+            <input type="hidden" name="tipo_corte" value="dia">
+            <div class="form-actions">
+                <button type="submit" class="btn-danger">Confirmar Cierre del Día</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-actions-bottom">
+        <button type="button" class="btn-secondary" onclick="window.history.back()">Regresar</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='venCorteCaja.js') }}"></script>
+{% endblock %}

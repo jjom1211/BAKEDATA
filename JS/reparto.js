@@ -1,31 +1,25 @@
-function verCalendario() {
-    alert("Abriendo calendario...");
-    window.location.href = "repCalendario.html";
-}
-function verPedidos() {
-    alert("Abriendo pedidos pendientes...");
-    window.location.href = "repPedidos.html";
-}
-function actualizarEntrega() {
-    alert("Actualizando entrega...");
-}
-function confirmarEntrega() {
-    alert("Confirmando entrega...");
-}
-function agregarEntrega() {
-    alert("Agregando entrega...");
-}
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    sidebar.classList.toggle('active');
-}
-function verMateriaPrima() {
-    window.location.href = "/materias_primas";  // Debe coincidir con la ruta en Flask
-}
-function toggleSubmenu(button) {
-    const submenu = button.closest('.menu-item').querySelector('.submenu');
-    if (submenu) {
-        submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
-        button.textContent = submenu.style.display === 'flex' ? '▾' : '▸';
+document.addEventListener("DOMContentLoaded", () => {
+    // Lógica para ocultar/mostrar botones de admin
+    const roles = JSON.parse(sessionStorage.getItem("roles") || "[]").map(r => r.toUpperCase());
+    
+    // Define los roles con permisos de administrador
+    const esGerente = roles.includes("G");
+    const esEncargado = roles.includes("E");
+    const esEncargadoReparto = roles.includes("ER"); // Agregamos el rol de Subgerente
+
+    // Si el usuario tiene alguno de los roles de administrador, muestra los botones
+    if (esGerente || esEncargado || esEncargadoReparto) {
+        document.querySelectorAll(".admin-only").forEach(elemento => {
+            elemento.style.display = 'block';
+        });
     }
-}
+
+    // Lógica para manejar clics en botones con data-url
+    document.querySelectorAll(".container .button").forEach(button => {
+        button.addEventListener("click", () => {
+            if (button.dataset.url) {
+                window.location.href = button.dataset.url;
+            }
+        });
+    });
+});

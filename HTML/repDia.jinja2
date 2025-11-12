@@ -1,0 +1,53 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Repartos del Día{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repDia.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="subinterface">
+    <h1>Reparto</h1>
+    <h2>Repartos del día</h2>
+    <div class="container" id="lista-actividades">
+        {% if pedidos %}
+            {% for ped in pedidos %}
+            <div class="pedido">
+                <p>{{ ped.ped_asunto }}</p>
+                <div class="pedido-actions">
+                    <button class="btn-detalles" data-reparto-id="{{ ped.rep_id }}">Ver Detalles</button>
+                    <label>
+                        <input type="checkbox"
+                                name="pedidos"
+                                value="{{ ped.ped_id }}"
+                                {% if ped.rep_estado_reparto == 'E' %} checked disabled {% endif %}/>
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay repartos programados para hoy.</p>
+        {% endif %}
+    </div>
+
+<div class="bottom-buttons">
+        <button id="btn-regresar">Regresar</button>
+        <button id="btn-confirmar">Confirmar avance</button>
+    </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <h2>Detalles del Reparto</h2>
+        <div class="modal-body" id="modal-body">
+            </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repDia.js') }}"></script>
+{% endblock %}

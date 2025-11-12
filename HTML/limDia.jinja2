@@ -1,0 +1,40 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Limpieza del Día{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='limDia.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="subinterface">
+    <h1>Limpieza</h1>
+    <h2>Actividades del día</h2>
+    <div class="container" id="lista-actividades">
+        {% if actividades%}
+        {% for act in actividades %}
+        <div class="actividad">
+            <p>{{ act.actividades_limpieza }}</p>
+            <label>
+                <input type="checkbox"
+                        name="actividad"
+                        value="{{ act.actividades_limpieza }}"
+                        {% if act.limdia_act_estado == 'C' %} checked disabled {% endif %}/>
+            </label>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p>No hay actividades programadas para hoy.</p>
+        {% endif %}
+    </div>
+
+    <div class="bottom-buttons">
+        <button onclick="goBack()">Regresar</button>
+        <button onclick="confirmarLimpieza()">Confirmar avance</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='limDia.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.jinja2" %}
+{% block title %}Reporte de Caja{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repoCaja.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Reporte de Caja</h1>
+    
+    <div class="selector-fecha" data-action-url="{{ url_for('api_reporte_caja_dia') }}">
+        <label for="fecha-reporte">Selecciona una fecha:</label>
+        <input type="date" id="fecha-reporte">
+        <button id="btn-generar-reporte" class="btn-primary">Generar Reporte</button>
+    </div>
+
+    <p id="reporte-mensaje"></p>
+
+    <div id="resultado-reporte" style="display: none;">
+        
+        <h3>Resumen de Movimientos del Día</h3>
+        <div class="resumen-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="resumen-item">
+                <p>(+) Ventas en Efectivo</p>
+                <span id="rep-ventas-efectivo" class="monto-positivo">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <p>(+) Ventas con Tarjeta</p>
+                <span id="rep-ventas-tarjeta" class="monto-positivo">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <p>(+) Ajustes (Ingresos)</p>
+                <span id="rep-ajustes-agrego" class="monto-positivo">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <p>(-) Ajustes (Retiros)</p>
+                <span id="rep-ajustes-retiro" class="monto-negativo">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <p>(-) Retiros (Corte de Turno)</p>
+                <span id="rep-cortes-retiro" class="monto-negativo">$0.00</span>
+            </div>
+        </div>
+
+        <h3>Saldo Actual en Caja</h3>
+        <div class="resumen-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="resumen-item total-final">
+                <p>Saldo Efectivo Actual</p>
+                <span id="rep-saldo-efectivo" class="monto-final">$0.00</span>
+            </div>
+            <div class="resumen-item total-final">
+                <p>Saldo Tarjeta Actual</p>
+                <span id="rep-saldo-tarjeta" class="monto-final">$0.00</span>
+            </div>
+        </div>
+    </div>
+</div>
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repoCaja.js') }}"></script>
+{% endblock %}

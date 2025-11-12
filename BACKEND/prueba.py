@@ -1,40 +1,42 @@
 import pymysql
+from datetime import datetime
+import pytz
 
-# Establecemos la conexión con la base de datos
-conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    password='Bakedata',
-    db='mydb'
-)
+# Configuración de conexión
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'Bakedata',
+    'db': 'mydb'
+}
 
-# Creamos un cursor
-cur = conn.cursor()
-
-# Realizamos una consulta
-cur.execute("SELECT * FROM mydb.usuarios")
-
-# Obtenemos los resultados de la consulta
-results = cur.fetchall()
-
-# Imprimimos los resultados
-for row in results:
-    print(row)
-
+# Fecha actual con hora en 00:00:00
+fecha_actual = datetime.now(pytz.timezone('America/Mexico_City')).strftime('%Y-%m-%d 00:00:00')
 
 try:
-    with conn.cursor() as cursor:
-        # Obtener el siguiente valor de la secuencia
-        cursor.execute("UPDATE user_sequence SET valor = LAST_INSERT_ID(valor + 1)")
-        cursor.execute("SELECT LAST_INSERT_ID()")
-        next_id = cursor.fetchone()[0]
+    connection = pymysql.connect(**db_config)
+    with connection.cursor() as cursor:
+        print(f"🔍 Buscando actividades de limpieza para el día: {fecha_actual}")
 
-        # Insertar un nuevo usuario
-        sql = """
-        INSERT INTO usuarios (usu_id, usu_nombre, usu_apellido, usu_correo, usu_contrasenia, usu_telefono)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(sql, (next_id, 'Grace', 'Reparto', 'gracereparto@example.com', 'reparto', '0000000002'))
-        conn.commit()
+        # Consulta que simula tu backend
+        cursor.execute("""
+            SELECT l.lim_actividad, ld.limdia_act_estado
+            FROM limpieza_dia ld
+            JOIN limpieza l ON ld.limdia_lim_fk = l.lim_id
+            WHERE ld.limdia_limcal_fecha = %s
+        """, (fecha_actual,))
+        
+        resultados = cursor.fetchall()
+
+        if resultados:
+            print("✅ Actividades encontradas para hoy:")
+            for actividad, estado in resultados:
+                print(f" - {actividad} (Estado: {estado})")
+        else:
+            print("⚠️ No se encontraron actividades para hoy.")
+
+except Exception as e:
+    print(f"❌ Error en la consulta: {e}")
+
 finally:
-    conn.close()
+    connection.close()

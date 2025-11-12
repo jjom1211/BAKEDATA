@@ -1,56 +1,59 @@
 document.getElementById("loginForm").addEventListener("submit", function (event) {
     event.preventDefault();
 
-    let username = document.getElementById("username").value;
+    let correo = document.getElementById("correo").value;
     let password = document.getElementById("contraseña").value;
 
     $.ajax({
         url: "/login",
         method: "POST",
         contentType: "application/json",
-        data: JSON.stringify({ username: username, contraseña: password }),
-        success: function (respuesta) {
+        data: JSON.stringify({ correo: correo, contraseña: password }),
+        success: function(respuesta) {
             if (respuesta.error) {
                 document.getElementById("error-message").innerText = respuesta.error;
             } else {
                 alert(respuesta.message);
-                const users = {
-                    "gerente": "gerente.html",
-                    "usuario": "usuario.html",
-                    "venta": "ventas.html",
-                    "almacen": "almacen.html",
-                    "reparto": "reparto.html",
-                    "limpieza": "limpieza.html",
-                    "produccion": "produccion.html"
+
+                // Guardar en sessionStorage
+                sessionStorage.setItem('rol_principal', respuesta.rol_principal);
+                sessionStorage.setItem('roles', JSON.stringify(respuesta.roles));
+
+                // Redirigir según rol principal
+                const rolesMap = {
+                    "G": "/gerente",
+                    "U": "/usuario",
+                    "V": "/ventas",
+                    "A": "/almacen",
+                    "R": "/reparto",
+                    "L": "/limpieza",
+                    "P": "/produccion",
+                    "E": "/encargado",                    
+                    "EV": "/ventas",
+                    "EA": "/almacen",
+                    "ER": "/reparto",
+                    "EL": "/limpieza",
+                    "EP": "/produccion",
                 };
-                if (users[username]) {
-                    window.location.href = users[username];
+                const pagina = rolesMap[respuesta.rol_principal];
+                if (pagina) {
+                    window.location.href = pagina;
+                } else {
+                    alert("Rol no reconocido, contacte al administrador");
                 }
             }
         },
-        error: function () {
-            console.log("Error en la petición AJAX")
+        error: function() {
+            console.log("Error en la petición AJAX");
             alert("Error, usuario no existente o contraseña equivocada");
         }
     });
-    const users = {
-        "admin": "gerente.html",
-        "user": "usuario.html",
-        "sale": "ventas.html",
-        "alm": "almacen.html",
-        "rep": "reparto.html",
-        "lim": "limpieza.html",
-        "prod": "produccion.html"
-    };
-
-    if (users[username]) {
-        window.location.href = users[username];
-    } else {
-        document.getElementById("error-message").innerText = "Usuario o contraseña incorrectos.";
-    }
 });
-
-function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    input.type = input.type === "password" ? "text" : "password";
+//Funcion para observar la contraseña 
+function togglePassword(inputId) { 
+    const input = document.getElementById(inputId); 
+    input.type = input.type === "password" ? "text" : "password"; 
 }
+
+
+

@@ -12,9 +12,8 @@ body {
     font-family: Arial, sans-serif;
 }
 
-
 .login-container {
-    background: rgba(255, 255, 255, 0.7); /* Fondo blanco semitransparente */
+    background: rgba(255, 255, 255, 0.7);
     padding: 20px;
     border-radius: 10px;
     text-align: center;

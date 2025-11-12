@@ -1,0 +1,21 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Producción{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='produccion.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Producción</h1>
+        <button class="button" data-url="/verMateriaPrima">Ver Materia Prima</button>
+        <button class="button" data-url="/produccionDeHoy">Producción de hoy</button>
+        <button class="button admin-only" data-url="/registrarProduccion">Registrar producción</button>
+        <button class="button admin-only" data-url="/solicitarMateriaPrima">Solicitar Materia Prima</button>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='produccion.js') }}"></script>
+{% endblock %}

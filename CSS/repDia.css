@@ -1,0 +1,253 @@
+/* Fondo general y tipografía */
+body {
+  background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+  background-size: 100%;
+  background-repeat: repeat;
+  background-position: top left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #222;
+}
+
+
+/* Sub-interfaz: fondo, bordes y centrado */
+.subinterface {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  margin: 20px auto;
+}
+
+/* Ajuste al contenido principal para eliminar su propio padding y usar la sub-interfaz */
+.content {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Títulos dentro de la sub-interfaz */
+.subinterface h1 {
+  margin-top: 0;
+  font-size: 2em;
+  text-align: center;
+}
+
+.subinterface h2 {
+  margin: 8px 0 20px;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+/* Lista de actividades: cada fila es un flex con espacio entre texto y check */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pedido  {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(240,240,240,0.8);
+  border-radius: 5px;
+}
+
+/* Texto del pedido sin margen extra */
+.pedido p {
+  margin: 0;
+  font-size: 1em;
+  color: #333;
+}
+
+/* Checkbox en lugar de botón */
+.pedido input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #28a745;
+  cursor: pointer;
+}
+
+/* Agrupa los botones de pie para que estén lado a lado */
+.bottom-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+/* Estilo botones Regresar y Confirmar avance */
+.bottom-buttons button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.bottom-buttons button:hover {
+  background-color: #f0f0f0;
+}
+
+/* --- ESTILOS PARA EL MODAL (AÑADIR A TU repDia.css) --- */
+
+h2 {
+  color: #c45d3c;
+}
+
+.modal-overlay {
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fefefe; /* Fondo blanco-grisáceo */
+    color: #333;
+    margin: 10% auto;
+    padding: 20px 30px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.modal-close:hover {
+    color: black;
+}
+
+/* --- ESTILOS PARA EL CUERPO DEL MODAL (ADAPTADOS) --- */
+#modal-body p {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee; /* Borde inferior para simular una lista */
+    margin: 0;
+}
+#modal-body p:last-of-type {
+    border-bottom: none; /* Elimina el borde del último elemento */
+}
+
+/* --- CAMBIO DE COLOR SOLICITADO --- */
+#modal-body strong {
+    color: #c45d3c; /* Color naranja/marrón para resaltar */
+    min-width: 150px;
+    display: inline-block;
+}
+
+#modal-body h4 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+#modal-body ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#modal-body li {
+    padding: 8px 0;
+}
+
+
+/* --- ESTILOS PARA LA LISTA DE PRODUCTOS/MATERIALES DENTRO DEL MODAL --- */
+
+/* Estilo para el subtítulo, ej: "Contenido del Pedido" */
+.modal-body h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eee; /* Línea separadora */
+    color: #333;
+}
+
+/* Contenedor de la lista de ítems */
+.modal-body #lista-items-modal ul,
+.modal-body #modal-items-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Cada ítem de la lista (ej. "2 x Pastel de Chocolate") */
+.modal-body #lista-items-modal li,
+.modal-body #modal-items-list li {
+    display: flex; /* Alinea el label y el texto */
+    justify-content: space-between; /* Espacio entre ellos */
+    padding: 8px 5px;
+    border-bottom: 1px solid #f0f0f0; /* Línea separadora sutil */
+}
+.modal-body #lista-items-modal li:last-child,
+.modal-body #modal-items-list li:last-child {
+    border-bottom: none;
+}
+
+/* Etiqueta del tipo de ítem (ej. "Producto:", "Materia Prima:") */
+.modal-body #lista-items-modal li strong,
+.modal-body #modal-items-list li strong {
+    color: #555; /* Un gris oscuro para diferenciarlo de las etiquetas principales */
+    font-weight: bold;
+}
+
+
+/* --- AJUSTES AL DISEÑO EXISTENTE --- */
+
+.pedido {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Esto empujará el texto a la izq y las acciones a la der */
+}
+
+.pedido-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre el botón y el checkbox */
+}
+
+.btn-detalles {
+    background-color: #7e084b;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+.btn-detalles:hover {
+    background-color: #411163;
+}

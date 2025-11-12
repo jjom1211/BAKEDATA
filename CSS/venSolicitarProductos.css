@@ -1,0 +1,392 @@
+/* Archivo: CSS/venRegistrarVenta.css */
+
+/* --- ESTRUCTURA GENERAL --- */
+body {
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    /* Fondo general */
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    /* Añade un poco de espacio alrededor */
+    min-height: 100vh;
+    /* Asegura que el body ocupe al menos toda la pantalla */
+    box-sizing: border-box;
+}
+
+.venta-container {
+    max-width: 1200px;
+    margin: 500px auto 20px auto;
+    /* Centra el contenedor principal */
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    /* Fondo blanco para el contenido */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Párrafo de descripción debajo del título */
+.venta-container > p {
+    text-align: center;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 30px; /* Espacio antes de la cuadrícula */
+}
+
+/* --- TÍTULO Y SELECTOR DE CAJA --- */
+h1 {
+    text-align: center;
+    color: #c45d3c;
+    margin-top: 0;
+    /* Quita margen superior por defecto */
+    margin-bottom: 10px;
+    font-size: 2.8em;
+    /* Tamaño adecuado */
+}
+
+
+/* --- CUADRÍCULA DE VENTAS (PRODUCTOS Y CARRITO) --- */
+.venta-grid {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    /* Permite que se apilen en pantallas pequeñas */
+}
+
+.selector-sucursal-origen {
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.selector-sucursal-origen label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+#sucursal-origen {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.productos-columna,
+.carrito-columna {
+    background: #ffffff;
+    /* Fondo sólido para legibilidad */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    /* Usamos flex para controlar mejor el contenido interno */
+    flex-direction: column;
+    /* Apila los elementos internos */
+}
+
+.productos-columna {
+    flex: 2;
+    /* Ocupa más espacio */
+    min-width: 300px;
+    /* Ancho mínimo */
+}
+
+.carrito-columna {
+    flex: 1;
+    /* Ocupa menos espacio */
+    min-width: 250px;
+    /* Ancho mínimo */
+}
+
+.productos-columna h2,
+.carrito-columna h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#buscador-productos {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box;
+    /* Incluye padding en el ancho */
+}
+
+.lista-items {
+    flex-grow: 1;
+    /* Hace que la lista ocupe el espacio disponible */
+    height: 350px;
+    /* Altura ajustada */
+    overflow-y: auto;
+    border: 1px solid #eee;
+    padding: 10px;
+    background-color: #fdfdfd;
+    margin-bottom: 15px;
+    /* Espacio antes del total/botón */
+}
+
+.item-producto,
+.item-carrito {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.item-producto:last-child,
+.item-carrito:last-child {
+    border-bottom: none;
+}
+
+.btn-add,
+.btn-remove {
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.9em;
+}
+
+.btn-add {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-add:disabled {
+    background-color: #aaa;
+}
+
+.btn-remove {
+    background-color: #dc3545;
+    color: white;
+}
+
+.input-cantidad {
+    width: 50px;
+    text-align: center;
+    padding: 5px;
+}
+
+.carrito-total {
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: auto;
+    /* Empuja el total hacia abajo */
+    padding-top: 10px;
+    /* Espacio sobre el total */
+    border-top: 1px solid #eee;
+    /* Línea separadora */
+}
+
+#btn-proceder-pago {
+    width: 100%;
+    padding: 15px;
+    margin-top: 15px;
+    font-size: 1.1em;
+}
+
+/* --- ESTILOS DEL MODAL (Asegúrate de tenerlos) --- */
+/* ... (pega aquí tus estilos de .modal-overlay, .modal-content, etc.) ... */
+/* Estilos del Modal (puedes usar tu modal-styles.css si prefieres) */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    color: #333;
+    /* Añadido color de texto */
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: #000;
+}
+
+#paso1-cobro label,
+#paso2-resumen h4 {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+#paso1-cobro input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.monto-grande {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #28a745;
+}
+
+#paso2-resumen ul {
+    list-style: none;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+#paso2-resumen p {
+    margin: 5px 0;
+}
+
+#btn-confirmar-venta,
+#btn-volver-cobro {
+    margin-top: 15px;
+}
+
+/* Botones genéricos */
+.btn-primary {
+    background-color: #DA6049;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #eb816c;
+}
+
+.btn-primary:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+#botonRegresarFijo {
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    
+    /* Colores y tipografía */
+    background-color: #7e084b; /* Color principal de tu paleta */
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Otros estilos */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
+}
+
+#botonRegresarFijo:hover {
+    background-color: #411163; /* Color secundario de tu paleta */
+    transform: scale(1.05);
+}
+
+.carrito-columna textarea {
+    width: 100%;
+    min-height: 80px;
+    margin-top: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 0.9em;
+    box-sizing: border-box;
+}
+/* --- AÑADE ESTOS ESTILOS A TU ARCHIVO CSS --- */
+
+/* Contenedor del selector de sucursal de origen */
+.selector-sucursal-origen {
+    text-align: center; /* Centra el label y el select */
+    margin-bottom: 20px; /* Espacio antes del textarea de comentarios */
+    background-color: #f8f9fa; /* Fondo gris claro para destacar */
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.selector-sucursal-origen label {
+    font-weight: bold;
+    display: block; /* El label arriba del select */
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+/* Estilo para el <select> */
+#sucursal-origen {
+    width: 100%;
+    max-width: 300px; /* Limita el ancho para que no se vea enorme */
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    display: inline-block;
+}

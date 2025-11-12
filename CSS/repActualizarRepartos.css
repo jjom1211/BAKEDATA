@@ -1,0 +1,94 @@
+/* Fondo general y tipografía */
+body {
+  background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+  background-size: 100%;
+  background-repeat: repeat;
+  background-position: top left;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #222;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    margin: 40px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 900px;
+}
+
+.container h2 {
+    margin-top: 0;
+}
+
+/* Contenedor para el botón de regresar */
+.actions-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+/* Tabla de repartos */
+.table-repartos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-repartos th, .table-repartos td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.table-repartos thead {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table-repartos tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Estilos para los inputs y selects dentro de la tabla */
+.input-fecha, .select-estado {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Estilos para los botones */
+.btn-guardar, .btn-regresar {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn-guardar {
+    background-color: #28a745; /* Verde */
+    color: white;
+}
+.btn-guardar:hover {
+    background-color: #218838;
+}
+
+.btn-regresar {
+    background-color: #6c757d; /* Gris */
+    color: white;
+}
+.btn-regresar:hover {
+    background-color: #5a6268;
+}

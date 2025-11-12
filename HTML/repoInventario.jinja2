@@ -1,0 +1,75 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Reporte de Inventario{% endblock %}
+
+{% block head_links %}
+    {# Enlazamos a un CSS nuevo y limpio #}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repoInventario.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Reporte de Inventario</h1>
+    
+    {# Contenedor de filtros con la clase renombrada y la URL de la API #}
+    <div class="filtro-container" data-action-url="{{ url_for('api_reporte_stock') }}">
+        
+        <div class="filtro-item">
+            <label for="tipo_reporte">Tipo de Inventario:</label>
+            <select id="tipo_reporte">
+                <option value="productos">Productos Terminados</option>
+                <option value="materias_primas">Materias Primas</option>
+            </select>
+        </div>
+
+        <div class="filtro-item">
+            <label for="sucursal_selector">Sucursal:</label>
+            <select id="sucursal_selector">
+                {% for suc in sucursales %}
+                    <option value="{{ suc.suc_id }}" {% if suc.suc_id == sucursal_actual_id %}selected{% endif %}>
+                        {{ suc.suc_nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="filtro-item">
+            {# Botón de generar reporte #}
+            <button id="btn-generar-reporte" class="btn-primary">Generar Reporte</button>
+        </div>
+    </div>
+
+    <p id="reporte-mensaje"></p>
+
+    <div id="resultado-reporte" style="display: none;">
+        
+        <div class="resumen-grid">
+            <div class="resumen-item">
+                <p>Valor Total del Inventario</p>
+                <span id="reporte-valor-total">$0.00</span>
+            </div>
+        </div>
+
+        <h3>Detalle del Inventario</h3>
+        <table id="tabla-inventario">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Stock Actual</th>
+                    <th>Unidad</th>
+                    <th>Costo Unitario</th>
+                    <th>Valor Total</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-inventario-body">
+                </tbody>
+        </table>
+    </div>
+</div>
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repoInventario.js') }}"></script>
+{% endblock %}
