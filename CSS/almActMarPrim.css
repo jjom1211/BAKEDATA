@@ -1,0 +1,250 @@
+/* ============================== */
+/* ESTILOS PARA ALMACEN.CSS       */
+/* ============================== */
+
+body {
+    background-image: url("https://i.imgur.com/mGwWm4L.jpg");
+    background-size: 40%;
+    background-color: #f4f7f6;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Barra Superior (Botón Volver) --- */
+.header-bar {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+}
+
+.button-volver {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.button-volver:hover {
+    background-color: #5a6268;
+}
+
+/* --- Contenedor Principal --- */
+.container {
+    width: 95%;
+    max-width: 1400px;
+    margin-top: 20px !important;
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1 {
+    color: #DA6049;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* --- Estilos de la Tabla --- */
+.table-wrapper {
+    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table-edicion {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table-edicion th,
+.table-edicion td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.table-edicion th {
+    background-color: #DA6049;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.table-edicion th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.table-edicion th:last-child {
+    border-top-right-radius: 8px;
+    border-right: none;
+}
+
+.table-edicion tbody tr:nth-of-type(even) {
+    background-color: #f9f9f9;
+}
+
+.table-edicion tbody tr:hover {
+    background-color: #fceae5;
+}
+
+.table-edicion td {
+    border-left: none;
+    border-right: none;
+}
+
+.table-edicion tr td:last-child {
+    border-right: none;
+}
+
+.table-edicion tr:last-child td {
+    border-bottom: none;
+}
+
+.table-edicion tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.table-edicion tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+/* --- ✅ CAMBIO: Anchos de columna ajustados --- */
+
+/* Celdas con datos fijos */
+.cell-id {
+    font-weight: bold;
+    text-align: center;
+    width: 5%;
+}
+
+.cell-nombre {
+    font-weight: 500;
+    width: 12%;
+}
+
+.cell-accion {
+    text-align: center;
+    width: 10%;
+}
+
+.cell-desc {
+    width: 30%;
+    /* Más espacio para descripción */
+}
+
+.cell-unidad {
+    width: 15%;
+}
+
+/* --- ✅ NUEVO: Estilos para columnas de precio --- */
+.cell-precio-actual {
+    width: 10%;
+    text-align: right;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    color: #333;
+}
+
+.cell-precio-nuevo {
+    width: 10%;
+}
+
+/* ------------------------------------------ */
+
+
+/* --- Estilos de Inputs y Selects --- */
+.input-editable,
+.select-editable {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-editable:focus,
+.select-editable:focus {
+    border-color: #DA6049;
+    box-shadow: 0 0 5px rgba(218, 96, 73, 0.3);
+    outline: none;
+}
+
+.input-desc {
+    width: 100%;
+}
+
+.select-unidad {
+    width: 100%;
+    min-width: 150px;
+}
+
+/* ✅ CAMBIO: Clase renombrada y estilo */
+.input-nuevo-precio {
+    width: 100%;
+    min-width: 100px;
+    text-align: right;
+    /* Alinear números a la derecha */
+}
+
+/* --- Estilos del Botón Guardar --- */
+.btn-guardar {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-guardar:hover {
+    background-color: #0056b3;
+    transform: scale(1.02);
+}
+
+.btn-guardar:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- Responsividad --- */
+@media (max-width: 768px) {
+    .container {
+        width: 98%;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .table-edicion th,
+    .table-edicion td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .input-editable,
+    .select-editable {
+        padding: 8px;
+        font-size: 14px;
+    }
+}

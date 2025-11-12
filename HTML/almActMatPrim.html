@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Materias Primas</title>
+    <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
+        <link rel="stylesheet" href="../CSS/almacen.css">
+    <link rel="stylesheet" href="../CSS/almActMarPrim.css">
+</head>
+
+<body>
+
+    <div class="header-bar">
+        <button class="button-volver" onclick="window.location.href='/almacen.html'">
+            &#8592; Volver a Almacén
+        </button>
+    </div>
+
+    <div class="container">
+        <h1>Actualizar Materias Primas</h1>
+
+        <div class="table-wrapper">
+            <table class="table-edicion">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Unidad de Medida</th>
+                        <th>Precio Actual</th>
+                        <th>Nuevo Precio</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for materia in materias %}
+                    <tr data-id="{{ materia.id }}">
+                        <td class="cell-id">{{ materia.id }}</td>
+                        <td class="cell-nombre">{{ materia.nombre }}</td>
+
+                        <!-- Descripción -->
+                        <td class="cell-desc">
+                            <input type="text" class="input-editable input-desc"
+                                value="{{ materia.descripcion | default('', true) }}">
+                        </td>
+
+                        <!-- Unidad de Medida -->
+                        <td class="cell-unidad">
+                            <select class="select-editable select-unidad">
+                                {% for val, txt in unidades %}
+                                <option value="{{ val }}" {% if val==materia.unidad %}selected{% endif %}>
+                                    {{ txt }} ({{ val }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+
+                        <!-- ✅ VERIFICACIÓN: Usamos materia.costo -->
+                        <td class="cell-precio-actual">
+                            $ {{ "%.2f"|format(materia.costo) }}
+                        </td>
+
+                        <!-- ✅ VERIFICACIÓN: Usamos materia.costo -->
+                        <td class="cell-precio-nuevo">
+                            <input type="number" class="input-editable input-nuevo-precio">
+                        </td>
+
+                        <!-- Botón de Guardar -->
+                        <td class="cell-accion">
+                            <button class="btn-guardar" onclick="guardarCambiosMateria(this)">Guardar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="../JS/alm.js"></script>
+</body>
+
+</html>

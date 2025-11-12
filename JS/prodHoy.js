@@ -1,58 +1,127 @@
-// Array para almacenar la producción del día
-// Se intenta cargar desde localStorage, si no existe se inicializa como un array vacío
-let produccionDelDia = JSON.parse(localStorage.getItem('produccionDelDia')) || [];
+let produccionDelDia = [];
 
 /**
- * Función para mostrar la producción de hoy en la tabla HTML
- * - Crea filas dinámicamente para cada producto registrado
- * - Incluye nombre, cantidad y un checkbox para marcar si ya fue realizado
+ * Función principal: Obtiene los datos de la API de Flask y los muestra en la tabla.
+ */
+function obtenerYMostrarProduccion() {
+    // 1. Obtener los datos del servidor (API de Flask)
+    fetch('/api/obtener_produccion_hoy') 
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.message || 'Error desconocido del servidor.'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            produccionDelDia = data; 
+            mostrarProduccionHoy(); 
+        })
+        .catch(error => {
+            console.error('Error al cargar la producción:', error);
+            document.querySelector('#tablaProduccion tbody').innerHTML = 
+                `<tr><td colspan="3">❌ Error al cargar la producción: ${error.message}</td></tr>`;
+        });
+}
+
+/**
+ * Función para confirmar los productos seleccionados como 'C' (Completados) en la BD.
+ */
+async function confirmarProduccion() {
+    // 1. Obtener los nombres de los productos cuyo estado local es 'C' y que necesitan confirmación.
+    const productos_a_confirmar = [];
+    
+    // Iteramos sobre el array local.
+    produccionDelDia.forEach(item => {
+        // 🔑 CORRECCIÓN CLAVE: Buscamos productos que marcamos como 'C' en la UI 
+        // pero que el estado en la DB (el original) era 'P'.
+        // No necesitamos la bandera uiChecked temporal, usamos el estado de la variable.
+        if (item.pro_dia_estado === 'C' && item.estadoOriginalDB === 'P') {
+            productos_a_confirmar.push(item.pro_dia_nombre);
+        }
+    });
+
+    if (productos_a_confirmar.length === 0) {
+        alert("Selecciona al menos un producto pendiente para confirmar.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/confirmar_produccion', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productos: productos_a_confirmar })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            // 2. Mensaje de éxito con cantidad confirmada
+            alert(`✅ Se confirmaron ${data.rows_affected || 0} productos como Completados.`);
+            
+            // 3. Recargar la tabla para ver los cambios bloqueados
+            obtenerYMostrarProduccion(); 
+        } else {
+            alert('❌ Error al confirmar: ' + (data.message || 'Error desconocido.'));
+        }
+
+    } catch (err) {
+        console.error("Error de conexión al confirmar:", err);
+        alert("Ocurrió un error al intentar confirmar la producción.");
+    }
+}
+
+
+/**
+ * Función para mostrar la producción de hoy en la tabla HTML.
  */
 function mostrarProduccionHoy() {
-    // Selecciona el <tbody> de la tabla donde se insertarán los datos
     const tablaBody = document.querySelector('#tablaProduccion tbody');
-    tablaBody.innerHTML = ''; // Limpia la tabla antes de volver a llenarla
+    tablaBody.innerHTML = ''; 
 
-    // Recorre el array de producción del día
+    if (produccionDelDia.length === 0) {
+        tablaBody.innerHTML = '<tr><td colspan="3">No hay producción registrada para hoy.</td></tr>';
+        return;
+    }
+
     produccionDelDia.forEach((item, index) => {
-        // Crea una nueva fila
         const fila = document.createElement('tr');
-
-        // ----- Columna: Nombre del producto -----
+        
+        // 🔑 CLAVE: Almacenamos el estado original de la DB (P o C)
+        item.estadoOriginalDB = item.pro_dia_estado; 
+        
+        // Columna Nombre y Cantidad (sin cambios)
         const celdaNombre = document.createElement('td');
-        celdaNombre.textContent = item.producto; // Asigna el nombre del producto
+        celdaNombre.textContent = item.pro_dia_nombre;
         fila.appendChild(celdaNombre);
 
-        // ----- Columna: Cantidad producida -----
         const celdaCantidad = document.createElement('td');
-        celdaCantidad.textContent = item.cantidad; // Asigna la cantidad
+        celdaCantidad.textContent = item.pro_dia_cantidad;
         fila.appendChild(celdaCantidad);
 
-        // ----- Columna: Checkbox de "Realizado" -----
+        // Columna Checkbox
         const celdaRealizado = document.createElement('td');
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        // Marca el checkbox si el producto ya estaba marcado como realizado
-        checkbox.checked = item.realizado || false;
+        
+        const estaCompletado = item.pro_dia_estado === 'C';
+        
+        checkbox.checked = estaCompletado;
+        checkbox.disabled = estaCompletado; // BLOQUEAR COMPLETADOS
 
-        // Evento: cuando se cambia el estado del checkbox
-        checkbox.addEventListener('change', () => {
-            // Actualiza el estado de "realizado" en el array
-            produccionDelDia[index].realizado = checkbox.checked;
-            // Guarda los cambios en localStorage para persistencia
-            localStorage.setItem('produccionDelDia', JSON.stringify(produccionDelDia));
-        });
+        // Evento: cuando se cambia el estado del checkbox (solo si está pendiente)
+        if (!estaCompletado) {
+             checkbox.addEventListener('change', (e) => {
+                 // 🔑 CORRECCIÓN CRÍTICA: Actualiza DIRECTAMENTE el estado en el array local.
+                 // Si está marcado, cambia a 'C'. Si se desmarca, cambia a 'P'.
+                 item.pro_dia_estado = e.target.checked ? 'C' : 'P';
+             });
+        }
 
-        // Agrega el checkbox a su celda y luego a la fila
         celdaRealizado.appendChild(checkbox);
         fila.appendChild(celdaRealizado);
-
-        // Finalmente agrega la fila completa al cuerpo de la tabla
         tablaBody.appendChild(fila);
     });
 }
 
-// Ejecutar la función automáticamente al cargar la página de "produccion-hoy.html"
-// Esto asegura que la tabla muestre los datos almacenados sin necesidad de interacción del usuario
-if (window.location.href.includes('produccion-hoy.html')) {
-    mostrarProduccionHoy();
-}
+// Ejecutar la función automáticamente al cargar la página
+obtenerYMostrarProduccion();

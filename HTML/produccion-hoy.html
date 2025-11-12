@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <!-- Definición del documento como HTML5 -->
     <meta charset="UTF-8">
@@ -14,6 +15,7 @@
     <!-- Hoja de estilos específica para esta página -->
     <link rel="stylesheet" href="../CSS/prodHoy.css">
 </head>
+
 <body>
     <!-- Contenedor principal -->
     <div class="container">
@@ -25,9 +27,9 @@
             <thead>
                 <!-- Encabezados de las columnas -->
                 <tr>
-                    <th>Nombre</th>      <!-- Nombre del producto -->
-                    <th>Cantidad</th>    <!-- Cantidad producida -->
-                    <th>Realizado</th>   <!-- Estado (si ya se realizó o no) -->
+                    <th>Nombre</th> <!-- Nombre del producto -->
+                    <th>Cantidad</th> <!-- Cantidad producida -->
+                    <th>Realizado</th> <!-- Estado (si ya se realizó o no) -->
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +37,9 @@
                      con JavaScript (desde prodHoy.js) -->
             </tbody>
         </table>
+        <button class="button" onclick="confirmarProduccion()" id="btnConfirmar">
+            Confirmar Productos Realizados
+        </button>
 
         <!-- Botón para regresar a la página de Producción principal -->
         <button class="button volver" onclick="window.location.href='produccion.html'">Volver</button>
@@ -43,4 +48,5 @@
     <!-- Archivo JavaScript que gestionará la lógica para llenar la tabla dinámicamente -->
     <script src="../JS/prodHoy.js"></script>
 </body>
+
 </html>
