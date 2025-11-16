@@ -16,7 +16,7 @@ app.secret_key = 'esta-es-una-llave-muy-secreta-y-debes-cambiarla'
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'bakedata',
+    'password': 'Bakedata',
     'db': 'mydb'
 }
 # Rutas para servir archivos estáticos
