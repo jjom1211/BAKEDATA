@@ -1,0 +1,38 @@
+{% extends "base.jinja2" %}
+
+{# Esto define el título de la pestaña del navegador #}
+{% block title %}Producción de Hoy{% endblock %}
+
+{# Aquí se cargan los CSS específicos de esta página #}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='proProduccionDelDia.css') }}">
+    {% endblock %}
+
+{# Este es el contenido principal y único de esta página #}
+{% block content %}
+<div class="container">
+    <h1>Producción de Hoy</h1>
+
+    <table id="tablaProduccion">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Realizado</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+    
+    <button class="button" onclick="confirmarProduccion()" id="btnConfirmar">
+        Confirmar Productos Realizados
+    </button>
+    <button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+</div>
+{% endblock %}
+
+{# Aquí se cargan los JS específicos de esta página #}
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='proProduccionDelDia.js') }}"></script>
+{% endblock %}

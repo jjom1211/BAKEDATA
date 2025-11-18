@@ -84,11 +84,41 @@ input {
     background-color: #eb816c;
 }
 
+/* Añade esto a tu archivo login.css */
 .error-message {
-    color: red;
-    margin-top: 10px;
+    color: #721c24; /* Color rojo oscuro */
+    background-color: #f8d7da; /* Fondo rosa pálido */
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    /* Oculto por defecto si está vacío */
+    display: block; 
 }
 
+/* Oculta el contenedor de error si está vacío */
+.error-message:empty {
+    display: none;
+}
+/* Añade esto a tu archivo login.css */
+
+.success-message {
+    color: #155724; /* Verde oscuro */
+    background-color: #d4edda; /* Fondo verde pálido */
+    border: 1px solid #c3e6cb;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Oculta el div si está vacío */
+.success-message:empty {
+    display: none;
+}
 .register-text {
     color: #000000;
     font-weight: bold;

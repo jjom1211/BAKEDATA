@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, render_template, send_from_directory, session, redirect, url_for,flash
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
 import pymysql
 from datetime import date, datetime
 import pytz
@@ -31,8 +32,18 @@ def serve_js(filename):
 # Ruta para mostrar el formulario de inicio de sesión
 @app.route('/')
 def login():
-    return render_template('login.html')
-    # Conectar a la base de datos
+    return render_template('login.jinja2')
+
+
+@app.route('/gerente')
+def gerente():
+    return render_template('gerente.jinja2')
+
+@app.route('/usuario')
+def usuario():
+    return render_template('usuario.jinja2')
+
+
 @app.route('/login', methods=['POST'])
 def handle_login():
     data = request.json
@@ -41,11 +52,16 @@ def handle_login():
     conn = pymysql.connect(**db_config)
     try:
         with conn.cursor(pymysql.cursors.DictCursor) as cursor:
-            sql = "SELECT emp_id, emp_nombre, emp_rol_principal, emp_sucursal FROM empleados WHERE emp_correo = %s AND emp_contrasenia = %s"
-            cursor.execute(sql, (correo, password))
+            # 1. Buscamos al empleado SOLO por su correo
+            sql = "SELECT emp_id, emp_nombre, emp_rol_principal, emp_sucursal, emp_contrasenia FROM empleados WHERE emp_correo = %s"
+            cursor.execute(sql, (correo,))
             empleado = cursor.fetchone()
             if not empleado:
-                return jsonify({'error': 'Usuario o contraseña no válidos'}), 401
+                return jsonify({'error': 'Usuario no encontrado'}), 401
+            # 2. Verificamos si el empleado existe Y si la contraseña hasheada coincide
+            if not check_password_hash(empleado['emp_contrasenia'], password):
+                # Si no existe o la contraseña no coincide, es un error
+                return jsonify({'error': 'Contraseña Incorrecta'}), 401
             # --- INICIO DE LA MODIFICACIÓN ---
             # Limpiamos cualquier sesión anterior por seguridad
             session.clear()
@@ -55,19 +71,20 @@ def handle_login():
             session['sucursal'] = empleado['emp_sucursal'] # Muy útil para tus filtros
             emp_id = empleado['emp_id']
             rol_principal = empleado['emp_rol_principal']
-            # Buscar roles secundarios en tabla roles
-            cursor.execute("SELECT rolemp FROM roles_empleados WHERE rolemp_emp_fk = %s", (emp_id,))
-            rol_registro = cursor.fetchone()
-            roles_extra = []
-            if rol_registro and rol_registro['rolemp']:
-                try:
-                    roles_extra = json.loads(rol_registro['rolemp'])
-                except:
-                    roles_extra = []
-            # Si no hay roles extra, usar solo el principal
-            roles_finales = roles_extra if roles_extra else [rol_principal]
-            # Guardamos también los roles en la sesión
-            session['roles'] = roles_finales
+            # Buscamos roles adicionales en la tabla empleados_roles
+            # 1. Usamos un 'set' para guardar el rol principal (evita duplicados)
+            roles_finales = {rol_principal}
+            # 2. Buscamos todos los roles adicionales en la tabla 'empleados_roles'
+            cursor.execute("SELECT emprol_rol_fk FROM empleados_roles WHERE emprol_emp_fk = %s", (emp_id,))
+            roles_adicionales = cursor.fetchall() # Esto devuelve una lista de diccionarios
+            # 3. Añadimos los roles adicionales al set
+            if roles_adicionales:
+                for rol in roles_adicionales:
+                    roles_finales.add(rol['emprol_rol_fk'])
+            # 4. Convertimos el set a una lista para guardarla en la sesión
+            lista_roles_finales = list(roles_finales)
+            # 5. Guardamos la lista COMPLETA de roles en la sesión
+            session['roles'] = lista_roles_finales
             # Saludo según hora
             tz = pytz.timezone('America/Mexico_City')
             hora_actual = datetime.now(tz).hour
@@ -80,7 +97,7 @@ def handle_login():
             return jsonify({
                 'message': f'{saludo} , ¡Bienvenido!',
                 'rol_principal': rol_principal,
-                'roles': roles_finales
+                'roles': lista_roles_finales
             }), 200
     finally:
         conn.close()
@@ -382,18 +399,459 @@ def actualizar_tareas():
 def produccion():
     return render_template('produccion.jinja2')
 
+# ==============================================================================
+# 3. FUNCIONES DE LÓGICA DE NEGOCIO (BD Utilities)
+#    Funciones que contienen lógica de BD pura, no son rutas de Flask.
+# ==============================================================================
 
-@app.route('/gerente')
-def gerente():
-    return render_template('gerente.jinja2')
+def get_materias_primas():
+    """Obtiene una lista de todas las materias primas de la base de datos."""
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            # Selecciona campos clave
+            cursor.execute("SELECT matprim_id, matprim_nombre, matprim_unimed, matprim_descr FROM materias_primas")
+            rows = cursor.fetchall()
+            materias = []
+            for row in rows:
+                materias.append({
+                    'id': row[0],
+                    'nombre': row[1],
+                    'unidad': row[2],
+                    'descripcion': row[3]
+                })
+            return materias
+    finally:
+        conn.close()
 
-@app.route('/usuario')
-def usuario():
-    return render_template('usuario.jinja2')
+def buscar_materias_logic(query):
+    """Contiene la lógica de la BD para buscar materias primas por nombre."""
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            sql = """
+            SELECT matprim_id, matprim_nombre, matprim_unimed, matprim_descr 
+            FROM materias_primas 
+            WHERE matprim_nombre LIKE %s
+            """
+            like_query = f"%{query}%"
+            cursor.execute(sql, (like_query,))
+            rows = cursor.fetchall()
+            return [
+                {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'unidad': row[2],
+                    'descripcion': row[3]
+                } for row in rows
+            ]
+    finally:
+        conn.close()
+
+
+
+
+
+@app.route("/verMateriaPrima")
+def materias_primas():
+    """Página que lista todas las materias primas."""
+    materias = get_materias_primas()
+    return render_template('proVerMateriaPrima.jinja2', materias=materias)
+
+@app.route('/solicitarMateriaPrima')
+def solicitarMateriaPrima():
+    """Página para solicitar materia prima."""
+    if 'sucursal' not in session:
+        return redirect(url_for('login'))
+        
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            
+            # 1. Obtenemos la lista de proveedores
+            cursor.execute("SELECT prov_id, prov_nombre_empresa FROM proveedores WHERE prov_estado = 'A'")
+            proveedores = cursor.fetchall()
+            
+            # 2. Obtenemos la lista de sucursales (para traslados)
+            # Excluimos la sucursal actual, no puedes pedirte a ti mismo
+            cursor.execute("SELECT suc_id, suc_nombre FROM sucursales WHERE suc_id != %s", (session['sucursal'],))
+            sucursales = cursor.fetchall()
+            
+        return render_template('proSolicitarMateriaPrima.jinja2', 
+                            proveedores=proveedores,
+                            sucursales=sucursales)
+    except Exception as e:
+        print(f"Error en solicitarMateriaPrima: {e}")
+        return "Error al cargar la página", 500
+    finally:
+        if connection:
+            connection.close()
+
+@app.route('/produccionDeHoy')
+def produccionHoy():
+    """Página que muestra la producción del día."""
+    return render_template('proProduccionDelDia.jinja2')
+@app.route('/api/inventario/<int:sucursal_id>')
+def obtener_inventario_materias_primas(sucursal_id):
+    """Obtiene el inventario de materias primas para una sucursal específica (API Restful)."""
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT invmatprim_matprim_fk AS id, invmatprim_matprim_nombre AS nombre, invmatprim_unimed AS unidad, invmatprim_stock AS stock
+                FROM inventario_materias_primas
+                WHERE invmatprim_suc_fk = %s
+            """, (sucursal_id,))
+            rows = cursor.fetchall()
+            datos = [
+                {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'unidad': row[2],
+                    'stock': float(row[3])
+                }
+                for row in rows
+            ]
+            return jsonify(datos)
+    finally:
+
+        conn.close()
+@app.route("/registrarProduccion", methods=["GET", "POST"])
+def registrar_produccion():
+    """
+    Ruta para servir la página HTML (GET) o registrar producción simple (POST).
+    NOTA: La lógica POST de esta ruta es una implementación API simple.
+    """
+    if request.method == "GET":
+        return render_template("proRegistrarProduccion.jinja2")
+    elif request.method == "POST":
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No se recibieron datos"}), 400
+        producto_id = data.get("producto_id")
+        cantidad = data.get("cantidad")
+        if not producto_id or not cantidad:
+            return jsonify({"error": "Faltan datos"}), 400
+
+        # Aquí se debería guardar en la base de datos o llamar a una función de lógica
+        # (La implementación se deja como un mensaje de confirmación simple, como en el original)
+        return jsonify({"message": f"Producto {producto_id} registrado con cantidad {cantidad}"})
+
+
+# ==============================================================================
+# 5. RUTAS DE API: MATERIAS PRIMAS, PRODUCTOS E INVENTARIO
+#    Endpoints que retornan datos en formato JSON.
+# ==============================================================================
+
+@app.route('/buscar_materias')
+def buscar_materias():
+    """Endpoint para buscar materias por nombre."""
+    query = request.args.get('q', '').strip()
+    if not query:
+        return jsonify([])
+
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            sql = """
+                SELECT matprim_id, matprim_nombre, matprim_unimed, matprim_descr
+                FROM materias_primas
+                WHERE matprim_nombre LIKE %s
+            """
+            like_query = f"%{query}%"
+            cursor.execute(sql, (like_query,))
+            rows = cursor.fetchall()
+
+            productos = [
+                {
+                    "id": row[0],
+                    "nombre": row[1],
+                    "unidad": row[2],
+                    "descripcion": row[3]
+                }
+                for row in rows
+            ]
+        return jsonify(productos)
+    finally:
+        conn.close()
+
+@app.route('/get_materias_por_sucursal')
+def get_materias_por_sucursal():
+    """Obtiene el inventario de materias primas para una sucursal específica (Legacy/Query String)."""
+    sucursal_id = request.args.get('sucursal')
+    if not sucursal_id:
+        return jsonify([])
+
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    invmatprim_matprim_fk AS id,
+                    invmatprim_matprim_nombre AS nombre,
+                    invmatprim_unimed AS unidad,
+                    invmatprim_stock AS stock
+                FROM inventario_materias_primas
+                WHERE invmatprim_suc_fk = %s
+            """, (sucursal_id,))
+            rows = cursor.fetchall()
+
+        materias = [
+            {'id': row[0], 'nombre': row[1], 'unidad': row[2], 'stock': float(row[3])}
+            for row in rows
+        ]
+        return jsonify(materias)
+    finally:
+        conn.close()
+
+@app.route('/buscar_productos')
+def buscar_productos():
+    """Endpoint para buscar productos por nombre."""
+    query = request.args.get('q', '').strip()
+    if not query:
+        return jsonify([])
+
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            sql = """
+                SELECT pro_id, pro_nombre, pro_unimed, pro_descr
+                FROM productos
+                WHERE pro_nombre LIKE %s
+            """
+            like_query = f"%{query}%"
+            cursor.execute(sql, (like_query,))
+            rows = cursor.fetchall()
+
+            productos = [
+                {
+                    "id": row[0],
+                    "nombre": row[1],
+                    "unidad": row[2],
+                    "descripcion": row[3]
+                }
+                for row in rows
+            ]
+        return jsonify(productos)
+    finally:
+        conn.close()
+
+
+# ==============================================================================
+# 6. RUTAS DE API: PRODUCCIÓN DEL DÍA
+#    Endpoints específicos para la gestión de producción.
+# ==============================================================================
+
+@app.route('/api/registrar_produccion', methods=['POST'])
+def api_registrar_produccion():
+    """Registra una lista de productos producidos en la tabla produccion_del_dia."""
+    data = request.get_json()
+    if not data or not isinstance(data, list):
+        return jsonify({"success": False, "message": "Datos no válidos. Se espera una lista de productos."}), 400
+
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            # SQL para insertar en mydb.produccion_del_dia
+            sql = "INSERT INTO produccion_del_dia (pro_dia_nombre, pro_dia_cantidad, pro_dia_estado) VALUES (%s, %s, %s)"
+            
+            for producto in data:
+                nombre = producto.get('pro_dia_nombre')
+                cantidad = producto.get('pro_dia_cantidad')
+                estado = producto.get('pro_dia_estado', 'P') # Por defecto, 'P' (Pendiente)
+
+                if nombre and cantidad is not None:
+                    # Ejecutar el INSERT por cada producto
+                    cursor.execute(sql, (nombre, cantidad, estado))
+            
+            conn.commit() # Confirmar la transacción
+            return jsonify({"success": True, "message": "Producción registrada exitosamente."})
+            
+    except Exception as e:
+        conn.rollback() # Revertir si hay un error
+        print(f"Error al registrar producción: {e}")
+        return jsonify({"success": False, "message": f"Error interno del servidor: {str(e)}"}), 500
+    finally:
+        conn.close()
+
+@app.route('/api/obtener_produccion_hoy', methods=['GET'])
+def api_obtener_produccion_hoy():
+    """Obtiene todos los registros de la tabla produccion_del_dia."""
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT pro_dia_nombre, pro_dia_cantidad, pro_dia_estado FROM produccion_del_dia"
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            
+            produccion = []
+            for row in rows:
+                produccion.append({
+                    'pro_dia_nombre': row[0],
+                    'pro_dia_cantidad': float(row[1]), # Convertir DECIMAL a float
+                    'pro_dia_estado': row[2]
+                })
+            
+            return jsonify(produccion)
+            
+    except Exception as e:
+        print(f"Error al obtener producción: {e}")
+        return jsonify({"success": False, "message": "Error al consultar la base de datos."}), 500
+    finally:
+        conn.close()
+        
+@app.route('/api/confirmar_produccion', methods=['POST'])
+def api_confirmar_produccion():
+    """
+    Actualiza el estado de los productos de 'P' a 'C' (Completado/Confirmado) 
+    en la tabla `produccion_del_dia`.
+    """
+    data = request.get_json()
+    
+    if not data or 'productos' not in data or not isinstance(data['productos'], list):
+        return jsonify({"success": False, "message": "Datos no válidos. Se espera una lista de productos."}), 400
+
+    productos_a_confirmar = data['productos']
+    
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            # Crear los placeholders de %s necesarios para la cláusula IN
+            placeholders = ', '.join(['%s'] * len(productos_a_confirmar))
+            
+            sql = f"""
+            UPDATE produccion_del_dia 
+            SET pro_dia_estado = 'C' 
+            WHERE pro_dia_nombre IN ({placeholders}) AND pro_dia_estado = 'P'
+            """
+            
+            # Ejecutar la actualización
+            cursor.execute(sql, productos_a_confirmar)
+            
+            rows_affected = cursor.rowcount
+            conn.commit()
+            
+            return jsonify({
+                "success": True, 
+                "message": f"Se confirmaron {rows_affected} productos como Realizados."
+            })
+            
+    except Exception as e:
+        conn.rollback()
+        print(f"Error al confirmar producción: {e}")
+        return jsonify({"success": False, "message": f"Error interno del servidor: {str(e)}"}), 500
+    finally:
+        conn.close()
+
+
+# ==============================================================================
+# 7. Rutas API: Solicitud de Materia Prima
+#    Endpoints para gestionar solicitudes de materia prima.
+# ==============================================================================
+# --- RUTA PARA MOSTRAR LA PÁGINA (MODIFICADA) ---
+
+# --- API PARA PROCESAR LA SOLICITUD (MODIFICADA) ---
+# En tu archivo app.py
+# (Asegúrate de tener import decimal, import json, from datetime import date)
+
+# --- REEMPLAZA TU API ACTUAL CON ESTA ---
+@app.route('/api/solicitar_materia_prima', methods=['POST'])
+def api_solicitar_materia_prima():
+    if 'emp_id' not in session or 'sucursal' not in session:
+        return jsonify({'success': False, 'message': 'Acceso no autorizado'}), 401
+
+    empleado_id = session['emp_id']
+    sucursal_id_destino = session['sucursal'] # El DESTINO siempre es quien pide
+    
+    data = request.json
+    carrito = data.get('carrito')
+    comentarios = data.get('comentarios', '')
+    tipo_origen = data.get('tipo_origen') # 'proveedor' o 'sucursal'
+    origen_id = data.get('origen_id')
+
+    if not carrito:
+        return jsonify({'success': False, 'message': 'No hay materias primas en la solicitud.'}), 400
+    if not tipo_origen or not origen_id:
+        return jsonify({'success': False, 'message': 'No se seleccionó un origen válido.'}), 400
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            connection.begin()
+
+            # --- Lógica de Costos (sin cambios) ---
+            monto_total_solicitud = 0
+            detalles_para_insertar = []
+            ids_materias = [item['id'] for item in carrito]
+            format_strings = ','.join(['%s'] * len(ids_materias))
+            cursor.execute(f"SELECT matprim_id, matprim_costo_unit FROM materias_primas WHERE matprim_id IN ({format_strings})", tuple(ids_materias))
+            costos = {row['matprim_id']: row['matprim_costo_unit'] for row in cursor.fetchall()}
+            
+            # --- CORRECCIÓN DE LÓGICA DE ORIGEN ---
+            proveedor_fk = None
+            sucursal_origen_fk = None # Inicia como None
+            asunto = ""
+
+            if tipo_origen == 'proveedor':
+                proveedor_fk = int(origen_id)
+                sucursal_origen_fk = 1 # <-- ¡CORRECCIÓN! Asignamos ID 1 (Paseos del Bosque) como origen
+                asunto = "Pedido a Proveedor"
+                for item in carrito:
+                     monto_total_solicitud += decimal.Decimal(costos.get(int(item['id']), 0)) * decimal.Decimal(item['cantidad'])
+            
+            elif tipo_origen == 'sucursal':
+                sucursal_origen_fk = int(origen_id) # Asignamos el ID de la otra sucursal
+                asunto = "Solicitud de Traslado"
+                monto_total_solicitud = 0 
+            
+            # --- FIN DE LA CORRECCIÓN ---
+
+            # 3. Insertar el Pedido principal
+            sql_pedido = """
+                INSERT INTO pedidos 
+                (ped_emp_id, ped_sucursal_origen, ped_sucursal_destino, ped_prov_fk, ped_fecha_pedido, ped_monto_total, ped_estado_pedido, ped_asunto, ped_comentarios) 
+                VALUES (%s, %s, %s, %s, %s, %s, 'P', %s, %s)
+            """
+            today = date.today()
+            # Ahora sucursal_origen_fk NUNCA será None, resolviendo el error
+            cursor.execute(sql_pedido, (empleado_id, sucursal_origen_fk, sucursal_id_destino, proveedor_fk, today, monto_total_solicitud, asunto, comentarios))
+            pedido_id = cursor.lastrowid 
+
+            # 4. Insertar detalles (sin cambios)
+            sql_detalle = """
+                INSERT INTO detalle_pedido_materias_primas 
+                (detpedmat_ped_id, detpedmat_matprim_id, detpedmat_cantidad, detpedmat_precio_unitario) 
+                VALUES (%s, %s, %s, %s)
+            """
+            for item in carrito:
+                item_id = int(item['id'])
+                cantidad = decimal.Decimal(item['cantidad'])
+                costo_unitario = decimal.Decimal(costos.get(item_id, 0))
+                detalles_para_insertar.append((pedido_id, item_id, cantidad, costo_unitario))
+            
+            cursor.executemany(sql_detalle, detalles_para_insertar)
+            
+            connection.commit()
+            
+        return jsonify({'success': True, 'message': f'Solicitud #{pedido_id} ({asunto}) registrada exitosamente.'}), 200
+    except Exception as e:
+        if connection: connection.rollback()
+        print(f"Error al finalizar solicitud de materia prima: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
+
+# __________________________________________________________
+# INICIO ENDPOINT ALMACEN
 
 @app.route('/almacen')
 def almacen():
     return render_template('almacen.jinja2')
+
+
 
 
 # __________________________________________________________
@@ -2050,13 +2508,327 @@ def api_reporte_caja_dia():
         if connection:
             connection.close()
 
+#--------------------------------------------------
+# FIN MODULO DE REPORTES
 
-
-
+#--------------------------------------------------------------
+# INICIO MODULO DE ENCARGADO
 
 @app.route('/encargado')
 def encargado():
     return render_template('encargado.jinja2')
+
+@app.route('/crearCuentaEmpleado', methods=['GET', 'POST'])
+def crear_empleado():
+    # 1. VERIFICAR PERMISOS (Esto está bien)
+    if 'roles' not in session or not ('E' in session['roles'] or 'G' in session['roles']):
+        flash('No tienes permiso para acceder a esta página.', 'error')
+        return redirect(url_for('login')) 
+
+    # --- LÓGICA POST (Procesar el formulario) ---
+    if request.method == 'POST':
+        connection = None
+        try:
+            # 2. OBTENER DATOS DEL FORMULARIO
+            nombre = request.form.get('nombre')
+            apellido = request.form.get('apellido')
+            correo = request.form.get('correo')
+            telefono = request.form.get('telefono')
+            sucursal_id_str = request.form.get('sucursal')
+            rol_principal = request.form.get('rol_principal')
+            contraseña = request.form.get('contraseña')
+            confirmacion = request.form.get('confirmacion_de_contraseña')
+            fecha_contratacion = date.today()
+
+            if contraseña != confirmacion:
+                raise Exception("Las contraseñas no coinciden.")
+            
+            sucursal_id = int(sucursal_id_str)
+            
+            # --- INICIO DE TRANSACCIÓN SEGURA ---
+            connection = pymysql.connect(**db_config)
+            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                connection.begin()
+
+                # 3. Validar correo y teléfono
+                cursor.execute("SELECT emp_correo FROM empleados WHERE emp_correo = %s", (correo,))
+                if cursor.fetchone():
+                    raise Exception("El correo electrónico ya está registrado.")
+                
+                cursor.execute("SELECT emp_telefono FROM empleados WHERE emp_telefono = %s", (telefono,))
+                if cursor.fetchone():
+                    raise Exception("El número de teléfono ya está registrado.")
+
+                # 4. Generar ID de empleado
+                cursor.execute("SELECT proximo_id_empleado FROM contadores_sucursal WHERE sucursal_id = %s FOR UPDATE", (sucursal_id,))
+                contador = cursor.fetchone()
+                if not contador:
+                    raise Exception(f"Error de configuración: No se encontró un contador para la sucursal {sucursal_id}.")
+                
+                proximo_sufijo = contador['proximo_id_empleado']
+                base_id = sucursal_id * 100000
+                nuevo_emp_id = base_id + proximo_sufijo
+                
+                cursor.execute("UPDATE contadores_sucursal SET proximo_id_empleado = %s WHERE sucursal_id = %s", (proximo_sufijo + 1, sucursal_id))
+
+                # 5. Hashear contraseña e Insertar
+                hashed_password = generate_password_hash(contraseña)
+                sql = "INSERT INTO empleados (emp_id, emp_nombre, emp_apellido, emp_correo, emp_contrasenia, emp_telefono, emp_rol_principal, emp_sucursal,emp_contrat) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s)"
+                cursor.execute(sql, (nuevo_emp_id, nombre, apellido, correo, hashed_password, telefono, rol_principal, sucursal_id,fecha_contratacion))
+            
+            connection.commit()
+            flash(f'Empleado "{nombre} {apellido}" (ID: {nuevo_emp_id}) creado exitosamente.', 'success')
+            
+        except Exception as e:
+            if connection: connection.rollback()
+            flash(f'Error al crear empleado: {e}', 'error')
+        
+        finally:
+            if connection:
+                connection.close()
+        
+        # Después de un POST (exitoso o fallido), siempre redirigir a la vista GET
+        return redirect(url_for('crear_empleado'))
+
+    # --- LÓGICA GET (Mostrar la página y el formulario) ---
+    # Esto solo se ejecuta si request.method es 'GET'
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("SELECT suc_id, suc_nombre FROM sucursales")
+            sucursales = cursor.fetchall()
+            
+            # --- CORRECCIÓN SQL AQUÍ ---
+            # 'G' debe ir entre comillas para ser un string
+            cursor.execute("SELECT rol_id as id, rol_nombre as nombre FROM roles WHERE rol_id != 'U' AND rol_id != 'G' ORDER BY rol_nombre")
+            roles = cursor.fetchall()
+        
+        return render_template('encCrearCuentaEmpleado.jinja2', sucursales=sucursales, roles=roles)
+    
+    except Exception as e:
+        # Si la carga GET falla, mostramos el error y redirigimos a una página segura (ej. 'encargado')
+        flash(f'Error al cargar la página de creación: {e}', 'error')
+        print(f"Error en GET crear_empleado: {e}")
+        # NO redirigir a sí mismo, ¡redirigir a una página anterior!
+        return redirect(url_for('encargado')) # Reemplaza 'encargado' por tu ruta del menú de encargado
+    finally:
+        if connection:
+            connection.close()
+
+
+
+@app.route('/gestionEmpleados')
+def gestion_empleados_vista():
+    if 'roles' not in session or not ('E' in session['roles'] or 'G' in session['roles']):
+        flash('No tienes permiso para acceder a esta página.', 'error')
+        return redirect(url_for('login'))
+        
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Obtenemos todas las sucursales para el filtro
+            cursor.execute("SELECT suc_id, suc_nombre FROM sucursales")
+            sucursales = cursor.fetchall()
+        
+        # Pasamos la sucursal del empleado para seleccionarla por defecto
+        return render_template('encGestionEmpleados.jinja2', 
+                            sucursales=sucursales, 
+                            sucursal_actual_id=session['sucursal'])
+    except Exception as e:
+        flash(f"Error al cargar la página: {e}", 'error')
+        return redirect(url_for('encargado')) # Redirige al menú de encargado
+    finally:
+        if connection:
+            connection.close()
+
+# En tu archivo app.py
+
+@app.route('/api/empleados_por_sucursal/<int:sucursal_id>')
+def api_empleados_por_sucursal(sucursal_id):
+    if 'roles' not in session or not ('E' in session['roles'] or 'G' in session['roles']):
+        return jsonify({'error': 'Acceso no autorizado'}), 401
+    
+    # Un Gerente puede ver cualquier sucursal, un Encargado solo la suya
+    if 'G' not in session['roles'] and session['sucursal'] != sucursal_id:
+        return jsonify({'error': 'No tienes permiso para ver esta sucursal'}), 403
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # --- CONSULTA MEJORADA ---
+            # Esta consulta obtiene los datos del empleado, su rol principal,
+            # y usa GROUP_CONCAT para juntar todos sus roles adicionales en una sola cadena.
+            query = """
+                SELECT 
+                    e.emp_id, 
+                    e.emp_nombre, 
+                    e.emp_apellido, 
+                    e.emp_activo, 
+                    r_principal.rol_nombre AS rol_principal,
+                    GROUP_CONCAT(r_adicional.rol_nombre SEPARATOR ', ') AS roles_adicionales
+                FROM empleados e
+                LEFT JOIN roles r_principal ON e.emp_rol_principal = r_principal.rol_id
+                LEFT JOIN empleados_roles er ON e.emp_id = er.emprol_emp_fk
+                LEFT JOIN roles r_adicional ON er.emprol_rol_fk = r_adicional.rol_id
+                WHERE e.emp_sucursal = %s
+                GROUP BY e.emp_id, e.emp_nombre, e.emp_apellido, e.emp_activo, r_principal.rol_nombre
+                ORDER BY e.emp_id
+            """
+            cursor.execute(query, (sucursal_id,))
+            empleados = cursor.fetchall()
+            
+            return jsonify(empleados)
+    except Exception as e:
+        print(f"Error en api_empleados_por_sucursal: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if connection:
+            connection.close()
+
+
+
+@app.route('/api/empleado/actualizar_estado', methods=['POST'])
+def api_actualizar_estado_empleado():
+    # 1. Verificar permisos (solo Encargados o Gerentes)
+    if 'roles' not in session or not ('E' in session['roles'] or 'G' in session['roles']):
+        return jsonify({'success': False, 'message': 'Acceso no autorizado'}), 401
+    data = request.json
+    emp_id = data.get('emp_id')
+    nuevo_estado = bool(data.get('nuevo_estado')) # Convierte true/false de JS a 1/0 para SQL
+
+    if not emp_id:
+        return jsonify({'success': False, 'message': 'Falta ID de empleado'}), 400
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor() as cursor:
+            sql = "UPDATE empleados SET emp_activo = %s WHERE emp_id = %s"
+            cursor.execute(sql, (nuevo_estado, emp_id))
+            connection.commit()
+        accion = "activado" if nuevo_estado else "desactivado"
+        return jsonify({'success': True, 'message': f'Empleado {emp_id} ha sido {accion}.'})
+    except Exception as e:
+        if connection: connection.rollback()
+        print(f"Error en api_actualizar_estado_empleado: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+@app.route('/api/empleado/cambiar_password', methods=['POST'])
+def api_cambiar_password():
+    if 'roles' not in session or not ('E' in session['roles'] or 'G' in session['roles']):
+        return jsonify({'success': False, 'message': 'Acceso no autorizado'}), 401
+    data = request.json
+    emp_id = data.get('emp_id')
+    nueva_password = data.get('nueva_password')
+    if not emp_id or not nueva_password:
+        return jsonify({'success': False, 'message': 'Faltan datos (ID o nueva contraseña).'}), 400
+    hashed_password = generate_password_hash(nueva_password)
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor() as cursor:
+            sql = "UPDATE empleados SET emp_contrasenia = %s WHERE emp_id = %s"
+            cursor.execute(sql, (hashed_password, emp_id))
+            connection.commit()
+        return jsonify({'success': True, 'message': f'Contraseña del empleado {emp_id} actualizada.'})
+    except Exception as e:
+        if connection: connection.rollback()
+        print(f"Error en api_cambiar_password: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+# En tu archivo app.py
+
+@app.route('/api/empleado_detalle/<int:emp_id>', methods=['GET'])
+def api_empleado_detalle(emp_id):
+    if 'roles' not in session or not ('E' in session['roles'] or 'G' in session['roles']):
+        return jsonify({'error': 'Acceso no autorizado'}), 401
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            
+            # 1. Obtener la información básica del empleado
+            cursor.execute("SELECT emp_nombre, emp_apellido, emp_correo, emp_telefono, emp_rol_principal FROM empleados WHERE emp_id = %s", (emp_id,))
+            empleado_info = cursor.fetchone()
+            if not empleado_info:
+                return jsonify({'error': 'Empleado no encontrado'}), 404
+
+            # 2. Obtener la lista de TODOS los roles posibles para el formulario
+            cursor.execute("SELECT rol_id, rol_nombre FROM roles WHERE rol_id != 'U'")
+            roles_posibles = cursor.fetchall()
+            
+            # 3. Obtener los roles ADICIONALES que este empleado ya tiene
+            cursor.execute("SELECT emprol_rol_fk FROM empleados_roles WHERE emprol_emp_fk = %s", (emp_id,))
+            roles_actuales = [row['emprol_rol_fk'] for row in cursor.fetchall()]
+
+        return jsonify({
+            'info_basica': empleado_info,
+            'roles_posibles': roles_posibles,
+            'roles_actuales': roles_actuales
+        })
+
+    except Exception as e:
+        print(f"Error en api_empleado_detalle: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if connection: connection.close()
+        
+
+
+# En tu archivo app.py
+
+@app.route('/api/empleado/actualizar', methods=['POST'])
+def api_actualizar_empleado():
+    if 'roles' not in session or not ('E' in session['roles'] or 'G' in session['roles']):
+        return jsonify({'success': False, 'message': 'Acceso no autorizado'}), 401
+    data = request.json
+    emp_id = data.get('emp_id')
+    # Datos básicos
+    nombre = data.get('nombre')
+    apellido = data.get('apellido')
+    correo = data.get('correo')
+    telefono = data.get('telefono')
+    rol_principal = data.get('rol_principal')
+    # Lista de roles adicionales (ej: ['R', 'EV'])
+    roles_adicionales = data.get('roles_adicionales', []) 
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor() as cursor:
+            # --- INICIA TRANSACCIÓN ---
+            connection.begin()
+            # 1. Actualizar la tabla principal 'empleados'
+            sql_update_emp = """
+                UPDATE empleados 
+                SET emp_nombre = %s, emp_apellido = %s, emp_correo = %s, emp_telefono = %s, emp_rol_principal = %s
+                WHERE emp_id = %s
+            """
+            cursor.execute(sql_update_emp, (nombre, apellido, correo, telefono, rol_principal, emp_id))
+            # 2. Borrar TODOS los roles adicionales antiguos de este empleado
+            cursor.execute("DELETE FROM empleados_roles WHERE emprol_emp_fk = %s", (emp_id,))
+            # 3. Insertar los nuevos roles adicionales (si hay)
+            if roles_adicionales:
+                # Preparamos los datos para una inserción múltiple
+                datos_roles = [(emp_id, rol_id) for rol_id in roles_adicionales]
+                sql_insert_roles = "INSERT INTO empleados_roles (emprol_emp_fk, emprol_rol_fk) VALUES (%s, %s)"
+                cursor.executemany(sql_insert_roles, datos_roles)
+            # --- FINALIZA TRANSACCIÓN ---
+            connection.commit()
+        return jsonify({'success': True, 'message': f'Datos del empleado {emp_id} actualizados.'})
+    except Exception as e:
+        if connection: connection.rollback()
+        print(f"Error en api_actualizar_empleado: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

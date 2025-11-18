@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bake Data: Login</title>
     <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
-    <link rel="stylesheet" href="../CSS/login.css">
+    
+    {# Enlace CSS corregido para usar tu endpoint 'serve_css' #}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='login.css') }}">
 </head>
 <body>
     <div class="login-container">
+        {# --- DIV DE ÉXITO AÑADIDO AQUÍ --- #}
+        <div id="success-message" class="success-message"></div>
+        {# --- DIV DE ERROR --- #}
+        <div id="error-message" class="error-message"></div>
         <h1>Iniciar Sesión</h1>
         <form id="loginForm">
             <div class="input-group">
@@ -22,10 +28,14 @@
                     <span class="toggle-password" onclick="togglePassword('contraseña')">👁‍🗨</span>
                 </div>
             </div>
+
             <button type="submit">Iniciar Sesión</button>
         </form>
     </div>
+    
+    {# No es necesario cambiar el enlace de jQuery #}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../JS/login.js"></script>
+    {# Enlace JS corregido para usar tu endpoint 'serve_js' #}
+    <script src="{{ url_for('serve_js', filename='login.js') }}"></script>
 </body>
 </html>

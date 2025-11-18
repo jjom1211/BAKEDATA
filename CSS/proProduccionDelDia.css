@@ -1,0 +1,70 @@
+/* Estilos para la tabla de producción */
+#tablaProduccion {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white; /* Fondo blanco solo para la tabla */
+}
+
+#tablaProduccion th, #tablaProduccion td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#tablaProduccion th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+#tablaProduccion tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#tablaProduccion tr:hover {
+    background-color: #f1f1f1;
+}
+
+
+#botonRegresarFijo {
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    
+    /* Colores y tipografía */
+    background-color: #7e084b; /* Color principal de tu paleta */
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Otros estilos */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
+}
+
+#botonRegresarFijo:hover {
+    background-color: #411163; /* Color secundario de tu paleta */
+    transform: scale(1.05);
+}
+
+
+
+/* Limpiar el float para evitar desbordamientos */
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}

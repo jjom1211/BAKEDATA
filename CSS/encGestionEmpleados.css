@@ -1,0 +1,439 @@
+/* Archivo: CSS/encGestionEmpleados.css */
+.container {
+    max-width: 900px;
+    margin: 80px auto 40px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #c45d3c;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 2.5em;
+}
+
+.filtro-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filtro-item label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #495057;
+}
+
+#sucursal_selector {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    min-width: 250px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    background-color: #411163;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.estado {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.estado-activo {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.estado-inactivo {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.acciones {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-accion {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+
+.btn-editar {
+    background-color: #007bff;
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+.btn-desactivar {
+    background-color: #dc3545;
+}
+
+.btn-desactivar:hover {
+    background-color: #c82333;
+}
+
+#botonRegresarFijo {
+    position: fixed;
+    /* Lo fija en la pantalla */
+    bottom: 30px;
+    /* A 30px del borde inferior */
+    right: 30px;
+    /* A 30px del borde derecho */
+
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+
+    /* Colores y tipografía */
+    background-color: #7e084b;
+    /* Color principal de tu paleta */
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Otros estilos */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
+}
+
+#botonRegresarFijo:hover {
+    background-color: #411163;
+    /* Color secundario de tu paleta */
+    transform: scale(1.05);
+}
+
+/* --- AÑADIR ESTOS ESTILOS a encGestionEmpleados.css --- */
+
+.roles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.rol-principal,
+.rol-adicional {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.rol-principal {
+    background-color: #411163;
+    /* Color de rol principal */
+    color: white;
+}
+
+.rol-adicional {
+    background-color: #6c757d;
+    /* Color de rol secundario */
+    color: white;
+}
+
+/* Estilos para los botones de acción */
+.acciones {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-accion {
+    padding: 8px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    font-size: 0.9em;
+}
+
+.btn-editar {
+    background-color: #007bff;
+}
+
+.btn-editar:hover {
+    background-color: #0056b3;
+}
+
+.btn-password {
+    background-color: #ffc107;
+    color: #333;
+}
+
+/* Amarillo */
+.btn-password:hover {
+    background-color: #e0a800;
+}
+
+.btn-desactivar {
+    background-color: #dc3545;
+}
+
+/* Rojo */
+.btn-desactivar:hover {
+    background-color: #c82333;
+}
+
+.btn-activar {
+    background-color: #28a745;
+}
+
+/* Verde */
+.btn-activar:hover {
+    background-color: #218838;
+}
+
+
+/* --- AÑADE ESTAS REGLAS A TU ARCHIVO encGestionEmpleados.css --- */
+
+/* Contenedor para la tabla con scroll */
+.tabla-scroll-container {
+    width: 100%;
+    /* Altura máxima (ajusta este valor según tu gusto) */
+    max-height: 60vh;
+    /* 60% de la altura de la ventana */
+    /* Crea el scroll vertical cuando el contenido es más alto */
+    overflow-y: auto;
+    /* Estilos para que se vea bien */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste para que el encabezado de la tabla se quede fijo (Sticky Header) */
+#tabla-empleados {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabla-empleados thead th {
+    position: sticky;
+    /* Fija el encabezado */
+    top: 0;
+    /* Lo pega a la parte superior del contenedor .tabla-scroll-container */
+    z-index: 10;
+    /* Mantenemos tus estilos de fondo */
+    background-color: #411163;
+    color: white;
+}
+
+/* --- ESTILOS GENERALES DEL MODAL --- */
+.modal-overlay {
+    display: none;
+    /* Oculto por defecto, JS lo cambia a 'flex' */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    /* Evita que el modal se encoja si el contenido es pequeño */
+    min-width: 300px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+/* --- ESTILOS DEL FORMULARIO DENTRO DEL MODAL --- */
+.modal-content h2 {
+    text-align: center;
+    color: #c45d3c;
+    font-size: 2em;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.modal-content form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: left;
+}
+
+.modal-content form input[type="text"],
+.modal-content form input[type="email"],
+.modal-content form input[type="password"],
+.modal-content form select {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el párrafo en el modal de contraseña */
+.modal-content p {
+    text-align: center;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+.modal-content p strong {
+    color: #c45d3c;
+}
+
+
+/* --- ESTILOS PARA ROLES ADICIONALES (CHECKBOXES) --- */
+.checkbox-group {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+    background: #f9f9f9;
+}
+
+/* Estilo para cada fila de checkbox */
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+/* Hace que el checkbox no ocupe el 100% del ancho */
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin-bottom: 0;
+}
+
+
+/* --- ESTILOS PARA LOS BOTONES DEL MODAL --- */
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #DA6049;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #eb816c;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* --- ESTILOS PARA EL CONTENEDOR DE CONTRASEÑA EN EL MODAL --- */
+
+/* 1. Asegúrate de que el label esté FUERA del password-container en tu HTML. */
+/* Esta regla hace que el div que contiene el input sea 'relativo' */
+.modal-content .password-container {
+    position: relative;
+    width: 100%;
+}
+
+/* 2. Estilo para el input dentro del contenedor */
+.modal-content .password-container input {
+    width: 100%;
+    /* Añadimos padding a la derecha para que el texto no se escriba encima del icono */
+    padding-right: 40px !important; 
+    box-sizing: border-box; /* Asegura que el padding no aumente el ancho */
+}
+
+/* 3. Posiciona el icono del ojo 'absolutamente' DENTRO del contenedor */
+.modal-content .toggle-password {
+    position: absolute;
+    right: 10px; /* 10px desde el borde derecho */
+    top: 50%; /* Lo centra verticalmente */
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+    font-size: 1.2em;
+}

@@ -19,14 +19,10 @@ db_config = {
 def login():
     return render_template('limpieza.jinja2')
 
-    """
-    FUNCIONALIDAD DENTRO DE: LIMPIEZA DEL DIA
-    
-    Muestra las actividades de limpieza programadas para el día actual,
-    incluyendo su estado (pendiente o confirmada).
-    
-    """
-@app.route("/limDia.jinja2")
+@app.route('/limpieza')
+def limpieza():
+    return render_template('limpieza.jinja2')
+@app.route("/limDia")
 def ver_limpieza_dia():
     fecha = datetime.now(pytz.timezone("America/Mexico_City")).strftime('%Y-%m-%d 00:00:00')
     connection = pymysql.connect(**db_config)
@@ -42,7 +38,6 @@ def ver_limpieza_dia():
         actividades = cursor.fetchall() #Captura todos los elementos encontrados dentro de una lista
     connection.close()
     return render_template("limDia.jinja2", actividades=actividades) #Manda las actividades a un render de otro recurso
-
     """
     FUNCIONALIDAD DENTRO DE: LIMPIEZA DEL DIA
     
@@ -90,15 +85,12 @@ def confirmar_actividades():
         return jsonify({"message": "Ocurrió un error al actualizar actividades"}), 500 #Si no se pudo actualizar en BD
     finally:
         connection.close()
-
-
-
     """
     FUNCIONALIDAD DENTRO DE: REGISTRAR LIMPIEZA DEL DIA
     Muestra una lista de todas las actividades de limpieza disponibles 
     para que el encargado seleccione cuáles se programarán.
     """
-@app.route('/limRegistrarLimpieza.jinja2')
+@app.route('/limRegistrarLimpieza')
 def limRegistrarLimpieza():
     try:
         connection = pymysql.connect(**db_config)
@@ -113,8 +105,6 @@ def limRegistrarLimpieza():
     finally:
         connection.close()
     return render_template('limRegistrarLimpieza.jinja2', actividades_limpieza=actividades_limpieza) #Se envia la lista de actividades de la BD junto con el render del recurso
-
-
     """
     FUNCIONALIDAD DENTRO DE: REGISTRAR LIMPIEZA DEL DIA
     Registra las actividades seleccionadas para la fecha actual.
@@ -167,15 +157,12 @@ def registrar_limpieza():
         return jsonify({'error': str(e)}), 500
     finally:
         connection.close()
-
-
-
     """
     FUNCIONALIDAD DENTRO DE: CALENDARIO
     Muestra las fechas disponibles en el calendario de limpieza
     en las que se han registrado actividades.
     """
-@app.route('/limCalendario.jinja2')
+@app.route('/limCalendario')
 def limCalendario():
     try:
         connection = pymysql.connect(**db_config)
@@ -228,7 +215,7 @@ def tareas_por_fecha(fecha):
     dentro de un calendario
     """
     
-@app.route('/limActualizarFechaLimpieza.jinja2')
+@app.route('/limActualizarFechaLimpieza')
 def limActualizarFechaLimpieza():
     try:
         connection = pymysql.connect(**db_config)
@@ -255,7 +242,6 @@ def limActualizarFechaLimpieza():
     finally:
         connection.close()
     return render_template('limActualizarFechaLimpieza.jinja2', dias_limpieza=dias_limpieza,actividades_limpieza = actividades_limpieza)
-
 
     """
     FUNCIONALIDAD DENTRO DE: ACTUALIZAR FECHA DE LIMPIEZA

@@ -47,8 +47,8 @@ const menuData = [
         { name: "Actualizar fecha de limpieza", url: "/limActualizarFechaLimpieza", roles: ["EL", "E", "G"] },
     ]},
     { name: "Encargado", url: "/encargado", roles: ["E", "G"], icon: "https://i.imgur.com/AU09egm.png", submenu: [
-        { name: "Gestión de permisos", url: "/gestionPermisos", roles: ["E", "G"] },
         { name: "Crear Cuenta de empleado", url: "/crearCuentaEmpleado", roles: ["E", "G"] },
+        { name: "Gestión de empleados", url: "/gestionEmpleados", roles: ["E", "G"] },
     ]},
     { name: "Reportes", url: "/reportes", roles: ["G"], icon: "https://i.imgur.com/8b2Igfw.png", submenu: [
         { name: "Reportes de Ventas", url: "/reporteDeVentas", roles: ["G"] },

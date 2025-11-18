@@ -1,0 +1,201 @@
+/* Archivo: CSS/produccion_layout.css */
+
+/* --- ESTRUCTURA GENERAL --- */
+body {
+    /* Fondo del body (si no está en gen.css) */
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#main-content-wrapper {
+    display: flex;
+    flex-wrap: wrap; /* Permite que las columnas se reordenen en pantallas pequeñas */
+    gap: 30px; /* Espacio entre las columnas izquierda y derecha */
+    
+    width: 90%;
+    max-width: 1200px;
+    margin: 80px auto 40px auto; /* Margen superior para que no se corte */
+    
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* --- COLUMNA IZQUIERDA (Buscador y Sugerencias) --- */
+.columna-izquierda {
+    flex: 2; /* Ocupa más espacio (aprox. 66%) */
+    min-width: 300px;
+    display: flex;
+    flex-direction: column; /* Apila el buscador y las sugerencias */
+    position: relative;
+    z-index: 100;
+}
+
+.busqueda-container {
+    width: 100%;
+}
+
+.busqueda-container h1 {
+    font-size: 2.8em;
+    color: #c45d3c;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#buscador {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border: 2px solid #ccc;
+    border-radius: 5px 5px 0 0; /* Redondeado solo arriba */
+    box-sizing: border-box;
+    margin-bottom: 0; /* Para que las sugerencias se peguen */
+}
+
+/* Contenedor de Sugerencias */
+.resultados-busqueda-container-Produc,
+.resultados-busqueda-container-MatPri {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: -1px; /* Se pega al input */
+    z-index: 999;
+    max-height: 250px;
+    overflow-y: auto;
+    /* Ya no usa position: absolute */
+}
+
+#sugerencias, #sugerenciasProducto {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#sugerencias div, #sugerenciasProducto div {
+    padding: 12px 15px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+#sugerencias div:last-child, #sugerenciasProducto div:last-child {
+    border-bottom: none;
+}
+#sugerencias div:hover, #sugerenciasProducto div:hover {
+    background: #eef;
+}
+
+/* --- COLUMNA DERECHA (Seleccionados) --- */
+.seleccionadas-container-Produc,
+.seleccionadas-container-MatPri {
+    flex: 1; /* Ocupa menos espacio (aprox. 33%) */
+    min-width: 250px;
+    background-color: #f2baa4;
+    border-radius: 10px;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+}
+
+.seleccionadas-container-Produc h3,
+.seleccionadas-container-MatPri h3 {
+    color: #DA6049;
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #fff6f2;
+    text-align: center;
+}
+
+.seleccionadas-container-Produc ul,
+.seleccionadas-container-MatPri ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.seleccionadas-container-Produc li,
+.seleccionadas-container-MatPri li {
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #fff6f2;
+    border-radius: 6px;
+    border-left: 5px solid #DA6049;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+}
+
+.seleccionadas-container-Produc strong,
+.seleccionadas-container-MatPri strong {
+    color: #DA6049;
+}
+
+/* Inputs de cantidad */
+.seleccionadas-container-Produc input[type="number"],
+.seleccionadas-container-MatPri input[type="number"] {
+    width: 50px !important;
+    padding: 5px !important;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+/* --- BOTONES FIJOS --- */
+#boton-fijo-wrapper {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1001;
+}
+
+#botonEnviar {
+    padding: 12px 25px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.2s;
+}
+#botonEnviar:hover {
+    background-color: #DA6049 !important;
+}
+
+#boton-volver-wrapper {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 1001;
+}
+
+#botonVolver {
+    padding: 12px 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#botonVolver:hover {
+    background-color: #DA6049;
+}

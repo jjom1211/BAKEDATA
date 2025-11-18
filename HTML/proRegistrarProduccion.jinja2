@@ -1,0 +1,41 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Registrar Producción{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='proRegistrarProduccion.css') }}">
+{% endblock %}
+
+{% block content %}
+<div id="main-content-wrapper">
+
+    <div class="buscador-y-sugerencias-wrapper">
+        <div class="busqueda-container">
+            <h1>Registrar Producción</h1>
+            <input type="text" id="buscador" oninput="buscarProductos()" placeholder="Buscar productos...">
+        </div>
+
+        <div class="resultados-busqueda-container-Produc" id="contenedor-sugerencias-producto">
+            <ul id="sugerenciasProducto"></ul>
+        </div>
+    </div>
+    <div id="seleccionadasContainerProducto" class="seleccionadas-container-Produc">
+        <ul id="listaSeleccionadas"></ul>
+    </div>
+    
+    <div id="boton-fijo-wrapper">
+        <button onclick="enviarRegistroProduccion()" id="botonEnviar">
+            Confirmar y Registrar Solicitud
+        </button>
+    </div>
+    <div id="boton-volver-wrapper">
+        <button onclick="window.history.back()" id="botonVolver">
+            ⭠
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='produccion.js') }}"></script>
+{% endblock %}

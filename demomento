@@ -1,0 +1,19 @@
+contraseñas de usuarios por el momento: 
+
+1	limpieza	Grace	2025-03-25	limpieza1@example.com	limpieza	0000000001	L	1	1
+2	gerente	Grace	2025-03-25	gerente1@example.com	gerente	0000000002	G	1	1
+3	ventas	Grace	2025-03-25	ventas1@example.com	ventas	0000000003	V	1	1
+4	produccion	Grace	2025-03-25	produccion1@example.com	produccion	0000000004	P	1	1
+5	usuario	Grace	2025-03-25	usuario1@example.com	usuario	0000000005	U	1	1
+6	reparto	Grace	2025-03-25	reparto1@example.com	reparto	0000000006	R	1	1
+7	almacen	Grace	2025-03-25	almacen1@example.com	almacen	0000000007	A	1	1
+8	Limpieza	Encargado	2025-09-15	limpiezaencargado1@example.com	limpiezaencargado	0000000008	L	1	1
+9	Encargado	Grace	2025-09-21	encargado1@example.com	encargado	0000000009	E	1	1
+10	Ventas	Encargado	2025-09-15	ventasencargado1@example.com	ventasencargado	0000000010	EV	1	1
+11	Produccion	Encargado	2025-09-15	produccionencargado1@example.com	produccionencargado	0000000011	EP	1	1
+12	Reparto	Encargado	2025-09-15	repartoencargado1@example.com	repartoencargado	0000000012	ER	1	1
+13	Almacen	Encargado	2025-09-15	almacenencargado1@example.com	almacenencargado	0000000013	EA	1	1
+
+contraseña para los demás cuentas, es decir contraseña base: 
+
+clave123

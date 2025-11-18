@@ -1,0 +1,70 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Solicitar Materia Prima{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='proSolicitarMateriaPrima.css') }}">
+{% endblock %}
+
+{% block content %}
+<div id="main-content-wrapper">
+    <div class="columna-izquierda">
+        <div class="busqueda-container">
+            <h1>Solicitar Materia Prima</h1>
+            <input type="text" id="buscador" oninput="buscarMaterias()" placeholder="Buscar materia prima...">
+        </div>
+        <div class="resultados-busqueda-container-MatPri" id="contenedor-sugerencias-MatPri">
+            <ul id="sugerencias"></ul>
+        </div>
+    </div>
+
+    <div id="seleccionadasContainerMateriaPrima" class="seleccionadas-container-MatPri">
+        <h3>Materias Seleccionadas</h3>
+        <ul id="listaSeleccionadas"></ul>
+
+        <div class="origen-container">
+            <label for="tipo_origen">Tipo de Origen:</label>
+            <select id="tipo_origen" name="tipo_origen" required>
+                <option value="">-- Seleccionar tipo --</option>
+                <option value="proveedor">Pedido a Proveedor</option>
+                <option value="sucursal">Traslado de Sucursal</option>
+            </select>
+            
+            <div id="selector-proveedor-div" style="display:none;">
+                <label for="proveedor_selector">Proveedor:</label>
+                <select id="proveedor_selector" name="proveedor_id">
+                    <option value="">-- Seleccionar proveedor --</option>
+                    {% for prov in proveedores %}
+                    <option value="{{ prov.prov_id }}">{{ prov.prov_nombre_empresa }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div id="selector-sucursal-div" style="display:none;">
+                <label for="sucursal_selector">Sucursal Origen:</label>
+                <select id="sucursal_selector" name="sucursal_id">
+                    <option value="">-- Seleccionar sucursal --</option>
+                    {% for suc in sucursales %}
+                    <option value="{{ suc.suc_id }}">{{ suc.suc_nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        </div>
+
+    <div id="boton-fijo-wrapper">
+        <button onclick="enviarSolicitud()" id="botonEnviar">
+            Confirmar y Registrar Solicitud
+        </button>
+    </div>
+    <div id="boton-volver-wrapper">
+        <button onclick="window.history.back()" id="botonVolver">
+            ⭠ Regresar
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='proSolicitarMateriaPrima.js') }}"></script>
+{% endblock %}
