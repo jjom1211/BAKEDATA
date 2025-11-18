@@ -1,0 +1,35 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Registrar Limpieza{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='limRegistrarLimpieza.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="subinterface">
+    <h2>Limpieza del día</h2>
+    <ul id="taskList"></ul>
+
+    <div class="input-container autocomplete-container-row">
+        <input type="text" id="taskSelect" name="actividad" placeholder="Buscar actividad..." autocomplete="off" oninput="filtrarActividades()" />
+        <button id="toggleAllBtn" onclick="toggleMostrarTodas()">
+            <img src="https://i.imgur.com/smPDt4w.png" alt="Toggle" />
+        </button>
+        <ul id="autocompleteList" class="autocomplete-list"></ul>
+        <button onclick="addSelectedTask()">Agregar</button>
+    </div>
+
+    <div class="button-group">
+        <button onclick="goBack()">Regresar</button>
+        <button onclick="confirmTasks()">Confirmar</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        const actividadesDesdeServidor = {{ actividades_limpieza | tojson }};
+    </script>
+    <script src="{{ url_for('serve_js', filename='limRegistrarLimpieza.js') }}"></script>
+{% endblock %}

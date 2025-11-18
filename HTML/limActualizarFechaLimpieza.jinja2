@@ -1,0 +1,66 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Actualizar fecha de limpieza{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='limActualizarFechaLimpieza.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <h1>Calendario de limpieza</h1>
+    <h2>Seleccione una fecha para realizar los cambios</h2>
+    <div class="calendar">
+        <div class="header">
+            <button id="prevMonth">&lt;</button>
+            <h3 id="currentMonth"></h3>
+            <button id="nextMonth">&gt;</button>
+        </div>
+        <div class="days">
+            <div class="day">Dom</div>
+            <div class="day">Lun</div>
+            <div class="day">Mar</div>
+            <div class="day">Mié</div>
+            <div class="day">Jue</div>
+            <div class="day">Vie</div>
+            <div class="day">Sáb</div>
+        </div>
+        <div id="calendarGrid" class="grid"></div>
+    </div>
+    <div class="buttons">
+        <button id="backButton">Regresar</button>
+    </div>
+</div>
+
+<div id="modalOverlay" style="display: none;"></div>
+<div id="popupTareas" role="dialog" aria-modal="true" style="display: none;">
+    <button id="cerrarPopupBtn" aria-label="Cerrar ventana">✖</button>
+    <div id="contenidoPopup">
+        <div id="tareasDelDiaContainer" class="tareas-del-dia">
+            <h2>Tareas del Día</h2>
+            <div id="listaTareasDia"></div>
+        </div>
+
+        <div class="autocomplete-container-row">
+            <input type="text" id="taskSelect" placeholder="Buscar o seleccionar tarea..." autocomplete="off">
+            <button id="addTaskBtn">+</button>
+            <button id="toggleAllBtn" title="Mostrar tareas del servidor">
+                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828778.png" alt="toggle">
+            </button>
+        </div>
+
+        <div id="contenedorServidor" class="contenedor-servidor" style="display: none;">
+            <h3>Tareas Disponibles</h3>
+            <ul id="tareasServidorLista" class="autocomplete-list"></ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        const diasConLimpieza = {{ dias_limpieza | tojson | safe }};
+        const actividadesDesdeServidor = {{ actividades_limpieza | tojson }};
+    </script>
+    <script src="{{ url_for('serve_js', filename='limActualizarFechaLimpieza.js') }}"></script>
+{% endblock %}

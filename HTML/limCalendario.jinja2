@@ -1,0 +1,39 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Calendario de la Panadería{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='limCalendario.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="main-container"> <h1>Calendario de limpiezas</h1>
+        <div class="calendar">
+            <div class="header">
+                <button id="prevMonth">&lt;</button>
+                <h2 id="currentMonth"></h2>
+                <button id="nextMonth">&gt;</button>
+            </div>
+            <div class="days">
+                <div class="day">Dom</div>
+                <div class="day">Lun</div>
+                <div class="day">Mar</div>
+                <div class="day">Mié</div>
+                <div class="day">Jue</div>
+                <div class="day">Vie</div>
+                <div class="day">Sáb</div>
+            </div>
+            <div id="calendarGrid" class="grid"></div>
+        </div>
+        <div id="tareasDelDia" class="tareas-del-dia" style="display: none;"></div>
+    </div>
+            <div class="buttons">
+            <button id="backButton">Regresar</button>
+        </div>
+{% endblock %}
+{% block extra_scripts %}
+    <script>
+        const diasConLimpieza = {{ dias_limpieza | tojson | safe }};
+    </script>
+    <script src="{{ url_for('serve_js', filename='limCalendario.js') }}"></script>
+{% endblock %}

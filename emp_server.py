@@ -2,8 +2,8 @@ from flask import Flask, jsonify, request, render_template, send_from_directory
 import pymysql
 from datetime import datetime
 import pytz
-from database import get_materias_primas
 
+#Inicializacion de la aplicación de los endpoints
 app = Flask(__name__, template_folder='HTML')
 
 # Configuración de la base de datos
@@ -18,45 +18,64 @@ db_config = {
 @app.route('/')
 def login():
     return render_template('login.html')
-
-# Ruta para manejar el inicio de sesión
+    # Conectar a la base de datos
 @app.route('/login', methods=['POST'])
 def handle_login():
     data = request.json
-    username = data.get('username')
+    correo = data.get('correo')
     password = data.get('contraseña')
 
-    # Conectar a la base de datos
     conn = pymysql.connect(**db_config)
     try:
-        with conn.cursor() as cursor:
-            # Consulta para verificar el usuario y la contraseña
-            sql = "SELECT * FROM mydb.empleados WHERE emp_nombre = %s AND emp_contrasenia = %s"
-            cursor.execute(sql, (username, password))
-            result = cursor.fetchone()
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Obtener usuario y rol principal
+            sql = "SELECT emp_id, emp_nombre, emp_rol_principal FROM empleados WHERE emp_correo = %s AND emp_contrasenia = %s"
+            cursor.execute(sql, (correo, password))
+            empleado = cursor.fetchone()
 
-            if result:
-                # Obtener la hora local de México Centro
-                tz = pytz.timezone('America/Mexico_City')
-                hora_actual = datetime.now(tz).hour
-
-                if 5 <= hora_actual < 12:
-                    saludo = '¡Buenos días ' + username + ' !'
-                elif 12 <= hora_actual < 19:
-                    saludo = '¡Buenas tardes ' + username + ' !'
-                else:
-                    saludo = '¡Buenas noches ' + username + ' !'
-
-                return jsonify({'message': f'{saludo} , ¡Bienvenido!'}), 200
-            else:
+            if not empleado:
                 return jsonify({'error': 'Usuario o contraseña no válidos'}), 401
+
+            emp_id = empleado['emp_id']
+            nombre = empleado['emp_nombre']
+            rol_principal = empleado['emp_rol_principal']
+
+            # Buscar roles secundarios en tabla roles
+            cursor.execute("SELECT rolemp FROM roles_empleados WHERE rolemp_emp_fk = %s", (emp_id,))
+            rol_registro = cursor.fetchone()
+            if rol_registro and rol_registro['rolemp']:
+                try:
+                    import json
+                    roles_extra = json.loads(rol_registro['rolemp'])
+                    if not isinstance(roles_extra, list):
+                        roles_extra = [roles_extra]
+                except:
+                    roles_extra = []
+            else:
+                roles_extra = []
+
+            # Si no hay roles extra, usar solo el principal
+            roles_finales = roles_extra if roles_extra else [rol_principal]
+
+            # Saludo según hora
+            from datetime import datetime
+            import pytz
+            tz = pytz.timezone('America/Mexico_City')
+            hora_actual = datetime.now(tz).hour
+            if 5 <= hora_actual < 12:
+                saludo = f'¡Buenos días {nombre}!'
+            elif 12 <= hora_actual < 19:
+                saludo = f'¡Buenas tardes {nombre}!'
+            else:
+                saludo = f'¡Buenas noches {nombre}!'
+
+            return jsonify({
+                'message': f'{saludo} , ¡Bienvenido!',
+                'rol_principal': rol_principal,
+                'roles': roles_finales
+            }), 200
     finally:
         conn.close()
-
-@app.route('/materias_primas')
-def materias_primas():
-    materias = get_materias_primas()
-    return render_template('materias_primas.html', materias=materias)
 
 # Rutas para servir archivos estáticos
 @app.route('/CSS/<path:filename>')
@@ -87,6 +106,10 @@ def reparto():
 def repCalendario():
     return render_template('repCalendario.html')
 
+@app.route('/register.html')
+def registro():
+    return render_template('register.html')
+
 @app.route('/produccion.html')
 def produccion():
     return render_template('produccion.html')
@@ -95,17 +118,25 @@ def produccion():
 def ventas():
     return render_template('ventas.html')
 
-@app.route('/limpieza.html')
+@app.route('/limpieza.jinja2')
 def limpieza():
-    return render_template('limpieza.html')
+    return render_template('limpieza.jinja2')
 
 @app.route('/limDia.html')
 def limDia():
     return render_template('limDia.html')
 
-@app.route('/limCalendario.html')
+@app.route('/limCalendario.jinja2')
 def limCalendario():
-    return render_template('limCalendario.html')
+    return render_template('limCalendario.jinja2')
+
+@app.route('/limRegistrarLimpieza.jinja2')
+def limRegistrarLimpieza():
+    return render_template('limRegistrarLimpieza.jinja2')
+
+@app.route('/limActualizarFechaLimpieza.jinja2')
+def limActualizarFechaLimpieza():
+    return render_template('limActualizarFechaLimpieza.jinja2')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,63 +1,42 @@
-document.addEventListener("DOMContentLoaded", function() {
-    loadTasks();
-    loadTaskOptions();
-});
 
-function loadTasks() {
-    const taskList = document.getElementById("taskList");
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    taskList.innerHTML = "";
-    tasks.forEach((task, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<input type='checkbox'> ${task} <button onclick='removeTask(${index})'>X</button>`;
-        taskList.appendChild(li);
-    });
-}
-
-function addTask() {
-    const newTaskInput = document.getElementById("newTask");
-    const task = newTaskInput.value.trim();
-    if (task) {
-        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        tasks.push(task);
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-        newTaskInput.value = "";
-        loadTasks();
-        loadTaskOptions();
+        //Funcion para regresar a la pagina anterior
+        function goBack() {
+        window.history.back();
+        }
+//Funcion para confirmar los cambios en el estado de una actividad o actividades
+function confirmarLimpieza() {
+    //Seleccion de las actividades realizadas
+    const seleccionados = Array.from(
+        document.querySelectorAll('input[name="actividad"]:checked')
+    ).map(cb => cb.value);
+    //Muestra en consola la seleccion
+    console.log("IDs seleccionados:", seleccionados);  // <-- útil para depurar
+    //Condicional para mandar el request de cambios en los estados de las actividades
+    if (seleccionados.length === 0) {
+        alert("Selecciona al menos una actividad.");
+        return;
     }
-}
-
-function removeTask(index) {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.splice(index, 1);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    loadTasks();
-    loadTaskOptions();
-}
-
-function loadTaskOptions() {
-    const taskSelect = document.getElementById("taskSelect");
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    taskSelect.innerHTML = "";
-    tasks.forEach(task => {
-        const option = document.createElement("option");
-        option.textContent = task;
-        taskSelect.appendChild(option);
+    //Llamado al endpoint para confirmar los cambios en las actividades
+    fetch('/confirmarLimpieza', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ actividades: seleccionados })
+    })
+    .then(response => response.json())
+    .then(res => {
+        alert(res.message || "Actividades confirmadas");
+        location.reload();
+    })
+    .catch(err => {
+        console.error("Error:", err);
+        alert("Ocurrió un error al confirmar.");
     });
 }
 
-function confirmTasks() {
-    alert("Actividades confirmadas.");
-}
-
-function goBack() {
-    alert("Regresando a la pantalla anterior.");
-    window.history.back(); // Regresa a la página anterior
-}
-
-function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
-    const content = document.querySelector('.content');
-    sidebar.classList.toggle('active');
-    content.classList.toggle('active');
+// Función de salir
+function Salir() {
+    sessionStorage.clear();
+    window.location.href = "/";
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,17 +9,226 @@
     <link rel="stylesheet" href="../CSS/gen.css">
     <link rel="stylesheet" href="../CSS/produccion.css">
 </head>
-<body>
-    <div class="container">
-        <h1>Registrar Producción</h1>
-        <form id="formRegistrarProduccion">
-            <input type="text" id="producto" placeholder="Nombre del producto" required>
-            <input type="number" id="cantidad" placeholder="Cantidad" required>
-            <button type="button" onclick="registrarProduccion()">Registrar</button>
-        </form>
-        <button class="button volver" onclick="window.location.href='produccion.html'">Volver</button>
-    </div>
 
+<body>
+    <button class="open-sidebar" onclick="toggleSidebar()">☰</button>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-background"></div>
+        <!-- Contenido de la sidebar -->
+        <div class="sidebar-content">
+            <!-- Imagen superior de la slidebar-->
+            <img src="https://i.imgur.com/WW384uk.png" alt="Gerencia" class="sidebar-logo">
+            <!-- Módulo Almacén -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Almacén -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Almacén -->
+                    <img src="https://i.imgur.com/vp9A1f3.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Almacén -->
+                    <button class="button admin-only ir-produccion"
+                        onclick="window.location.href='almacen.html'">Almacén</button>
+                </div>
+                <!-- Submenú del módulo Almacén -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
+                    <button class="button" onclick="registrarEntradas()">Registrar Entradas</button>
+                    <button class="button" onclick="actualizarMateriaPrima()">Actualizar Materia Prima</button>
+                    <button class="button" onclick="registrarSalidas()">Registrar Salidas</button>
+                    <button class="button" onclick="actualizarProductos()">Actualizar Productos</button>
+                    <button class="button" onclick="verProductos()">Ver Productos</button>
+                    <button class="button" onclick="verMateriaPrima()">Ver Materias Primas</button>
+                    <!-- Botones habilitados sólo para el Administrador-->
+                    <button class="button admin-only" onclick="solicitarProductos()">Solicitar Productos</button>
+                    <button class="button admin-only" onclick="solicitarMateriaPrima()">Solicitar Materia Prima</button>
+                    <button class="button admin-only" onclick="enviarProductosaTienda()">Enviar Productos a
+                        Tienda</button>
+                </div>
+            </div>
+            <!-- Módulo Reparto -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Reparto -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Reparto -->
+                    <img src="https://i.imgur.com/dZdUNal.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Reparto -->
+                    <button class="button admin-only ir-produccion" <button class="button admin-only"
+                        onclick="window.location.href='reparto.html'">Reparto</button>
+                </div>
+                <!-- Submenú del módulo Reparto -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
+                    <button class="button" onclick="verCalendario()">Calendario</button>
+                    <button class="button" onclick="verPedidos()">Pedidos</button>
+                    <button class="button" onclick="actualizarEntrega()">Actualizar Entrega</button>
+                    <button class="button" onclick="confirmarEntrega()">Confirmar entrega</button>
+                    <!-- Bóton habilitado sólo para el Administrador-->
+                    <button class="button admin-only" onclick="agregarEntrega()">Agregar entrega</button>
+                </div>
+            </div>
+            <!-- Módulo Usuario -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Usuario -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Usuario -->
+                    <img src="https://i.imgur.com/WLyck1q.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Usuario -->
+                    <button class="button admin-only ir-produccion" <button class="button admin-only"
+                        onclick="window.location.href='usuario.html'">Usuario</button>
+                </div>
+                <!-- Submenú del módulo Usuario -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
+                    <button class="button" onclick="verCatalogo()">Catálogo</button>
+                    <button class="button" onclick="realizarPedido()">Realizar Pedido</button>
+                    <button class="button" onclick="verSucursales()">Ver sucursales</button>
+                    <button class="button" onclick="confirmarEntrega()">Confirmar entrega</button>
+                    <button class="button" onclick="promocionesycupones()">Promociones y cupones</button>
+                </div>
+            </div>
+            <!-- Módulo Producción -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Producción -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Producción -->
+                    <img src="https://i.imgur.com/3cO5Fks.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Producción -->
+                    <button class="button admin-only ir-produccion"
+                        onclick="window.location.href='produccion.html'">Producción</button>
+                </div>
+                <!-- Submenú del módulo Producción -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
+                    <button class="button" onclick="solicitarMateriaPrima()">Solicitar Materia Prima</button>
+                    <button class="button" onclick="verMateriaPrima()">Ver Materia Prima</button>
+                    <button class="button" onclick="window.location.href='registrar-produccion.html'">Registrar
+                        producción</button>
+                    <button class="button" onclick="window.location.href='produccion-hoy.html'">Producción de
+                        hoy</button>
+                </div>
+            </div>
+            <!-- Módulo Ventas -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Ventas -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Ventas -->
+                    <img src="https://i.imgur.com/aUIJoQt.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Ventas -->
+                    <button class="button admin-only ir-produccion"
+                        onclick="window.location.href='ventas.html'">Ventas</button>
+                </div>
+                <!-- Submenú del módulo Ventas -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
+                    <button class="button" onclick="RegistrarCliente()">Registrar Cliente</button>
+                    <button class="button" onclick="RegistrarVenta()">Registrar Venta</button>
+                    <button class="button" onclick="RealizarPedido()">Realizar Pedido</button>
+                    <button class="button" onclick="ActualizarCaja()">Actualizar Caja</button>
+                    <button class="button" onclick="verCatalogo()">Ver Catalogo</button>
+                    <button class="button" onclick="VerCaja()">Ver Caja</button>
+                    <button class="button" onclick="VerProductos()">Ver Productos</button>
+                    <!-- Bótones habilitados sólo para el Administrador-->
+                    <button class="button admin-only" onclick="SolicitarProductos()">Solicitar Productos</button>
+                    <button class="button admin-only" onclick="CortedeCaja()">Corte de Caja</button>
+                    <button class="button admin-only" onclick="ReportedelDía()">Reporte del Día</button>
+                    <button class="button admin-only full-width" onclick="ReporteMensual()">Reporte Mensual</button>
+                    <button class="button" onclick="window.location.href='registrar-produccion.html'">Registrar
+                        producción</button>
+                    <button class="button" onclick="window.location.href='produccion-hoy.html'">Producción de
+                        hoy</button>
+                </div>
+            </div>
+            <!-- Módulo Limpieza -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Limpieza -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Limpieza -->
+                    <img src="https://i.imgur.com/75aCNcB.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Botón que redirige a la página de Limpieza -->
+                    <button class="button admin-only ir-produccion"
+                        onclick="window.location.href='limpieza.html'">Limpieza</button>
+                </div>
+                <!-- Submenú del módulo Limpieza -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirigen al javascript del módulo -->
+                    <button class="button" onclick="verCalendario()">Calendario</button>
+                    <button class="button" onclick="limpiezaDelDia()">Limpieza del Dia</button>
+                    <!-- Bótones habilitados sólo para el Administrador-->
+                    <button class="button admin-only" onclick="registrarLimpieza()">Registrar Limpieza</button>
+                    <button class="button admin-only" onclick="actualizarFechaDeLimpieza()">Actualizar fecha de
+                        limpieza</button>
+                </div>
+            </div>
+            <!-- Módulo Reportes -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Reportes -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Reportes -->
+                    <img src="https://i.imgur.com/8b2Igfw.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Bóton habilitado sólo para el Administrador-->
+                    <button class="button admin-only ir-produccion"
+                        onclick="window.location.href='reporte.html'">Reporte</button>
+                </div>
+                <!-- Submenú del módulo Reportes -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
+                </div>
+            </div>
+
+            <!-- Módulo Gerente -->
+            <div class="menu-item doble-opcion">
+                <div class="ir-produccion-wrapper">
+                    <!-- Flecha que despliguea el submenú de Gerente -->
+                    <button class="toggle-submenu" onclick="toggleSubmenu(this)">▸</button>
+                    <!-- Icono del módulo Gerente -->
+                    <img src="https://i.imgur.com/AU09egm.png" alt="Producción Icon" class="icono-sidebar">
+                    <!-- Bóton habilitado sólo para el Administrador-->
+                    <button class="button admin-only ir-produccion"
+                        onclick="window.location.href='gerente.html'">Gerente</button>
+                </div>
+                <!-- Submenú del módulo Gerente -->
+                <div class="submenu">
+                    <!-- Botones con funciones que redirige al javascript del módulo -->
+                </div>
+            </div>
+            <!-- Botón que redirige al loggin del programa -->
+            <div class="menu-item">
+                <img src="https://i.imgur.com/ft5fWsY.png" alt="Regresar Icon" class="icono-sidebar">
+                <button class="button return-login" onclick="window.location.href='/'">Salir</button>
+            </div>
+        </div>
+    </div>
+    <div id="main-content-wrapper">
+        <div class="busqueda-container">
+            <h1>Registrar Producción</h1>
+            <input type="text" id="buscador" oninput="buscarProductos()" placeholder="Buscar productos...">
+        </div>
+
+        <div class="resultados-busqueda-container-Produc" id="contenedor-sugerencias-producto">
+            <ul id="sugerenciasProducto"></ul>
+        </div>
+        <div id="seleccionadasContainerProducto" class="seleccionadas-container-Produc">
+            <ul id="listaSeleccionadas"></ul>
+        </div>
+        <div id="boton-fijo-wrapper">
+            <button onclick="enviarRegistroProduccion()" id="botonEnviar">
+                Confirmar y Registrar Solicitud
+            </button>
+        </div>
+        <div id="boton-volver-wrapper">
+            <button onclick="window.location.href='produccion.html'" id="botonVolver">
+                Regresar
+            </button>
+        </div>
+    </div>
     <script src="../JS/produccion.js"></script>
 </body>
+
 </html>

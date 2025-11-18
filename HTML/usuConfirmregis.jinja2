@@ -1,0 +1,29 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Registro Confirmado{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/usuConfirmregis.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="content-box">
+        <h2>¡Registro Exitoso!</h2>
+        <p>Gracias por registrarte, <strong>{{ usuario.nombre }}</strong>.</p>
+        <hr>
+        <h4>Resumen de tus Datos:</h4>
+        <div class="summary-details">
+            <p><strong>Correo:</strong> <span>{{ usuario.correo }}</span></p>
+            <p><strong>Teléfono:</strong> <span>{{ usuario.telefono }}</span></p>
+            <p><strong>Dirección:</strong> <span>{{ usuario.direccion }}</span></p>
+        </div>
+        <p class="verification-note">Se ha enviado un correo de verificación a <strong>{{ usuario.correo }}</strong>. Por favor, revisa tu bandeja de entrada.</p>
+        
+        <a href="{{ url_for('login') }}" class="btn-confirm">Ingresar</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    {% endblock %}

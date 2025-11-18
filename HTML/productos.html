@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Productos</title>
+    <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
+    <link rel="stylesheet" href="../CSS/almActMarPrim.css">
+    <style>
+        /* AJUSTES GLOBALES PARA VISIBILIDAD DEL TÍTULO */
+        body {
+            /* 1. Empuja todo el contenido hacia abajo (ej. para dejar espacio a una barra fija superior) */
+            padding-top: 80px; 
+            margin: 0;
+            background-color: #ffffff; /* Asegura un fondo blanco si el contenedor no cubre todo */
+        }
+        
+        /* ESTILOS DEL CONTENEDOR PRINCIPAL */
+        .container {
+            /* Usamos tus unidades relativas, pero quitamos height: 100vh para evitar problemas de scroll doble */
+            width: 90vw; 
+            max-width: 1000px;
+            margin: 0 auto 50px auto; /* Centrar y añadir margen inferior */
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: #f9f9f9; /* Fondo claro para distinguir del body */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ESTILO PARA EL TÍTULO H1 (Basado en tu CSS) */
+        h1 {
+            color: #ca563f; /* Rojo/Marrón */
+            font-size: 40px; /* Tamaño ajustado para ser visible */
+            padding-left: 0; /* Centramos el texto en el div, no lo separamos */
+            text-align: center;
+            border-bottom: 2px solid #ca563f;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* ESTILO PARA LA TABLA (Basado en tu CSS) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            table-layout: fixed;
+        }
+
+        /* Encabezados de la tabla */
+        th {
+            background-color: #4f4f4f; 
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        /* Estilo de las filas */
+        tr {
+            background-color: #e5e3e3;
+        }
+        tr:nth-child(even) {
+            background-color: #c3c3c3; /* Alternar color para mejor lectura */
+        }
+
+        /* Resaltar fila al pasar el mouse */
+        tr:hover {
+            background-color: #fff9e6;
+        }
+
+        /* Celdas de la tabla */
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #c3c3c3;
+            word-wrap: break-word;
+        }
+        
+        /* Estilos específicos para las columnas */
+        .precio-col, .costo-col {
+            font-weight: bold;
+            color: #28a745; /* Verde para precios/costos */
+            width: 10%;
+        }
+        .unidad-col {
+            width: 8%;
+        }
+        .id-col {
+            width: 5%;
+            font-weight: 600;
+        }
+        
+        /* Botones */
+        .button.volver {
+            margin-top: 20px;
+            padding: 12px 25px; /* Ligeramente más pequeño */
+            background-color: #ff8c00; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* Responsive para móviles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            table {
+                font-size: 12px;
+                /* Permite el scroll horizontal en móviles */
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Inventario de Productos Terminados</h1>
+
+        {% if productos %}
+        <table>
+            <thead>
+                <tr>
+                    <th class="id-col">ID</th>
+                    <th>Nombre y Descripción</th>
+                    <th class="unidad-col">Unidad</th>
+                    <th class="precio-col">Precio Venta</th>
+                    <th class="costo-col">Costo Unit.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>
+                        <strong>{{ producto.nombre }}</strong>
+                        <p style="font-size: 0.8em; color: #666; margin: 2px 0;">{{ producto.descripcion or 'Sin descripción' }}</p>
+                    </td>
+                    <td>{{ producto.unidad }}</td>
+                    <td class="precio-col">${{ "%.2f"|format(producto.precio) }}</td>
+                    <td class="costo-col">${{ "%.2f"|format(producto.costo) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p style="text-align: center; color: #d9534f; font-weight: bold;">⚠️ No se encontraron productos en la base de datos.</p>
+        {% endif %} 
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="button volver" onclick="window.history.back()">← Volver a Almacén</button>
+        </div>
+    </div>
+</body>
+</html>

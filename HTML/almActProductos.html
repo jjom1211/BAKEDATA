@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Productos</title> <!-- Título cambiado -->
+    <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
+    <!-- Usamos el mismo CSS de almacén -->
+    <link rel="stylesheet" href="../CSS/almacen.css">
+    <link rel="stylesheet" href="../CSS/almActMarPrim.css"> <!-- CSS específico -->
+</head>
+
+<body>
+
+    <div class="header-bar">
+        <button class="button-volver" onclick="window.location.href='/almacen.html'">
+            &#8592; Volver a Almacén
+        </button>
+    </div>
+
+    <div class="container">
+        <h1>Actualizar Productos</h1> <!-- Título cambiado -->
+
+        <div class="table-wrapper">
+            <table class="table-edicion">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Unidad de Medida</th>
+                        <th>Precio Actual</th> <!-- Este es el PRECIO DE VENTA -->
+                        <th>Nuevo Precio</th>
+                        <th>Costo</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- ✅ CAMBIO: Iteramos sobre 'productos' -->
+                    {% for producto in productos %}
+                    <tr data-id="{{ producto.id }}">
+                        <td class="cell-id">{{ producto.id }}</td>
+                        <td class="cell-nombre">{{ producto.nombre }}</td>
+
+                        <!-- Descripción -->
+                        <td class="cell-desc">
+                            <input type="text" class="input-editable input-desc"
+                                value="{{ producto.descripcion | default('', true) }}">
+                        </td>
+
+                        <!-- Unidad de Medida -->
+                        <td class="cell-unidad">
+                            <select class="select-editable select-unidad">
+                                <!-- Reutilizamos la lista de 'unidades' -->
+                                {% for val, txt in unidades %}
+                                <option value="{{ val }}" {% if val==producto.unidad %}selected{% endif %}>
+                                    {{ txt }} ({{ val }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+
+                        <!-- ✅ CAMBIO: Usamos 'producto.precio' -->
+                        <td class="cell-precio-actual">
+                            $ {{ "%.2f"|format(producto.precio) }}
+                        </td>
+
+                        <!-- ✅ CAMBIO: Usamos 'producto.precio' -->
+                        <td class="cell-precio-nuevo">
+                            <input type="number" class="input-editable input-nuevo-precio">
+                        </td>
+
+                        <td class="cell-precio-nuevo">
+                            <input type="number" class="input-editable input-costo-precio">
+                        </td>
+
+                        <td class="cell-accion">
+                            <button class="btn-guardar" onclick="guardarCambiosProducto(this)">Guardar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="../JS/alm.js"></script>
+</body>
+
+</html>

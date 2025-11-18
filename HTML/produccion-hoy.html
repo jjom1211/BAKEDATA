@@ -1,31 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+    <!-- Definición del documento como HTML5 -->
     <meta charset="UTF-8">
+    <!-- Ajusta la visualización para que la página sea responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título que aparece en la pestaña del navegador -->
     <title>Producción de Hoy</title>
+    <!-- Icono (favicon) que se muestra en la pestaña -->
     <link rel="icon" href="https://i.imgur.com/WW384uk.png" type="image/png" sizes="16x16">
+    <!-- Hoja de estilos general -->
     <link rel="stylesheet" href="../CSS/gen.css">
+    <!-- Hoja de estilos específica para esta página -->
     <link rel="stylesheet" href="../CSS/prodHoy.css">
 </head>
+
 <body>
+    <!-- Contenedor principal -->
     <div class="container">
+        <!-- Encabezado de la página -->
         <h1>Producción de Hoy</h1>
+
+        <!-- Tabla donde se mostrará la producción -->
         <table id="tablaProduccion">
             <thead>
+                <!-- Encabezados de las columnas -->
                 <tr>
-                    <th>Nombre</th>
-                    <th>Cantidad</th>
-                    <th>Realizado</th>
+                    <th>Nombre</th> <!-- Nombre del producto -->
+                    <th>Cantidad</th> <!-- Cantidad producida -->
+                    <th>Realizado</th> <!-- Estado (si ya se realizó o no) -->
                 </tr>
             </thead>
             <tbody>
-                <!-- Filas de la tabla se generarán dinámicamente -->
+                <!-- Aquí se insertarán dinámicamente las filas de la tabla
+                     con JavaScript (desde prodHoy.js) -->
             </tbody>
         </table>
+        <button class="button" onclick="confirmarProduccion()" id="btnConfirmar">
+            Confirmar Productos Realizados
+        </button>
+
+        <!-- Botón para regresar a la página de Producción principal -->
         <button class="button volver" onclick="window.location.href='produccion.html'">Volver</button>
     </div>
 
+    <!-- Archivo JavaScript que gestionará la lógica para llenar la tabla dinámicamente -->
     <script src="../JS/prodHoy.js"></script>
 </body>
+
 </html>
