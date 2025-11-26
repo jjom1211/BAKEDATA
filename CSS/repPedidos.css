@@ -1,80 +1,177 @@
+/* Archivo: CSS/repPedidos.css */
+
+/* --- ESTRUCTURA GENERAL --- */
 body {
     background-image: url("https://i.imgur.com/3nSk8QU.jpg");
     background-size: cover;
-    background-repeat: repeat;
+    background-attachment: fixed;
     font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    /* Asegura que el contenido empiece desde arriba */
+    display: block; 
+}
+
+/* Título */
+h1 {
     text-align: center;
-}
-
-
-h1{
-    display: inline; 
     font-weight: bold;
-    color: #E7A59A ;
-    padding: 5px;
-    font-size:100px;
-    -webkit-text-stroke: 2px #9d6363;
+    color: #c45d3c; /* Color sólido para mejor lectura */
+    font-size: 3.5em;
+    margin-top: 0;
+    margin-bottom: 15px;
+    /* -webkit-text-stroke: 2px #9d6363; (Opcional, a veces dificulta lectura) */
 }
 
+
+
+/* --- ESTILOS DEL SELECTOR --- */
+.filter-container {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.filter-container label {
+    font-weight: bold;
+    color: #402929;
+    font-size: 1.1em;
+    margin-right: 10px;
+}
+
+.filter-container select {
+    padding: 10px 15px;
+    font-size: 1em;
+    border: 2px solid #9d6363;
+    border-radius: 8px;
+    background-color: #fceae5; /* Un tono rosado muy suave */
+    color: #7e084b;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.filter-container select:hover,
+.filter-container select:focus {
+    background-color: #fff;
+    border-color: #7e084b;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+
+/* --- CONTENEDOR CON SCROLL (LA SOLUCIÓN) --- */
+.table-scroll-container {
+    width: 100%;
+    /* Altura máxima: Si la tabla es más larga, aparecerá el scroll */
+    max-height: 65vh; /* Ocupa el 65% de la altura de la ventana */
+    overflow-y: auto; /* Habilita scroll vertical */
+    
+    border: 2px solid #9d6363;
+    background-color: #fff; /* Fondo blanco para la tabla */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
 
 table {
     width: 100%;
-    border-collapse: collapse;
-    background-color: #E7A59A;
+    border-collapse: separate; /* Necesario para sticky header */
+    border-spacing: 0;
+    background-color: #fff;
 }
-th, td {
+
+/* Encabezado Fijo (Sticky) */
+thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #E7A59A; /* Tu color rosa/salmón */
     color: #402929;
-    border: 2px solid #9d6363;
-    padding: 8px;
+    padding: 15px;
     text-align: left;
+    border-bottom: 2px solid #9d6363;
+    font-weight: bold;
 }
-.btn-detalles {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
+
+tbody td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+tbody tr:hover {
+    background-color: #fceae5; /* Efecto hover suave */
 }
 
 
+/* Botón de Ver Detalles */
 .btn-detalles {
-    background-color: #7e084b; /* Un color de tu paleta de la otra página */
+    background-color: #7e084b;
     color: white;
     border: none;
     padding: 8px 12px;
-    border-radius: 5px; /* Esquinas redondeadas */
+    border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.2s ease-in-out; /* Transición suave */
+    transition: background-color 0.2s ease-in-out;
 }
-
 .btn-detalles:hover {
-    background-color: #411163; /* Un color más oscuro al pasar el cursor */
+    background-color: #411163;
 }
 
-/* Estilos para el Modal */
-.modal-overlay {
-    display: none; /* Oculto por defecto */
+
+/* --- BOTÓN DE REGRESAR FIJO --- */
+#backButton {
     position: fixed;
-    z-index: 1000;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #7e084b;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    transition: all 0.2s ease-in-out;
+}
+#backButton:hover {
+    background-color: #411163;
+    transform: scale(1.05);
+}
+
+
+/* --- ESTILOS DEL MODAL --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 2000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
 }
 
 .modal-content {
     background-color: #fefefe;
     color: #333;
-    margin: 10% auto;
-    padding: 20px;
+    margin: 5% auto;
+    padding: 30px;
     border: 1px solid #888;
-    width: 80%;
+    width: 90%;
     max-width: 600px;
     border-radius: 8px;
     position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     animation: fadeIn 0.3s;
 }
 
@@ -88,61 +185,19 @@ th, td {
     float: right;
     font-size: 28px;
     font-weight: bold;
-}
-
-.modal-close-button:hover,
-.modal-close-button:focus {
-    color: black;
-    text-decoration: none;
     cursor: pointer;
 }
+.modal-close-button:hover { color: #000; }
 
 #modal-body-content ul {
     list-style-type: none;
     padding: 0;
 }
-
 #modal-body-content li {
     padding: 8px 0;
     border-bottom: 1px solid #eee;
 }
 #modal-body-content li strong {
-    color: #c45d3c; /* Un color para resaltar */
-}
-
-/* Reemplaza los estilos anteriores para el botón de regresar con estos */
-
-#backButton {
-    position: fixed; /* Lo saca del flujo normal y lo fija en la pantalla */
-    bottom: 30px;    /* A 30px del borde inferior */
-    right: 30px;     /* A 30px del borde derecho */
-    
-    width: 60px;     /* Ancho y alto iguales para hacerlo un círculo */
-    height: 60px;
-    border-radius: 50%; /* Esto lo hace perfectamente circular */
-    
-    background-color: #7e084b; /* Un color principal y llamativo */
-    color: white;
-    font-size: 28px; /* Tamaño grande para el icono de la flecha */
-    font-weight: bold;
-    text-align: center;
-    line-height: 60px; /* Centra verticalmente el icono de la flecha */
-    
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para darle profundidad */
-    z-index: 100; /* Asegura que esté por encima de otros elementos */
-    
-    transition: all 0.2s ease-in-out;
-}
-
-#backButton:hover {
-    background-color: #411163; /* Color más oscuro al pasar el cursor */
-    transform: scale(1.05); /* Lo agranda un poco */
-}
-
-/* Opcional pero recomendado: añade un margen inferior a tu tabla */
-/* para que el botón no tape la última fila al hacer scroll hasta abajo. */
-table {
-    margin-bottom: 100px;
+    color: #c45d3c;
+    margin-right: 5px;
 }

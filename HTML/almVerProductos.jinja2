@@ -3,7 +3,7 @@
 {% block title %}Inventario de Productos{% endblock %}
 
 {% block head_links %}
-    <link rel="stylesheet" href="{{ url_for('serve_css', filename='venVerProductos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='almVerProductos.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -54,6 +54,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-    {# Tu JavaScript no necesita cambios, funcionará perfectamente #}
-    <script src="{{ url_for('serve_js', filename='venVerProductos.js') }}"></script>
+    <script src="{{ url_for('serve_js', filename='almVerProductos.js') }}"></script>
 {% endblock %}

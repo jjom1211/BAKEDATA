@@ -4,38 +4,98 @@
 
 {% block head_links %}
     <link rel="stylesheet" href="{{ url_for('serve_css', filename='proRegistrarProduccion.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}
 
 {% block content %}
 <div id="main-content-wrapper">
 
-    <div class="buscador-y-sugerencias-wrapper">
-        <div class="busqueda-container">
-            <h1>Registrar Producción</h1>
-            <input type="text" id="buscador" oninput="buscarProductos()" placeholder="Buscar productos...">
-        </div>
+    {% if es_gerente %}
+    <div class="admin-selector-container">
+        <label for="sucursal_admin_prod">Registrar para Sucursal (Gerente):</label>
+        <select id="sucursal_admin_prod">
+            {% for suc in sucursales %}
+                <option value="{{ suc.suc_id }}" {% if suc.suc_id == sucursal_propia %}selected{% endif %}>
+                    {{ suc.suc_nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
 
-        <div class="resultados-busqueda-container-Produc" id="contenedor-sugerencias-producto">
-            <ul id="sugerenciasProducto"></ul>
+    <!-- PESTAÑAS -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="cambiarTab('manual')">📝 Producción Manual / Sugerida</button>
+        <button class="tab-btn" onclick="cambiarTab('pedidos')">📦 Por Pedidos (Surtir Hoy)</button>
+    </div>
+
+    <!-- SECCIÓN 1: MANUAL / SUGERIDA -->
+    <div id="seccion-manual" class="tab-content active">
+        <div class="contenido-dividido">
+            <div class="columna-izquierda">
+                <div class="busqueda-container">
+                    <h1>Registrar Producción</h1>
+                    
+                    <button id="btn-sugerencia-dia" onclick="cargarSugerenciasDelDia()">
+                        ✨ Cargar Producción Sugerida (Histórico)
+                    </button>
+                    
+                    <!-- CORRECCIÓN: Wrapper relativo para anclar la lista -->
+                    <div class="search-wrapper">
+                        <input type="text" id="buscador" oninput="buscarProductos()" placeholder="Buscar productos..." autocomplete="off">
+                        <i class="fas fa-search search-icon"></i>
+                        
+                        <!-- La lista de resultados ahora vive AQUÍ DENTRO -->
+                        <div class="resultados-busqueda-container-Produc" id="contenedor-sugerencias-producto">
+                            <ul id="sugerenciasProducto"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="seleccionadasContainerProducto" class="seleccionadas-container-Produc">
+                <h3>Lista de Producción del Día</h3>
+                <ul id="listaSeleccionadas"></ul>
+            </div>
         </div>
     </div>
-    <div id="seleccionadasContainerProducto" class="seleccionadas-container-Produc">
-        <ul id="listaSeleccionadas"></ul>
+
+    <!-- SECCIÓN 2: POR PEDIDOS (SURTIR) -->
+    <div id="seccion-pedidos" class="tab-content">
+        <div class="pedidos-container">
+            <h3>Pedidos Pendientes de Surtir</h3>
+            <p class="info-text">Estos pedidos deben entregarse hoy. Carga sus productos para producirlos ahora.</p>
+            
+            <div class="tabla-scroll-container">
+                <table class="tabla-pedidos">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Origen (Solicita)</th>
+                            <th>Destino (Recibe)</th>
+                            <th>Asunto</th>
+                            <th>Hora</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-pedidos-produccion">
+                        <tr><td colspan="6">Cargando pedidos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
     
     <div id="boton-fijo-wrapper">
         <button onclick="enviarRegistroProduccion()" id="botonEnviar">
-            Confirmar y Registrar Solicitud
+            Confirmar y Registrar Producción
         </button>
     </div>
-    <div id="boton-volver-wrapper">
-        <button onclick="window.history.back()" id="botonVolver">
-            ⭠
-        </button>
-    </div>
-</div>
+</div> 
+
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
 {% endblock %}
 
 {% block extra_scripts %}
-    <script src="{{ url_for('serve_js', filename='produccion.js') }}"></script>
+    <script src="{{ url_for('serve_js', filename='proRegistrarProduccion.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Actualizar Materias Primas{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='almActualizarMateriaPrima.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Actualizar Materias Primas</h1>
+
+    <div class="table-scroll-container">
+        <table class="table-edicion">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Unidad de Medida</th>
+                    <th>Costo Actual</th>
+                    <th>Nuevo Costo</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for materia in materias %}
+                <tr data-id="{{ materia.id }}">
+                    <td class="cell-id">{{ materia.id }}</td>
+                    <td class="cell-nombre">{{ materia.nombre }}</td>
+                    
+                    <td class="cell-desc">
+                        <input type="text" class="input-editable input-desc" value="{{ materia.descripcion | default('', true) }}">
+                    </td>
+
+                    <td class="cell-unidad">
+                        <select class="select-editable select-unidad">
+                            {% for val, txt in unidades %}
+                            <option value="{{ val }}" {% if val == materia.unidad %}selected{% endif %}>
+                                {{ txt }} ({{ val }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                    <td class="cell-precio-actual">
+                        $ {{ "%.2f"|format(materia.costo) }}
+                    </td>
+
+                    <td class="cell-precio-nuevo">
+                        <input type="number" class="input-editable input-nuevo-precio" placeholder="Ej: 25.50" step="0.01" min="0">
+                    </td>
+
+                    <td class="cell-accion">
+                        <button class="btn-guardar" onclick="guardarCambiosMateria(this)">Guardar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> </div>
+
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='almActualizarMateriaPrima.js') }}"></script>
+{% endblock %}

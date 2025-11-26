@@ -1,0 +1,103 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Monitor de Logística{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='repGestionLogistica.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header-section">
+        <h2>Monitor de Logística</h2>
+        <p>Gestiona envíos pendientes y actualizaciones en tiempo real.</p>
+    </div>
+    
+    <div class="table-container">
+        <table class="table-logistica">
+            <thead>
+                <tr>
+                    <th width="5%">ID</th>
+                    <th width="30%">Asunto / Pedido</th>
+                    <th width="35%">Programación (Fecha / Hora)</th>
+                    <th width="15%">Estado</th>
+                    <th width="15%">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in registros %}
+                <!-- Usamos el ID del pedido como identificador de fila -->
+                <tr id="fila-{{ item.ped_id }}">
+                    
+                    <td><strong>{{ item.ped_id }}</strong></td>
+                    
+                    <td>{{ item.ped_asunto }}</td>
+                    
+                    <!-- COLUMNA PROGRAMACIÓN -->
+                    <td>
+                        <div class="datetime-group">
+                            <!-- Fecha: Si es null (pendiente puro), sugiere hoy, o deja vacío -->
+                            <input type="date" class="input-fecha" 
+                                   value="{{ item.fecha_programada.strftime('%Y-%m-%d') if item.fecha_programada else '' }}">
+                            
+                            <!-- Selector de Hora (08:00 - 20:00) -->
+                            <select class="input-hora">
+                                <option value="" disabled {% if not item.ped_hora_entrega %}selected{% endif %}>--:--</option>
+                                
+                                {% for h in range(8, 21) %}
+                                    {% set hora_full = "%02d:00"|format(h) %}
+                                    {% set hora_half = "%02d:30"|format(h) %}
+                                    
+                                    <!-- Comparación directa de string (backend ya lo limpió) -->
+                                    <option value="{{ hora_full }}" {% if item.ped_hora_entrega == hora_full %}selected{% endif %}>
+                                        {{ hora_full }}
+                                    </option>
+
+                                    {% if h < 20 %}
+                                        <option value="{{ hora_half }}" {% if item.ped_hora_entrega == hora_half %}selected{% endif %}>
+                                            {{ hora_half }}
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </td>
+                    
+                    <!-- COLUMNA ESTADO -->
+                    <td>
+                        <select class="select-estado" data-original="{{ item.estado_actual }}">
+                            <option value="P" {% if item.estado_actual == 'P' %}selected{% endif %}>Pendiente</option>
+                            <option value="R" {% if item.estado_actual == 'R' %}selected{% endif %}>En Reparto</option>
+                            <option value="E" {% if item.estado_actual in ['E', 'C'] %}selected{% endif %}>Entregado</option>
+                            <option value="X" {% if item.estado_actual == 'X' %}selected{% endif %}>Cancelado</option>
+                        </select>
+                    </td>
+                    
+                    <!-- BOTÓN DE ACCIÓN -->
+                    <td>
+                        <!-- Guardamos ambos IDs en el dataset -->
+                        <button class="btn-guardar" 
+                                data-ped-id="{{ item.ped_id }}"
+                                data-rep-id="{{ item.rep_id if item.rep_id else '' }}">
+                            Guardar
+                        </button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="empty-state">No hay pedidos registrados en el sistema.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="actions-footer">
+        <button class="btn-regresar" onclick="window.history.back()">Regresar</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='repGestionLogistica.js') }}"></script>
+{% endblock %}

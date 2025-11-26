@@ -1,0 +1,150 @@
+/* --- CONFIGURACIÓN BASE --- */
+body {
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1100px; /* Un poco más ancho para ver mejor la tabla */
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header-section {
+    text-align: center;
+    border-bottom: 2px solid #7e084b;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+}
+
+.header-section h2 {
+    color: #DA6049;
+    font-size: 2.2em;
+    margin: 0 0 10px 0;
+}
+
+.header-section p {
+    color: #666;
+    margin: 0;
+}
+
+/* --- TABLA --- */
+.table-container {
+    overflow-x: auto;
+}
+
+.table-logistica {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.table-logistica th {
+    background-color: #411163;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.table-logistica td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+    background-color: white;
+}
+
+.table-logistica tr:hover td {
+    background-color: #fceae5; /* Color hover suave */
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    font-style: italic;
+    color: #888;
+}
+
+/* --- CONTROLES (Inputs y Selects) --- */
+.datetime-group {
+    display: flex;
+    gap: 8px;
+}
+
+.input-fecha, .input-hora, .select-estado {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.input-fecha:focus, .input-hora:focus, .select-estado:focus {
+    border-color: #7e084b;
+    box-shadow: 0 0 0 2px rgba(126, 8, 75, 0.1);
+}
+
+.input-fecha { flex: 2; }
+.input-hora { flex: 1; min-width: 80px; }
+.select-estado { width: 100%; font-weight: bold; }
+
+/* Colores de estado en el select (opcional, visual) */
+.select-estado option[value="P"] { color: #d9534f; }
+.select-estado option[value="R"] { color: #f0ad4e; }
+.select-estado option[value="E"] { color: #28a745; }
+
+/* --- BOTONES --- */
+.btn-guardar {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-guardar:hover {
+    background-color: #218838;
+}
+
+.btn-guardar:active {
+    transform: scale(0.97);
+}
+
+.actions-footer {
+    margin-top: 25px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-regresar {
+    background-color: #625c5b;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-regresar:hover {
+    background-color: #4e4847;
+}

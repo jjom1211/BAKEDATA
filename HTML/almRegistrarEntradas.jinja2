@@ -1,0 +1,155 @@
+{% extends "base.jinja2" %}
+{% block title %}Registrar Entradas{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='almRegistrarEntradas.css') }}">
+    <!-- Iconos FontAwesome para botones y buscador -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Gestión de Entradas</h1>
+    
+    <!-- CONTROL DE PESTAÑAS -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="cambiarTab('pedidos')">📦 Recepción de Pedidos</button>
+        <button class="tab-btn" onclick="cambiarTab('manual')">📝 Entrada Manual</button>
+    </div>
+
+    <!-- SECCIÓN 1: RECEPCIÓN POR PEDIDOS -->
+    <div id="seccion-pedidos" class="tab-content active">
+        <div class="info-bar">
+            <p>Pedidos en tránsito hacia esta sucursal.</p>
+        </div>
+        <div class="tabla-scroll-container">
+            <table id="tabla-pedidos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha Entrega</th>
+                        <th>Origen</th>
+                        <th>Asunto</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="pedidos-tbody">
+                    <tr><td colspan="5">Cargando pedidos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 2: ENTRADA MANUAL (REDISEÑADA) -->
+    <div id="seccion-manual" class="tab-content">
+        <div class="manual-card">
+            <div class="manual-header">
+                <h3><i class="fas fa-edit"></i> Registro de Entrada Manual</h3>
+                <p>Ajustes de inventario, compras locales o devoluciones.</p>
+            </div>
+            
+            <div class="manual-controls">
+                <!-- 1. Selector de Motivo -->
+                <div class="control-group">
+                    <label>Motivo de Entrada</label>
+                    <div class="select-wrapper">
+                        <select id="manual-motivo">
+                            <option value="AJUSTE">Ajuste de Inventario</option>
+                            <option value="COMPRA_LOCAL">Compra Local / Caja Chica</option>
+                            <option value="DEVOLUCION">Devolución de Cliente</option>
+                            <option value="REGALO">Bonificación / Regalo</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- 2. Buscador de Producto (Autocomplete) -->
+                <div class="control-group search-group">
+                    <label>Buscar Producto o Materia Prima</label>
+                    <div class="search-wrapper">
+                        <input type="text" id="search-input" placeholder="Escribe nombre o ID..." autocomplete="off">
+                        <!-- Inputs ocultos para guardar la selección real -->
+                        <input type="hidden" id="selected-prod-id">
+                        
+                        <div id="search-results" class="search-dropdown"></div>
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <!-- 3. Cantidad -->
+                <div class="control-group quantity-group">
+                    <label>Cantidad</label>
+                    <input type="number" id="manual-cantidad" placeholder="0" min="1">
+                </div>
+
+                <!-- 4. Botón Agregar -->
+                <div class="control-group btn-group">
+                    <label>&nbsp;</label>
+                    <button class="btn-add-manual" onclick="agregarItemManual()">
+                        <i class="fas fa-plus"></i> Agregar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabla de Items Agregados -->
+            <div class="manual-list-container">
+                <table class="tabla-manual">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="manual-tbody">
+                        <!-- Se llena con JS -->
+                    </tbody>
+                </table>
+                <!-- MENSAJE DE ESTADO VACÍO (CRUCIAL PARA JS) -->
+                <div id="empty-msg" class="empty-state-msg">No has agregado productos a la lista.</div>
+            </div>
+
+            <div class="manual-footer">
+                <button class="btn-save-manual" onclick="confirmarEntradaManual()">
+                    <i class="fas fa-save"></i> Guardar Entrada
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE DETALLES (Para Recepción por Pedidos) -->
+<div id="modal-recepcion" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <span class="modal-close" id="cerrar-modal">&times;</span>
+        <h2>Recibir Pedido #<span id="modal-pedido-id"></span></h2>
+        <p class="instruccion">Verifica las cantidades físicas recibidas.</p>
+        
+        <div class="tabla-modal-wrapper">
+            <table id="tabla-detalles-recepcion">
+                <thead>
+                    <tr>
+                        <th>Ítem</th>
+                        <th>Solicitado</th>
+                        <th>Recibido</th>
+                        <th>Unidad</th>
+                    </tr>
+                </thead>
+                <tbody id="detalles-tbody"></tbody>
+            </table>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" id="btn-cancelar-modal">Cancelar</button>
+            <button type="button" class="btn-primary" id="btn-confirmar-recepcion">Confirmar Entrada</button>
+        </div>
+    </div>
+</div>
+
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='almRegistrarEntradas.js') }}"></script>
+{% endblock %}

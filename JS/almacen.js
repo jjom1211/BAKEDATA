@@ -17,8 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Lógica para manejar clics en botones con data-url
     document.querySelectorAll(".container .button").forEach(button => {
         button.addEventListener("click", () => {
-            // Muestra una alerta con el texto del botón
-            alert("Función no implementada: " + button.textContent);
+            if (button.dataset.url) {
+                window.location.href = button.dataset.url;
+            }
         });
     });
 });

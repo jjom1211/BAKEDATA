@@ -1,0 +1,708 @@
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos para el formulario de registrar producción (Existente) */
+#formRegistrarProduccion input {
+  margin: 5px 0;
+  padding: 8px;
+  width: 100%;
+}
+
+/* Estilo para el botón verde (Registrar) (Existente) */
+#formRegistrarProduccion button {
+  margin-top: 10px;
+  padding: 15px 30px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  float: left;
+  cursor: pointer;
+  width: auto;
+}
+
+/* Estilo para el botón naranja (Volver) (Existente) */
+.button.volver {
+  margin-top: 10px;
+  padding: 15px 30px;
+  background-color: #ff8c00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  float: right;
+  width: auto;
+}
+
+/* Limpiar el float para evitar desbordamientos (Existente) */
+.container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Estilos de la Sidebar (Existente) */
+.menu-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.icono-sidebar {
+  width: 40px;
+  height: 40px;
+  margin-right: 5px;
+}
+
+.menu-item.doble-opcion {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+}
+
+.menu-item.doble-opcion .ir-produccion-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.menu-item.doble-opcion .toggle-submenu {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.menu-item.doble-opcion .ir-produccion {
+  background-color: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.menu-item.doble-opcion .submenu {
+  display: block;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.menu-item.doble-opcion .submenu .button {
+  color: white;
+  margin: 3px 0;
+  font-size: 14px;
+}
+
+/* 🟢 CORRECCIÓN 1: Asegura flotación y ancho consistente */
+.busqueda-container {
+  text-align: left;
+  margin-top: 0;
+  width: 47%;
+  float: left;
+  /* Añadido para asegurar la alineación de la columna izquierda */
+}
+
+.busqueda-container h1 {
+  font-size: 80px;
+}
+
+/* Buscador (Existente) de Registrar produccion*/
+#buscador {
+  width: 100%;
+  margin: 0;
+  padding: 12px;
+  font-size: 18px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 0;
+  box-sizing: border-box;
+  /* 🟢 CORRECCIÓN 3: Añadido min-width para evitar colapso al estar vacío */
+  min-width: 300px;
+
+  margin-left: 0%;
+  margin-right: 0;
+}
+
+/* Contenedor de Sugerencias/Resultados de Búsqueda (Existente) */
+/* RESULTADOS DE BÚSQUEDA EN "SOLICITAR MATERIAS PRIMAS" */
+/* 🟢 CORRECCIÓN 2: Eliminación de posicionamiento absoluto para evitar separación */
+.resultados-busqueda-container-MatPri {
+  position: absolute;
+  left: 20px;
+  top: 233px;
+  width: 46%;
+  /* Ajustado para que se vea como un bloque bajo el input */
+  margin: 0;
+  /* Corregido de 'margin: 10' a 0 para mejor control */
+  padding: 0;
+  font-size: 15px;
+  z-index: 9999;
+  display: block;
+  max-height: 200px;
+  overflow-y: auto;
+  border: none;
+  background: none;
+  clear: both;
+  /* Añadido para forzar el salto de línea debajo del input */
+}
+
+.resultados-busqueda-container-Produc {
+  position: absolute;
+  left: 20px;
+  top: 233px;
+  width: 46%;
+  /* Ajustado para que se vea como un bloque bajo el input */
+  margin: 0;
+  /* Corregido de 'margin: 10' a 0 para mejor control */
+  padding: 0;
+  font-size: 15px;
+  z-index: 9999;
+  display: block;
+  max-height: 200px;
+  overflow-y: auto;
+  border: none;
+  background: none;
+  clear: both;
+  /* Añadido para forzar el salto de línea debajo del input */
+  ;
+}
+
+/* Lista de Sugerencias (Existente - reutilizado para resultados de búsqueda) */
+#sugerencias {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  /* Se pega al input */
+  border-radius: 0 0 5px 5px;
+  /* Redondeado solo abajo */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para cada ITEM dentro del menú de sugerencias */
+#sugerencias div {
+  /* Aumentar el espacio interno (arriba/abajo) para más separación */
+  padding: 12px 15px;
+
+  /* Añadir un margen inferior para asegurar espacio entre ítems */
+  margin-bottom: 2px;
+
+  /* Ligeramente más grande, si es necesario */
+  font-size: 1.1em;
+
+  /* Asegurar que el cursor cambie para indicar que es clickeable */
+  cursor: pointer;
+
+  /* Opcional: Separador visual más discreto */
+  border-bottom: 1px solid #ddd;
+}
+
+#sugerencias div:last-child {
+  border-bottom: none;
+}
+
+#sugerencias div:hover {
+  background: #eef;
+  /* Un color de fondo más claro al pasar el ratón */
+}
+
+/* Estilo para cada Materia Prima en la lista de resultados (Nuevo) */
+#sugerencias li {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+#sugerencias li:last-child {
+  border-bottom: none;
+}
+
+#sugerencias li:hover {
+  background-color: #f9f9f9;
+}
+
+/* Estilo para el contenedor de elementos dentro del LI (check, nombre, cantidad) (Nuevo) */
+#sugerencias li>div {
+  display: block;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Campo de cantidad (Nuevo) */
+#sugerencias input[type="number"] {
+  width: 70px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-left: 5%;
+  text-align: center;
+}
+
+/* ---------------------------------------------------- */
+/* CONTENEDOR DE CONFIRMACIÓN (Existente y Mejorado) */
+/* ---------------------------------------------------- */
+/* ---------------------------------------------------- */
+/* CONTENEDOR DE CONFIRMACIÓN (Con Scrollbar) */
+/* ---------------------------------------------------- */
+.seleccionadas-container-MatPri {
+  position: relative;
+  background-color: #f2baa4;
+  border-radius: 10px;
+  padding: 10px;
+  padding-bottom: 10px;
+  width: 45%;
+  max-width: auto;
+  float: right;
+  /* 🟢 CORRECCIÓN 4: Arreglo de sintaxis de margin */
+  margin: 10px;
+  overflow-y: auto;
+  text-align: left;
+  max-height: 200px;
+}
+
+.seleccionadas-container-MatPri ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.seleccionadas-container-MatPri li {
+  margin: 10px 0;
+  padding: 12px;
+  background-color: #fff6f2;
+  /* Verde más fuerte */
+  border-radius: 6px;
+  border-left: 5px solid #DA6049;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.seleccionadas-container-MatPri strong {
+  color: #DA6049;
+  /* Destaca la cantidad */
+}
+
+.seleccionadas-container-MatPri input[type="number"],
+#sugerencias input[type="number"] {
+  width: 40px !important;
+  padding: 5px !important;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-left: 5px;
+}
+
+.seleccionadas-container-Produc {
+  background-color: #f2baa4;
+  border-radius: 10px;
+  padding: 10px;
+  padding-bottom: 10px;
+  width: 45%;
+  max-width: 600px;
+  float: right;
+  margin: 10px;
+  /* Corregido de 'margin: 10' a 10px */
+  max-height: 200px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.seleccionadas-container-Produc ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.seleccionadas-container-Produc li {
+  margin: 10px 0;
+  padding: 12px;
+  background-color: #fff6f2;
+  /* Verde más fuerte */
+  border-radius: 6px;
+  border-left: 5px solid #DA6049;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.seleccionadas-container-Produc strong {
+  color: #DA6049;
+  /* Destaca la cantidad */
+}
+
+.seleccionadas-container-Produc input[type="number"],
+#sugerencias input[type="number"] {
+  width: 40px !important;
+  padding: 5px !important;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin-left: 5px;
+}
+
+#botonEnviar {
+  display: block;
+  margin: 0 auto;
+  /* Centrar el botón */
+  width: 100%;
+  max-width: 600px;
+  /* Limitar el ancho */
+  padding: 12px 25px !important;
+  background-color: #000000 !important;
+  /* Azul para diferenciar de otros botones */
+  color: white !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  margin-top: 15px;
+  display: inline-block;
+  /* Sobrescribe el estilo por defecto */
+}
+
+#botonEnviar:hover {
+  background-color: #DA6049 !important;
+}
+
+/* ---------------------------------------------------- */
+/* Responsive (Existente) */
+/* ---------------------------------------------------- */
+@media (max-width: 1024px) {
+
+  /* Aplicar estilos al nuevo contenedor de detalles también */
+  #buscador,
+  .seleccionadas-container {
+    /* Hemos excluido .resultados-busqueda-container de esta regla */
+    width: 95%;
+    max-width: none;
+    margin: 10px 0 10px 5%;
+  }
+
+  /* Ahora manejamos el contenedor de sugerencias por separado */
+  /* Necesitamos que mantenga el ancho y que se centre correctamente */
+}
+
+/* Estilos de Autocompletado (Existente - para registrar-produccion) */
+
+/*
+ * Nuevos Estilos para el contenedor de confirmación 
+ * (Cuando se selecciona una materia prima)
+ */
+
+
+/* Lista UL interna que lleva los estilos de apariencia del menú */
+#sugerencias {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+
+  /* Estilos del menú */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  /* Se pega al buscador */
+  border-radius: 0 0 8px 8px;
+  /* Redondeado solo abajo */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para cada ITEM (div) dentro del menú */
+#sugerencias div {
+  padding: 12px 15px;
+  margin-bottom: 0;
+  /* Limpieza */
+  font-size: 1.1em;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+#sugerencias div:last-child {
+  border-bottom: none;
+}
+
+#sugerencias div:hover {
+  background: #eef;
+}
+
+
+/* ---------------------------------------------------- */
+/* CONTENEDOR DE CONFIRMACIÓN (Con Scrollbar) */
+/* ---------------------------------------------------- */
+.seleccionadas-container-MatPri h3 {
+  color: #DA6049;
+
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #a3d9b4;
+}
+
+.seleccionadas-container-MatPri ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.seleccionadas-container-MatPri li {
+  /* AJUSTE para que se vea mejor el scroll */
+  margin: 5px 0;
+  padding: 10px;
+  /* ... el resto de estilos ... */
+}
+
+/* ... resto de estilos de confirmación y botón ... */
+
+/* ---------------------------------------------------- */
+/* Responsive (Limpiado de selectores obsoletos) */
+/* ---------------------------------------------------- */
+/* 2. Estilos para el contenedor del botón (Fijarlo en la parte inferior) */
+#boton-fijo-wrapper {
+  position: fixed;
+  /* ✅ Siempre fijo en pantalla */
+  bottom: 30px;
+  /* Distancia desde abajo */
+  right: 10px;
+  /* Distancia desde la derecha */
+}
+
+/* Botón Confirmar (derecha) ya lo tienes */
+
+/* Botón Volver (izquierda) */
+#boton-volver-wrapper {
+  position: fixed;
+  bottom: 30px;
+  /* Distancia desde abajo */
+  left: 10px;
+  /* Distancia desde la izquierda */
+}
+
+#botonVolver {
+  padding: 10px 20px;
+  background-color: #000000;
+  /* Negro */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#botonVolver:hover {
+  background-color: #DA6049;
+}
+
+
+#main-content-wrapper {
+  display: flex;
+  /* Alinea los hijos lado a lado */
+  justify-content: space-around;
+  /* Distribuye el espacio entre el buscador y la confirmación */
+  align-items: flex-start;
+  /* Alinea ambos elementos en la parte superior */
+  width: 90%;
+  /* Ancho general del área de contenido */
+  max-width: 1200px;
+  margin: 30px auto;
+  margin-top: -150px;
+  /* Centra todo el bloque en la página */
+  position: relative;
+  /* CRÍTICO: El .busqueda-container debe ser un hijo de un contenedor posicionado para que el .resultados-busqueda-container funcione correctamente. */
+}
+
+/* ========================================================= */
+/* 📦 Estilos para Inventario de Materias Primas por Sucursal */
+/* ========================================================= */
+
+.container {
+  margin: 40px auto;
+  text-align: center;
+}
+
+/* ESTILO DEL TÍTULO "Producción" en produccion.html*/
+.container h1 {
+  color: #DA6049;
+  font-size: 100px;
+  text-align: center;
+}
+
+/* ESTILO DEL TÍTULO "Inventario de Materias Primas" en materias_primas.html*/
+.container h2 {
+  color: #DA6049;
+  margin: 40px auto;
+  font-size: 100px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.container h3 {
+  color: #DA6049;
+  margin: 0px auto;
+  font-size: 100px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.container-title {
+  color: #DA6049;
+  margin: 40px auto;
+  font-size: 80px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Selector de sucursal */
+#sucursal {
+  padding: 10px 15px;
+  font-size: 18px;
+  border: 2px solid #DA6049;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #333;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#sucursal:hover {
+  border-color: #a94438;
+}
+
+/* Tabla */
+#tabla-materias {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+#tabla-materias thead {
+  background-color: #DA6049;
+  color: white;
+}
+
+#tabla-materias th,
+#tabla-materias td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+#tabla-materias tbody tr:hover {
+  background-color: #fceae5;
+}
+
+/* Mensaje cuando no hay datos */
+#tabla-materias td[colspan] {
+  color: #666;
+  font-style: italic;
+}
+
+/* ---------------------------------------------------- */
+/* Responsive */
+/* ---------------------------------------------------- */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  #sucursal {
+    width: 100%;
+  }
+
+  #tabla-materias th,
+  #tabla-materias td {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}
+
+/* ============================== */
+/* 📦 Estilos para sugerencias de Productos */
+/* ============================== */
+#buscarProducto {
+  /* 🟢 CORRECCIÓN 3: Añadido min-width para evitar colapso al estar vacío */
+  min-width: 300px;
+  width: 100%;
+  display: block;
+  margin: 0;
+  padding: 12px;
+  font-size: 18px;
+  border: 2px solid #ccc;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 0;
+  box-sizing: border-box;
+
+  margin-left: 0%;
+  margin-right: 0;
+}
+
+#sugerenciasProducto {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Cada producto en la lista */
+#sugerenciasProducto li {
+  padding: 12px 15px;
+  margin-bottom: 0;
+  font-size: 1.1em;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+#sugerenciasProducto li:last-child {
+  border-bottom: none;
+}
+
+#sugerenciasProducto li:hover {
+  background: #eef;
+}
+
+/* Si usas <div> dentro de <ul>, agrega también: */
+#sugerenciasProducto div {
+  padding: 12px 15px;
+  margin-bottom: 0;
+  font-size: 1.1em;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+#sugerenciasProducto div:last-child {
+  border-bottom: none;
+}
+
+#sugerenciasProducto div:hover {
+  background: #eef;
+}

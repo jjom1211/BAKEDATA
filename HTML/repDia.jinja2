@@ -14,7 +14,13 @@
         {% if pedidos %}
             {% for ped in pedidos %}
             <div class="pedido">
-                <p>{{ ped.ped_asunto }}</p>
+            <div class="pedido-info">
+            <p><strong>{{ ped.ped_asunto }}</strong></p>
+            <!-- Mostrar la hora -->
+            <small style="color: #666;">
+                Hora: {{ ped.ped_hora_entrega if ped.ped_hora_entrega else 'Sin hora' }}
+            </small>
+                </div>
                 <div class="pedido-actions">
                     <button class="btn-detalles" data-reparto-id="{{ ped.rep_id }}">Ver Detalles</button>
                     <label>

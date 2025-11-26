@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, render_template, send_from_directory,
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import pymysql
+from pymysql import err
 from datetime import date, datetime
 import pytz
 import json
@@ -12,7 +13,7 @@ app = Flask(__name__, template_folder='HTML')
 # IMPORTANTE: Establece una llave secreta.
 # ¡Cámbiala por una cadena de texto larga, aleatoria y secreta!
 app.secret_key = 'esta-es-una-llave-muy-secreta-y-debes-cambiarla'
-
+app.config['SESSION_COOKIE_NAME'] = 'session_empleado_grace'
 # Configuración de la base de datos
 db_config = {
     'host': 'localhost',
@@ -448,10 +449,6 @@ def buscar_materias_logic(query):
     finally:
         conn.close()
 
-
-
-
-
 @app.route("/verMateriaPrima")
 def materias_primas():
     """Página que lista todas las materias primas."""
@@ -491,7 +488,32 @@ def solicitarMateriaPrima():
 @app.route('/produccionDeHoy')
 def produccionHoy():
     """Página que muestra la producción del día."""
-    return render_template('proProduccionDelDia.jinja2')
+    if 'sucursal' not in session or 'emp_id' not in session:
+        return redirect(url_for('login'))
+
+    # 1. Determinar si es gerente
+    es_gerente = 'G' in session.get('roles', [])
+    sucursales = []
+
+    connection = None
+    try:
+        # 2. Si es Gerente, cargamos todas las sucursales
+        if es_gerente:
+            connection = pymysql.connect(**db_config)
+            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                cursor.execute("SELECT suc_id, suc_nombre FROM sucursales")
+                sucursales = cursor.fetchall()
+    except Exception as e:
+        print(f"Error cargando sucursales: {e}")
+    finally:
+        if connection: connection.close()
+
+    # 3. Pasamos todo a la plantilla
+    return render_template('proProduccionDelDia.jinja2', 
+                            es_gerente=es_gerente, 
+                            sucursales=sucursales, 
+                            sucursal_propia=session['sucursal'])
+    
 @app.route('/api/inventario/<int:sucursal_id>')
 def obtener_inventario_materias_primas(sucursal_id):
     """Obtiene el inventario de materias primas para una sucursal específica (API Restful)."""
@@ -517,26 +539,6 @@ def obtener_inventario_materias_primas(sucursal_id):
     finally:
 
         conn.close()
-@app.route("/registrarProduccion", methods=["GET", "POST"])
-def registrar_produccion():
-    """
-    Ruta para servir la página HTML (GET) o registrar producción simple (POST).
-    NOTA: La lógica POST de esta ruta es una implementación API simple.
-    """
-    if request.method == "GET":
-        return render_template("proRegistrarProduccion.jinja2")
-    elif request.method == "POST":
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "No se recibieron datos"}), 400
-        producto_id = data.get("producto_id")
-        cantidad = data.get("cantidad")
-        if not producto_id or not cantidad:
-            return jsonify({"error": "Faltan datos"}), 400
-
-        # Aquí se debería guardar en la base de datos o llamar a una función de lógica
-        # (La implementación se deja como un mensaje de confirmación simple, como en el original)
-        return jsonify({"message": f"Producto {producto_id} registrado con cantidad {cantidad}"})
 
 
 # ==============================================================================
@@ -642,107 +644,458 @@ def buscar_productos():
 # 6. RUTAS DE API: PRODUCCIÓN DEL DÍA
 #    Endpoints específicos para la gestión de producción.
 # ==============================================================================
-
-@app.route('/api/registrar_produccion', methods=['POST'])
-def api_registrar_produccion():
-    """Registra una lista de productos producidos en la tabla produccion_del_dia."""
+    if 'sucursal' not in session: 
+        return jsonify({"success": False, "message": "No autorizado"}), 401
+        
+    # 1. Definir sucursal por defecto (la de la sesión)
+    sucursal_destino_id = session['sucursal']
+    usuario_es_gerente = 'G' in session.get('roles', [])
+    
     data = request.get_json()
-    if not data or not isinstance(data, list):
-        return jsonify({"success": False, "message": "Datos no válidos. Se espera una lista de productos."}), 400
+    
+    # --- DEBUG: Imprimir en consola qué llegó ---
+    print(f"DEBUG: Usuario Gerente? {usuario_es_gerente}")
+    print(f"DEBUG: JSON recibido: {data}")
+    
+    productos_lista = []
+    
+    # 2. Lógica de Selección de Sucursal
+    if isinstance(data, dict):
+        # Si el frontend envía un objeto { sucursal_id: X, productos: [...] }
+        solicitada_id = data.get('sucursal_id')
+        productos_lista = data.get('productos', [])
+        
+        # Si es Gerente Y mandó una ID, la usamos.
+        # IMPORTANTE: Convertir a int() para asegurar que no sea un string "2"
+        if usuario_es_gerente and solicitada_id:
+            try:
+                sucursal_destino_id = int(solicitada_id)
+                print(f"DEBUG: Cambio de sucursal autorizado a ID: {sucursal_destino_id}")
+            except ValueError:
+                print("DEBUG: ID de sucursal inválido, usando la propia.")
+    
+    elif isinstance(data, list):
+        # Formato antiguo
+        productos_lista = data
+    
+    if not productos_lista:
+        return jsonify({"success": False, "message": "No hay productos."}), 400
 
     conn = pymysql.connect(**db_config)
     try:
         with conn.cursor() as cursor:
-            # SQL para insertar en mydb.produccion_del_dia
-            sql = "INSERT INTO produccion_del_dia (pro_dia_nombre, pro_dia_cantidad, pro_dia_estado) VALUES (%s, %s, %s)"
+            # 3. Obtener el nombre de la sucursal donde se va a guardar (PARA CONFIRMAR)
+            cursor.execute("SELECT suc_nombre FROM sucursales WHERE suc_id = %s", (sucursal_destino_id,))
+            row_suc = cursor.fetchone()
+            nombre_sucursal_destino = row_suc[0] if row_suc else f"ID {sucursal_destino_id}"
+
+            # 4. Insertar
+            sql = """
+                INSERT INTO produccion_del_dia 
+                (pro_dia_suc_fk, pro_dia_pro_fk, pro_dia_nombre, pro_dia_cantidad, pro_dia_estado) 
+                VALUES (%s, %s, %s, %s, 'P')
+            """
             
-            for producto in data:
+            for producto in productos_lista:
+                prod_id = producto.get('id') 
                 nombre = producto.get('pro_dia_nombre')
                 cantidad = producto.get('pro_dia_cantidad')
-                estado = producto.get('pro_dia_estado', 'P') # Por defecto, 'P' (Pendiente)
 
-                if nombre and cantidad is not None:
-                    # Ejecutar el INSERT por cada producto
-                    cursor.execute(sql, (nombre, cantidad, estado))
+                if prod_id and cantidad:
+                    # Usamos la variable sucursal_destino_id que calculamos arriba
+                    cursor.execute(sql, (sucursal_destino_id, prod_id, nombre, cantidad))
             
-            conn.commit() # Confirmar la transacción
-            return jsonify({"success": True, "message": "Producción registrada exitosamente."})
+            conn.commit()
+            
+            # --- MENSAJE DE CONFIRMACIÓN EXPLÍCITO ---
+            mensaje = f"Producción registrada EXITOSAMENTE en: {nombre_sucursal_destino}"
+            return jsonify({"success": True, "message": mensaje})
             
     except Exception as e:
-        conn.rollback() # Revertir si hay un error
-        print(f"Error al registrar producción: {e}")
-        return jsonify({"success": False, "message": f"Error interno del servidor: {str(e)}"}), 500
+        conn.rollback()
+        print(f"Error: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
     finally:
         conn.close()
-
+        
 @app.route('/api/obtener_produccion_hoy', methods=['GET'])
 def api_obtener_produccion_hoy():
-    """Obtiene todos los registros de la tabla produccion_del_dia."""
+    if 'sucursal' not in session: return jsonify({"success": False}), 401
+    
+    # Lógica de selección de sucursal
+    sucursal_objetivo = session['sucursal'] # Por defecto, la propia
+    # Si el JS envía 'sucursal_id' en la URL (query param)
+    solicitada_id = request.args.get('sucursal_id')
+    # Si es gerente y pide una específica, usamos esa
+    if 'G' in session.get('roles', []) and solicitada_id:
+        try:
+            sucursal_objetivo = int(solicitada_id)
+        except:
+            pass
+
     conn = pymysql.connect(**db_config)
     try:
-        with conn.cursor() as cursor:
-            sql = "SELECT pro_dia_nombre, pro_dia_cantidad, pro_dia_estado FROM produccion_del_dia"
-            cursor.execute(sql)
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            # --- CONSULTA AGRUPADA (Misma lógica que definimos antes) ---
+            sql = """
+                SELECT 
+                    pro_dia_nombre, 
+                    pro_dia_estado,
+                    SUM(pro_dia_cantidad) as cantidad_total,
+                    GROUP_CONCAT(pro_dia_id) as lista_ids
+                FROM produccion_del_dia 
+                WHERE pro_dia_suc_fk = %s AND pro_dia_fecha = CURDATE()
+                GROUP BY pro_dia_nombre, pro_dia_estado
+                ORDER BY pro_dia_nombre ASC
+            """
+            cursor.execute(sql, (sucursal_objetivo,))
             rows = cursor.fetchall()
             
             produccion = []
             for row in rows:
+                ids_str = row['lista_ids']
+                if isinstance(ids_str, bytes): ids_str = ids_str.decode('utf-8')
+                lista_ids = [int(x) for x in ids_str.split(',')] if ids_str else []
+
                 produccion.append({
-                    'pro_dia_nombre': row[0],
-                    'pro_dia_cantidad': float(row[1]), # Convertir DECIMAL a float
-                    'pro_dia_estado': row[2]
+                    'pro_dia_nombre': row['pro_dia_nombre'],
+                    'pro_dia_estado': row['pro_dia_estado'],
+                    'pro_dia_cantidad': float(row['cantidad_total']),
+                    'ids_reales': lista_ids
                 })
             
             return jsonify(produccion)
-            
-    except Exception as e:
-        print(f"Error al obtener producción: {e}")
-        return jsonify({"success": False, "message": "Error al consultar la base de datos."}), 500
     finally:
         conn.close()
-        
+
 @app.route('/api/confirmar_produccion', methods=['POST'])
 def api_confirmar_produccion():
-    """
-    Actualiza el estado de los productos de 'P' a 'C' (Completado/Confirmado) 
-    en la tabla `produccion_del_dia`.
-    """
+    if 'sucursal' not in session: return jsonify({"success": False}), 401
+    emp_id = session.get('emp_id')
+    empleado_id = emp_id if emp_id else None
     data = request.get_json()
+    ids_produccion = data.get('ids_produccion', [])
     
-    if not data or 'productos' not in data or not isinstance(data['productos'], list):
-        return jsonify({"success": False, "message": "Datos no válidos. Se espera una lista de productos."}), 400
+    # Obtenemos la sucursal objetivo del JSON (para saber dónde sumar inventario)
+    solicitada_id = data.get('sucursal_id')
+    sucursal_objetivo = session['sucursal']
+    
+    if 'G' in session.get('roles', []) and solicitada_id:
+        sucursal_objetivo = int(solicitada_id)
 
-    productos_a_confirmar = data['productos']
+    if not ids_produccion: return jsonify({"success": False, "message": "Nada seleccionado"}), 400
+
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor(pymysql.cursors.DictCursor) as cursor:
+            conn.begin()
+            
+            format_strings = ','.join(['%s'] * len(ids_produccion))
+            
+            # 1. Obtener datos
+            cursor.execute(f"""
+                SELECT pro_dia_id, pro_dia_pro_fk, pro_dia_cantidad, pro_dia_nombre 
+                FROM produccion_del_dia 
+                WHERE pro_dia_id IN ({format_strings}) AND pro_dia_suc_fk = %s AND pro_dia_estado = 'P'
+            """, (*ids_produccion, sucursal_objetivo))
+            
+            items = cursor.fetchall()
+
+            for item in items:
+                pk_produccion = item['pro_dia_id']
+                producto_id = item['pro_dia_pro_fk']
+                cantidad = item['pro_dia_cantidad']
+                nombre = item['pro_dia_nombre']
+
+                # 2. Actualizar Inventario (en la sucursal_objetivo)
+                cursor.execute("SELECT pro_unimed FROM productos WHERE pro_id = %s", (producto_id,))
+                row_prod = cursor.fetchone()
+                unidad = row_prod['pro_unimed'] if row_prod else 'PZA'
+
+                sql_inventario = """
+                    INSERT INTO inventario_productos (invpro_pro_fk, invpro_suc_fk, pro_nombre, pro_stock, invpro_unimed_fk)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ON DUPLICATE KEY UPDATE pro_stock = pro_stock + VALUES(pro_stock)
+                """
+                cursor.execute(sql_inventario, (producto_id, sucursal_objetivo, nombre, cantidad, unidad))
+
+                # --- 3. NUEVO: Guardar en Historial de Producción (LO QUE FALTABA) ---
+                sql_historico = """
+                    INSERT INTO historial_produccion 
+                    (hist_suc_fk, hist_pro_fk, hist_emp_fk, hist_cantidad)
+                    VALUES (%s, %s, %s, %s)
+                """
+                cursor.execute(sql_historico, (sucursal_objetivo, producto_id, empleado_id, cantidad))
+                # ---------------------------------------------------------------------
+
+                # 4. Marcar como Completado
+                cursor.execute("UPDATE produccion_del_dia SET pro_dia_estado = 'C' WHERE pro_dia_id = %s", (pk_produccion,))
+
+            conn.commit()
+            return jsonify({"success": True, "message": "Producción confirmada."})
+            
+    except Exception as e:
+        if conn: conn.rollback()
+        return jsonify({"success": False, "message": str(e)}), 500
+    finally:
+        conn.close()
+# En tu archivo app.py
+
+
+    if 'sucursal' not in session:
+        return jsonify({'error': 'No autorizado'}), 401
     
+    sucursal_id = session['sucursal']
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # LÓGICA DE INTELIGENCIA:
+            # 1. Filtra por Sucursal.
+            # 2. Filtra por el mismo día de la semana de hoy (DAYOFWEEK(NOW())).
+            # 3. Filtra los últimos 90 días para que la tendencia sea reciente.
+            # 4. Agrupa por producto y promedia la cantidad.
+            
+            query = """
+                SELECT 
+                    p.pro_id as id, 
+                    p.pro_nombre as nombre, 
+                    p.pro_unimed as unidad,
+                    AVG(h.hist_cantidad) as cantidad_promedio
+                FROM historial_produccion h
+                JOIN productos p ON h.hist_pro_fk = p.pro_id
+                WHERE h.hist_suc_fk = %s
+                AND DAYOFWEEK(h.hist_fecha) = DAYOFWEEK(NOW())
+                AND h.hist_fecha >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+                GROUP BY p.pro_id, p.pro_nombre, p.pro_unimed
+                HAVING cantidad_promedio > 0
+            """
+            cursor.execute(query, (sucursal_id,))
+            sugerencias = cursor.fetchall()
+            
+            # Formateamos los datos para el frontend
+            resultados = []
+            for item in sugerencias:
+                resultados.append({
+                    'id': item['id'],
+                    'nombre': item['nombre'],
+                    'unidad': item['unidad'],
+                    # Redondeamos. Si es 'PZA' (Pieza) usamos entero, si no (KG/LT) usamos 2 decimales.
+                    'cantidad': int(item['cantidad_promedio']) if item['unidad'] == 'PZA' else round(float(item['cantidad_promedio']), 2)
+                })
+            
+            return jsonify(resultados)
+
+    except Exception as e:
+        print(f"Error en sugerencias del día: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+
+
+# ==============================================================================
+# MÓDULO: REGISTRO DE PRODUCCIÓN
+# ==============================================================================
+
+@app.route("/registrarProduccion", methods=["GET"])
+def registrar_produccion():
+    if 'sucursal' not in session or 'emp_id' not in session:
+        return redirect(url_for('login'))
+    
+    roles = session.get('roles', [])
+    es_gerente = 'G' in roles
+    sucursales = []
+    connection = None
+    try:
+        if es_gerente:
+            connection = pymysql.connect(**db_config)
+            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+                cursor.execute("SELECT suc_id, suc_nombre FROM sucursales")
+                sucursales = cursor.fetchall()
+    except Exception as e:
+        print(f"Error cargando sucursales: {e}")
+    finally:
+        if connection: connection.close()
+
+    return render_template("proRegistrarProduccion.jinja2", 
+                            es_gerente=es_gerente, 
+                            sucursales=sucursales, 
+                            sucursal_propia=session['sucursal'])
+
+# --- API 1: REGISTRAR PRODUCCIÓN (Guardar en BD) ---
+@app.route('/api/registrar_produccion', methods=['POST'])
+def api_registrar_produccion():
+    if 'sucursal' not in session: return jsonify({"success": False, "message": "No autorizado"}), 401
+        
+    sucursal_destino_id = session['sucursal']
+    usuario_es_gerente = 'G' in session.get('roles', [])
+    # 1. Obtienes el momento actual en la zona de CDMX
+    zona_mx = pytz.timezone("America/Mexico_City")
+    fecha_actual_mx = datetime.now(zona_mx)
+    # 2. Lo conviertes a string formato 'YYYY-MM-DD' para MySQL
+    fecha_produccion = fecha_actual_mx.strftime('%Y-%m-%d')
+    data = request.get_json()
+    productos_lista = []
+    
+    if isinstance(data, dict):
+        solicitada_id = data.get('sucursal_id')
+        productos_lista = data.get('productos', [])
+        if usuario_es_gerente and solicitada_id:
+            try:
+                sucursal_destino_id = int(solicitada_id)
+            except ValueError: pass
+    elif isinstance(data, list):
+        productos_lista = data
+    
+    if not productos_lista:
+        return jsonify({"success": False, "message": "No hay productos."}), 400
+
     conn = pymysql.connect(**db_config)
     try:
         with conn.cursor() as cursor:
-            # Crear los placeholders de %s necesarios para la cláusula IN
-            placeholders = ', '.join(['%s'] * len(productos_a_confirmar))
-            
-            sql = f"""
-            UPDATE produccion_del_dia 
-            SET pro_dia_estado = 'C' 
-            WHERE pro_dia_nombre IN ({placeholders}) AND pro_dia_estado = 'P'
+            cursor.execute("SELECT suc_nombre FROM sucursales WHERE suc_id = %s", (sucursal_destino_id,))
+            row_suc = cursor.fetchone()
+            nombre_sucursal = row_suc[0] if row_suc else f"ID {sucursal_destino_id}"
+
+            sql = """
+                INSERT INTO produccion_del_dia 
+                (pro_dia_suc_fk, pro_dia_pro_fk, pro_dia_nombre, pro_dia_cantidad, pro_dia_estado,pro_dia_fecha) 
+                VALUES (%s, %s, %s, %s, 'P',%s)
             """
+            for producto in productos_lista:
+                prod_id = producto.get('id') 
+                nombre = producto.get('pro_dia_nombre')
+                cantidad = producto.get('pro_dia_cantidad')
+                fecha_produccion
+
+                if prod_id and cantidad:
+                    cursor.execute(sql, (sucursal_destino_id, prod_id, nombre, cantidad,fecha_produccion))
             
-            # Ejecutar la actualización
-            cursor.execute(sql, productos_a_confirmar)
-            
-            rows_affected = cursor.rowcount
             conn.commit()
-            
-            return jsonify({
-                "success": True, 
-                "message": f"Se confirmaron {rows_affected} productos como Realizados."
-            })
-            
+            return jsonify({"success": True, "message": f"Producción registrada en: {nombre_sucursal}"})
     except Exception as e:
         conn.rollback()
-        print(f"Error al confirmar producción: {e}")
-        return jsonify({"success": False, "message": f"Error interno del servidor: {str(e)}"}), 500
+        return jsonify({"success": False, "message": str(e)}), 500
     finally:
         conn.close()
+
+# --- API 2: SUGERENCIAS DEL DÍA (Histórico) ---
+@app.route('/api/sugerencias_produccion_dia', methods=['GET'])
+def api_sugerencias_produccion_dia():
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    sucursal_id = session['sucursal']
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            query = """
+                SELECT p.pro_id as id, p.pro_nombre as nombre, p.pro_unimed as unidad, AVG(h.hist_cantidad) as cantidad_promedio
+                FROM historial_produccion h
+                JOIN productos p ON h.hist_pro_fk = p.pro_id
+                WHERE h.hist_suc_fk = %s
+                AND DAYOFWEEK(h.hist_fecha) = DAYOFWEEK(NOW())
+                AND h.hist_fecha >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+                GROUP BY p.pro_id, p.pro_nombre, p.pro_unimed
+                HAVING cantidad_promedio > 0
+            """
+            cursor.execute(query, (sucursal_id,))
+            sugerencias = cursor.fetchall()
+            
+            resultados = []
+            for item in sugerencias:
+                resultados.append({
+                    'id': item['id'],
+                    'nombre': item['nombre'],
+                    'unidad': item['unidad'],
+                    'cantidad': int(item['cantidad_promedio']) if item['unidad'] == 'PZA' else round(float(item['cantidad_promedio']), 2)
+                })
+            return jsonify(resultados)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+# --- API 3: PEDIDOS QUE REQUIEREN PRODUCCIÓN (TODOS LOS PENDIENTES) ---
+@app.route('/api/pedidos_para_produccion', methods=['GET'])
+def api_pedidos_para_produccion():
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # CAMBIO: Eliminado filtro de CURDATE(). Se muestran TODOS los pendientes.
+            query = """
+                SELECT 
+                    p.ped_id, 
+                    p.ped_asunto, 
+                    p.ped_fecha_entrega, 
+                    p.ped_hora_entrega,
+                    
+                    COALESCE(s_dest.suc_nombre, 'Cliente Externo') as destino,
+                    COALESCE(s_orig.suc_nombre, 'Matriz/Desconocido') as origen
+
+                FROM pedidos p
+                LEFT JOIN sucursales s_dest ON p.ped_sucursal_destino = s_dest.suc_id
+                LEFT JOIN sucursales s_orig ON p.ped_sucursal_origen = s_orig.suc_id
+                
+                WHERE 
+                    p.ped_estado_pedido = 'P' -- Solo pendientes de cualquier fecha
+                
+                ORDER BY p.ped_fecha_entrega ASC, p.ped_hora_entrega ASC
+            """
+            cursor.execute(query)
+            pedidos = cursor.fetchall()
+            
+            for p in pedidos:
+                if p['ped_fecha_entrega']:
+                    p['ped_fecha_entrega'] = p['ped_fecha_entrega'].strftime('%d/%m/%Y')
+                if p['ped_hora_entrega']:
+                    # Formato HH:MM
+                    if hasattr(p['ped_hora_entrega'], 'total_seconds'):
+                        seconds = p['ped_hora_entrega'].total_seconds()
+                        h = int(seconds // 3600)
+                        m = int((seconds % 3600) // 60)
+                        p['ped_hora_entrega'] = f"{h:02}:{m:02}"
+                    else:
+                        p['ped_hora_entrega'] = str(p['ped_hora_entrega'])[:5]
+                    
+            return jsonify(pedidos)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+# --- API 4: DETALLES DE PEDIDO PARA CARGAR ---
+@app.route('/api/items_pedido_produccion/<int:pedido_id>', methods=['GET'])
+def api_items_pedido_produccion(pedido_id):
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            query = """
+                SELECT 
+                    dp.detpedpro_pro_id as id, 
+                    p.pro_nombre as nombre, 
+                    p.pro_unimed as unidad, 
+                    dp.detpedpro_cantidad as cantidad
+                FROM detalle_pedido_productos dp
+                JOIN productos p ON dp.detpedpro_pro_id = p.pro_id
+                WHERE dp.detpedpro_ped_id = %s
+            """
+            cursor.execute(query, (pedido_id,))
+            items = cursor.fetchall()
+            for i in items: i['cantidad'] = float(i['cantidad'])
+            return jsonify(items)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if connection: connection.close()
 
 
 # ==============================================================================
@@ -769,12 +1122,11 @@ def api_solicitar_materia_prima():
     comentarios = data.get('comentarios', '')
     tipo_origen = data.get('tipo_origen') # 'proveedor' o 'sucursal'
     origen_id = data.get('origen_id')
-
-    if not carrito:
-        return jsonify({'success': False, 'message': 'No hay materias primas en la solicitud.'}), 400
-    if not tipo_origen or not origen_id:
-        return jsonify({'success': False, 'message': 'No se seleccionó un origen válido.'}), 400
-
+    fecha_entrega = data.get('fecha_entrega') # YYYY-MM-DD
+    hora_entrega = data.get('hora_entrega')   # HH:MM (puede ser vacío)
+    
+    if not carrito or not tipo_origen or not origen_id or not fecha_entrega:
+        return jsonify({'success': False, 'message': 'Faltan datos obligatorios.'}), 400
     connection = None
     try:
         connection = pymysql.connect(**db_config)
@@ -788,42 +1140,46 @@ def api_solicitar_materia_prima():
             format_strings = ','.join(['%s'] * len(ids_materias))
             cursor.execute(f"SELECT matprim_id, matprim_costo_unit FROM materias_primas WHERE matprim_id IN ({format_strings})", tuple(ids_materias))
             costos = {row['matprim_id']: row['matprim_costo_unit'] for row in cursor.fetchall()}
-            
-            # --- CORRECCIÓN DE LÓGICA DE ORIGEN ---
             proveedor_fk = None
             sucursal_origen_fk = None # Inicia como None
             asunto = ""
 
             if tipo_origen == 'proveedor':
                 proveedor_fk = int(origen_id)
-                sucursal_origen_fk = 1 # <-- ¡CORRECCIÓN! Asignamos ID 1 (Paseos del Bosque) como origen
-                asunto = "Pedido a Proveedor"
+                sucursal_origen_fk = 1 
+                asunto = "Pedido a Proveedor (MP)"
                 for item in carrito:
                      monto_total_solicitud += decimal.Decimal(costos.get(int(item['id']), 0)) * decimal.Decimal(item['cantidad'])
-            
             elif tipo_origen == 'sucursal':
                 sucursal_origen_fk = int(origen_id) # Asignamos el ID de la otra sucursal
-                asunto = "Solicitud de Traslado"
+                asunto = "Solicitud de Traslado (MP)"
                 monto_total_solicitud = 0 
-            
-            # --- FIN DE LA CORRECCIÓN ---
 
             # 3. Insertar el Pedido principal
+            # INSERT PEDIDO CON FECHA Y HORA DE ENTREGA
             sql_pedido = """
                 INSERT INTO pedidos 
-                (ped_emp_id, ped_sucursal_origen, ped_sucursal_destino, ped_prov_fk, ped_fecha_pedido, ped_monto_total, ped_estado_pedido, ped_asunto, ped_comentarios) 
-                VALUES (%s, %s, %s, %s, %s, %s, 'P', %s, %s)
+                (ped_emp_id, ped_sucursal_origen, ped_sucursal_destino, ped_prov_fk, 
+                ped_fecha_pedido, ped_fecha_entrega, ped_hora_entrega, 
+                ped_monto_total, ped_estado_pedido, ped_asunto, ped_comentarios) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'P', %s, %s)
             """
             today = date.today()
-            # Ahora sucursal_origen_fk NUNCA será None, resolviendo el error
-            cursor.execute(sql_pedido, (empleado_id, sucursal_origen_fk, sucursal_id_destino, proveedor_fk, today, monto_total_solicitud, asunto, comentarios))
+            # Si hora_entrega viene vacío, pasamos None
+            hora_val = hora_entrega if hora_entrega else None
+            
+            cursor.execute(sql_pedido, (
+                empleado_id, sucursal_origen_fk, sucursal_id_destino, proveedor_fk, 
+                today, fecha_entrega, hora_val, 
+                monto_total_solicitud, asunto, comentarios
+            ))
             pedido_id = cursor.lastrowid 
 
-            # 4. Insertar detalles (sin cambios)
+            # Insertar detalles (Materia Prima)
             sql_detalle = """
                 INSERT INTO detalle_pedido_materias_primas 
                 (detpedmat_ped_id, detpedmat_matprim_id, detpedmat_cantidad, detpedmat_precio_unitario) 
-                VALUES (%s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s) -- Asumimos precio 0 o calculas el real
             """
             for item in carrito:
                 item_id = int(item['id'])
@@ -851,6 +1207,902 @@ def api_solicitar_materia_prima():
 def almacen():
     return render_template('almacen.jinja2')
 
+# RUTA PARA VER MATERIAS PRIMAS
+@app.route("/almacen/verMateriasPrimas")
+def materias_primas_almacen():
+    materias = get_materias_primas_almacen()
+    return render_template('almVerMateriasPrimas.jinja2', materias=materias)
+
+# RUTA PARA SOLICITAR MATERIA PRIMA
+@app.route('/api/materia_prima/actualizar')
+def solicitar_MateriaPrima():
+    """
+    Ruta para la página de solicitud.
+    Reutiliza la función 'solicitarMateriaPrima' del módulo Producción 
+    para servir el mismo HTML.
+    """
+    return api_solicitar_materia_prima()
+
+@app.route('/almacen/solicitarMateriaPrima')
+def solicitarMateriaPrima_almacen():
+    """Página para solicitar materia prima."""
+    if 'sucursal' not in session:
+        return redirect(url_for('login'))
+        
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            
+            # 1. Obtenemos la lista de proveedores
+            cursor.execute("SELECT prov_id, prov_nombre_empresa FROM proveedores WHERE prov_estado = 'A'")
+            proveedores = cursor.fetchall()
+            
+            # 2. Obtenemos la lista de sucursales (para traslados)
+            # Excluimos la sucursal actual, no puedes pedirte a ti mismo
+            cursor.execute("SELECT suc_id, suc_nombre FROM sucursales WHERE suc_id != %s", (session['sucursal'],))
+            sucursales = cursor.fetchall()
+            
+        return render_template('almSolicitarMateriaPrima.jinja2', 
+                            proveedores=proveedores,
+                            sucursales=sucursales)
+    except Exception as e:
+        print(f"Error en solicitarMateriaPrima: {e}")
+        return "Error al cargar la página", 500
+    finally:
+        if connection:
+            connection.close()
+
+
+
+# RUTA  PARA VER PRODUCTOS
+@app.route("/almacen/verProductos")
+def productos():
+    """
+    Obtiene la lista completa de productos y la sirve en la plantilla HTML.
+    Esta ruta responde al clic del botón 'Ver Productos'.
+    """
+    # Verificamos que el empleado esté logueado
+    if 'emp_id' not in session:
+        return redirect(url_for('login'))
+        
+    # --- SIMPLIFICACIÓN: Obtenemos la sucursal directamente de la sesión ---
+    # Ya no es necesario buscar el empleado en la base de datos.
+    sucursal_actual_id = session.get('sucursal')
+
+    # Si por alguna razón la sucursal no está en la sesión, redirigimos.
+    if not sucursal_actual_id:
+        flash('No se pudo identificar la sucursal. Por favor, inicia sesión de nuevo.', 'error')
+        return redirect(url_for('login'))
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # 1. Obtener la lista de todas las sucursales para el dropdown (esto sigue siendo necesario)
+            cursor.execute("SELECT suc_id, suc_nombre FROM sucursales ORDER BY suc_nombre")
+            sucursales = cursor.fetchall()
+            # 2. Obtener el inventario inicial usando el ID de la sesión
+            query_inventario = """
+                SELECT ip.invpro_pro_fk AS id, p.pro_nombre AS nombre, p.pro_unimed AS unidad, ip.pro_stock AS stock
+                FROM inventario_productos ip
+                JOIN productos p ON ip.invpro_pro_fk = p.pro_id
+                WHERE ip.invpro_suc_fk = %s
+            """
+            cursor.execute(query_inventario, (sucursal_actual_id,))
+            inventario_inicial = cursor.fetchall()
+        # Pasamos los datos a la plantilla
+        return render_template('almVerProductos.jinja2', 
+                                sucursales=sucursales,
+                                inventario_inicial=inventario_inicial,
+                                sucursal_actual_id=sucursal_actual_id)
+    except Exception as e:
+        print(f"Error al ver productos: {e}")
+        return "Error al cargar la página", 500
+    finally:
+        if connection:
+            connection.close()
+
+
+def get_all_productos():
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            # Seleccionamos los campos necesarios de la tabla 'productos'
+            cursor.execute("SELECT pro_id, pro_nombre, pro_precio, pro_costo_unit, pro_unimed, pro_descr FROM productos")
+            rows = cursor.fetchall()
+            productos = []
+            for row in rows:
+                productos.append({
+                    'id': row[0],
+                    'nombre': row[1],
+                    'precio': row[2],
+                    'costo': row[3],
+                    'unidad': row[4],
+                    'descripcion': row[5]
+                })
+            return productos
+    except Exception as e:
+        print(f"Error al obtener productos de la BD: {e}")
+        return []
+    finally:
+        conn.close()
+
+
+@app.route('/api/inventario/<int:sucursal_id>')
+def obtener_inventario_productos(sucursal_id):
+    """Obtiene el inventario de materias primas para una sucursal específica (API Restful)."""
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT 
+                    invmatprim_matprim_fk AS id,
+                    invmatprim_matprim_nombre AS nombre,
+                    invmatprim_unimed AS unidad,
+                    invmatprim_stock AS stock
+                FROM inventario_materias_primas
+                WHERE invmatprim_suc_fk = %s
+            """, (sucursal_id,))
+            
+            rows = cursor.fetchall()
+            datos = [
+                {
+                    'id': row[0],
+                    'nombre': row[1],
+                    'unidad': row[2],
+                    'stock': float(row[3])
+                }
+                for row in rows
+            ]
+            return jsonify(datos)
+    finally:
+        conn.close()
+
+def get_materias_primas_almacen():
+    """Obtiene una lista de TODAS las materias primas, INCLUYENDO EL COSTO."""
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            # Esta consulta SÍ incluye 'matprim_costo_unit'
+            cursor.execute("SELECT matprim_id, matprim_nombre, matprim_unimed, matprim_descr, matprim_costo_unit FROM materias_primas")
+            rows = cursor.fetchall()
+            materias = []
+            for row in rows:
+                materias.append({
+                    'id': row[0],
+                    'nombre': row[1],
+                    'unidad': row[2],
+                    'descripcion': row[3],
+                    'costo': row[4]
+                })
+            return materias
+    finally:
+        conn.close()
+
+# -----------------------------------------------------------
+UNIDADES_DE_MEDIDA = [
+    ('KG', 'Kilogramo'),
+    ('GR', 'Gramo'),
+    ('PZA', 'Pieza'),
+    ('L', 'Litro'),
+    ('ml', 'Mililitro'),
+    ('M', 'Metro')
+]
+# -----------------------------------------------------------
+# RUTA PARA ACTUALIZAR MATERIA PRIMA
+# -----------------------------------------------------------
+@app.route('/actualizarMateriaPrima')
+def actualizar_materias_page():
+    """
+    Muestra la página de edición de materias primas.
+    NO debe leer request.json aquí.
+    """
+    try:
+        # Su único trabajo es obtener datos y mostrar la plantilla
+        materias = get_materias_primas_almacen() 
+    except Exception as e:
+        print(f"Error al obtener materias primas para edición: {e}")
+        materias = []
+        
+    # Renderiza el HTML y le pasa las materias
+    return render_template(
+        'almActualizarMateriaPrima.jinja2', 
+        materias=materias, 
+        unidades=UNIDADES_DE_MEDIDA
+    )
+
+# -----------------------------------------------------------
+# ACTUALIZAR MATERIA PRIMA (API)
+# -----------------------------------------------------------
+@app.route('/api/materia_prima/actualizar', methods=['POST'])
+def api_actualizar_materia():
+    """
+    Endpoint API para actualizar una materia prima.
+    Esta SÍ es POST y SÍ lee request.json
+    """
+    # Obtenemos los datos enviados por el JavaScript
+    data = request.json
+    
+    mat_id = data.get('id')
+    descripcion = data.get('descripcion')
+    unidad = data.get('unidad')
+    costo = data.get('costo')
+
+    if not all([mat_id, unidad, costo is not None]):
+        return jsonify({'error': 'Faltan datos (id, unidad, costo)'}), 400
+
+    conn = conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            sql = """
+                UPDATE materias_primas 
+                SET 
+                    matprim_descr = %s,
+                    matprim_unimed = %s,
+                    matprim_costo_unit = %s
+                WHERE 
+                    matprim_id = %s
+            """
+            cursor.execute(sql, (descripcion, unidad, costo, mat_id))
+        
+        conn.commit()
+        return jsonify({'success': True, 'message': f'Materia Prima {mat_id} actualizada.'})
+
+    except Exception as e:
+        conn.rollback() 
+        print(f"Error en API al actualizar materia prima: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conn.close()
+        
+# ===========================================================
+# RUTA PARA ACTUALIZAR PRODUCTOS
+# ===========================================================
+
+@app.route('/actualizarProductos')
+def actualizar_productos_page():
+    """
+    Muestra la página de edición de productos.
+    """
+    try:
+        # Reutilizamos la función que ya existe
+        productos_lista = get_all_productos() 
+    except Exception as e:
+        print(f"Error al obtener productos para edición: {e}")
+        productos_lista = []
+        
+    return render_template(
+        'almActualizarProductos.jinja2', 
+        productos=productos_lista, 
+        unidades=UNIDADES_DE_MEDIDA # Reutilizamos la lista de unidades
+    )
+
+@app.route('/api/producto/actualizar', methods=['POST'])
+def api_actualizar_producto():
+    """
+    Endpoint API para actualizar un producto.
+    """
+    data = request.json
+    
+    prod_id = data.get('id')
+    descripcion = data.get('descripcion')
+    unidad = data.get('unidad')
+    precio = data.get('precio') 
+    
+    # --- CAMBIO 1: Recibir 'costo_unit' (como lo envía el JS) ---
+    costo_unit = data.get('costo_unit') # No 'costo', sino 'costo_unit'
+
+    # --- CAMBIO 2: Agregar el nuevo campo a la validación ---
+    if not all([prod_id, unidad, precio is not None, costo_unit is not None]):
+        return jsonify({'error': 'Faltan datos (id, unidad, precio o costo_unit)'}), 400
+    conn = pymysql.connect(**db_config)
+    try:
+        with conn.cursor() as cursor:
+            # --- CAMBIO 3: Agregar 'pro_costo_unit' a la consulta SQL ---
+            sql = """
+                UPDATE productos 
+                SET 
+                    pro_descr = %s,
+                    pro_unimed = %s,
+                    pro_precio = %s,
+                    pro_costo_unit = %s  -- <-- ¡AQUÍ ESTÁ LA MAGIA!
+                WHERE 
+                    pro_id = %s
+            """
+            
+            # --- CAMBIO 4: Agregar 'costo_unit' a la tupla de datos ---
+            # (El orden debe coincidir con el SQL)
+            cursor.execute(sql, (
+                descripcion, 
+                unidad, 
+                precio, 
+                costo_unit,  # <-- El valor que faltaba
+                prod_id
+            ))
+        
+        conn.commit()
+        return jsonify({'success': True, 'message': f'Producto {prod_id} actualizado.'})
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error en API al actualizar producto: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        conn.close()
+
+
+# RUTA PARA SOLICITAR PRODUCTOS
+@app.route('/almacen/solicitarProductos')
+def solicitar_productos():
+    if 'sucursal' not in session or 'emp_id' not in session:
+        return redirect(url_for('login'))
+            
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # 1. Productos disponibles (Catálogo)
+            query_productos = """
+                SELECT pro_id as id, pro_nombre as nombre, pro_costo_unit as costo, pro_unimed as unidad
+                FROM productos ORDER BY pro_nombre
+            """
+            cursor.execute(query_productos)
+            productos_disponibles = cursor.fetchall()
+            for prod in productos_disponibles:
+                prod['costo'] = float(prod['costo'])
+            
+            # 2. Sucursales (Para el selector de Origen)
+            cursor.execute("SELECT suc_id, suc_nombre FROM sucursales")
+            sucursales = cursor.fetchall()
+            
+        return render_template('almSolicitarProductos.jinja2', 
+                                productos=productos_disponibles,
+                                sucursales=sucursales)
+    except Exception as e:
+        print(f"Error en solicitar_productos_vista: {e}")
+        return "Error al cargar la página", 500
+    finally:
+        if connection: connection.close()
+
+
+# ==============================================================================
+# MÓDULO: REGISTRO DE ENTRADAS (ALMACÉN)
+# # ==============================================================================
+
+# --- 1. RUTA DE VISTA ---
+@app.route('/registrarEntradas')
+def registrar_entradas_vista():
+    if 'sucursal' not in session: return redirect(url_for('login'))
+    return render_template('almRegistrarEntradas.jinja2')
+
+# --- 2. API: LISTAR PEDIDOS POR RECIBIR (Lógica de Origen Corregida) ---
+@app.route('/api/pedidos_por_recibir')
+def api_pedidos_por_recibir():
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    
+    sucursal_destino = session['sucursal']
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # CORRECCIÓN DE LÓGICA DE ORIGEN:
+            query = """
+                SELECT 
+                    p.ped_id, 
+                    p.ped_asunto, 
+                    p.ped_monto_total,
+                    p.ped_fecha_entrega,
+                    p.ped_hora_entrega,
+                    CASE 
+                        WHEN p.ped_prov_fk IS NOT NULL THEN CONCAT('Prov: ', prov.prov_nombre_empresa)
+                        WHEN p.ped_usu_id IS NOT NULL THEN 'Cliente (Web/App)'
+                        ELSE CONCAT('Suc: ', s.suc_nombre)
+                    END as origen
+                FROM pedidos p
+                LEFT JOIN sucursales s ON p.ped_sucursal_origen = s.suc_id
+                LEFT JOIN proveedores prov ON p.ped_prov_fk = prov.prov_id
+                WHERE 
+                    p.ped_sucursal_destino = %s 
+                    AND p.ped_estado_pedido = 'R' 
+                ORDER BY 
+                    p.ped_fecha_entrega ASC, 
+                    p.ped_hora_entrega ASC
+            """
+            cursor.execute(query, (sucursal_destino,))
+            pedidos = cursor.fetchall()
+            
+            # Formateo amigable de fecha y hora
+            for p in pedidos:
+                p['ped_monto_total'] = float(p['ped_monto_total'])
+                
+                # Fecha
+                fecha_display = ""
+                if p['ped_fecha_entrega']:
+                    fecha_display = p['ped_fecha_entrega'].strftime('%d/%m/%Y')
+                    # IMPORTANTE: Reemplazar el objeto date original con string para JSON
+                    p['ped_fecha_entrega'] = p['ped_fecha_entrega'].strftime('%Y-%m-%d')
+                else:
+                    p['ped_fecha_entrega'] = None
+                
+                # Hora (CORRECCIÓN DEL ERROR TIMEDELTA)
+                hora_display = ""
+                if p['ped_hora_entrega']:
+                    if hasattr(p['ped_hora_entrega'], 'total_seconds'):
+                        seconds = p['ped_hora_entrega'].total_seconds()
+                        h = int(seconds // 3600)
+                        m = int((seconds % 3600) // 60)
+                        hora_display = f"{h:02}:{m:02}"
+                    else:
+                        hora_display = str(p['ped_hora_entrega'])[:5]
+                    
+                    p['ped_hora_entrega'] = hora_display
+                else:
+                    p['ped_hora_entrega'] = None
+                
+                p['fecha_formateada'] = f"{fecha_display} {hora_display}".strip()
+
+            return jsonify(pedidos)
+    except Exception as e:
+        print(f"Error api_pedidos_por_recibir: {e}")
+        # Devolver una lista vacía en lugar de error JSON para no romper el frontend
+        return jsonify([]) 
+    finally:
+        if connection: connection.close()
+
+# --- 3. API: OBTENER DETALLES DEL PEDIDO ---
+@app.route('/api/obtener_detalles_pedido/<int:pedido_id>')
+def api_obtener_detalles_pedido(pedido_id):
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            items = []
+            
+            # Productos
+            cursor.execute("""
+                SELECT d.detpedpro_pro_id as id, d.detpedpro_cantidad as cantidad_esperada, 
+                    p.pro_nombre as nombre, p.pro_unimed as unidad, 'producto' as tipo
+                FROM detalle_pedido_productos d
+                JOIN productos p ON d.detpedpro_pro_id = p.pro_id
+                WHERE d.detpedpro_ped_id = %s
+            """, (pedido_id,))
+            items.extend(cursor.fetchall())
+
+            # Materias Primas
+            cursor.execute("""
+                SELECT d.detpedmat_matprim_id as id, d.detpedmat_cantidad as cantidad_esperada, 
+                       m.matprim_nombre as nombre, m.matprim_unimed as unidad, 'materia' as tipo
+                FROM detalle_pedido_materias_primas d
+                JOIN materias_primas m ON d.detpedmat_matprim_id = m.matprim_id
+                WHERE d.detpedmat_ped_id = %s
+            """, (pedido_id,))
+            items.extend(cursor.fetchall())
+
+            for item in items:
+                item['cantidad_esperada'] = float(item['cantidad_esperada'])
+
+            return jsonify(items)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if connection: connection.close()
+# --- 4. API: CONFIRMAR RECEPCIÓN (Corrección Lógica Origen + Precios) ---
+@app.route('/api/confirmar_recepcion', methods=['POST'])
+def api_confirmar_recepcion():
+    if 'emp_id' not in session or 'sucursal' not in session:
+        return jsonify({'success': False, 'message': 'Acceso no autorizado'}), 401
+    
+    empleado_id = session['emp_id']
+    sucursal_id = session['sucursal']
+    
+    data = request.json
+    pedido_id = data.get('pedido_id')
+    items_recibidos = data.get('items', []) 
+    accion_faltante = data.get('accion_faltante', 'CERRAR')
+
+    if not pedido_id or not items_recibidos:
+        return jsonify({'success': False, 'message': 'Datos incompletos.'}), 400
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            connection.begin()
+
+            items_backorder_prod = []
+            items_backorder_mat = []
+
+            for item in items_recibidos:
+                tipo = item.get('tipo')
+                item_id = item.get('id')
+                cantidad_recibida = float(item.get('cantidad_recibida'))
+                cantidad_esperada = float(item.get('cantidad_esperada'))
+
+                if cantidad_recibida < 0: 
+                    raise Exception(f"Error en ítem {item_id}: Cantidad negativa.")
+                
+                # Detectar faltantes para backorder
+                if cantidad_recibida < cantidad_esperada and accion_faltante == 'BACKORDER':
+                    diferencia = cantidad_esperada - cantidad_recibida
+                    if tipo == 'producto':
+                        items_backorder_prod.append({'id': item_id, 'cant': diferencia})
+                    elif tipo == 'materia':
+                        items_backorder_mat.append({'id': item_id, 'cant': diferencia})
+
+                # Actualizar Inventario con lo REAL recibido
+                if cantidad_recibida > 0:
+                    if tipo == 'producto':
+                        cursor.execute("SELECT pro_nombre, pro_unimed FROM productos WHERE pro_id = %s", (item_id,))
+                        info = cursor.fetchone()
+                        if info:
+                            cursor.execute("""
+                                INSERT INTO inventario_productos (invpro_pro_fk, invpro_suc_fk, pro_nombre, pro_stock, invpro_unimed_fk)
+                                VALUES (%s, %s, %s, %s, %s)
+                                ON DUPLICATE KEY UPDATE pro_stock = pro_stock + VALUES(pro_stock)
+                            """, (item_id, sucursal_id, info['pro_nombre'], cantidad_recibida, info['pro_unimed']))
+                            
+                            cursor.execute("""
+                                INSERT INTO movimientos_productos (mov_suc_fk, mov_pro_fk, mov_emp_fk, mov_cantidad, mov_tipo, mov_motivo, mov_referencia_id, stock_anterior, stock_nuevo)
+                                SELECT %s, %s, %s, %s, 'ENTRADA', 'RECEPCION_PEDIDO', %s, pro_stock - %s, pro_stock 
+                                FROM inventario_productos WHERE invpro_pro_fk = %s AND invpro_suc_fk = %s
+                            """, (sucursal_id, item_id, empleado_id, cantidad_recibida, pedido_id, cantidad_recibida, item_id, sucursal_id))
+
+                    elif tipo == 'materia':
+                        cursor.execute("SELECT matprim_nombre, matprim_unimed FROM materias_primas WHERE matprim_id = %s", (item_id,))
+                        info = cursor.fetchone()
+                        if info:
+                            cursor.execute("""
+                                INSERT INTO inventario_materias_primas (invmatprim_matprim_fk, invmatprim_suc_fk, invmatprim_matprim_nombre, invmatprim_stock, invmatprim_unimed)
+                                VALUES (%s, %s, %s, %s, %s)
+                                ON DUPLICATE KEY UPDATE invmatprim_stock = invmatprim_stock + VALUES(invmatprim_stock)
+                            """, (item_id, sucursal_id, info['matprim_nombre'], cantidad_recibida, info['matprim_unimed']))
+
+            # --- GENERACIÓN DE PEDIDO HIJO (CORREGIDO) ---
+            msg_extra = ""
+            if accion_faltante == 'BACKORDER' and (items_backorder_prod or items_backorder_mat):
+                # CORRECCIÓN: Incluimos ped_usu_id y ped_emp_id tal cual vienen del original
+                sql_header = """
+                    INSERT INTO pedidos (ped_fecha_pedido, ped_sucursal_origen, ped_sucursal_destino, ped_emp_id, ped_usu_id, ped_asunto, ped_comentarios, ped_monto_total, ped_estado_pedido, ped_prov_fk)
+                    SELECT CURDATE(), ped_sucursal_origen, ped_sucursal_destino, ped_emp_id, ped_usu_id, CONCAT(ped_asunto, ' (Faltante)'), 'Generado por faltante en recepción', 0, 'P', ped_prov_fk
+                    FROM pedidos WHERE ped_id = %s
+                """
+                cursor.execute(sql_header, (pedido_id,))
+                new_id = cursor.lastrowid
+                
+                # Copiamos detalles incluyendo precio original
+                for i in items_backorder_prod:
+                    cursor.execute("SELECT detpedpro_precio_unitario FROM detalle_pedido_productos WHERE detpedpro_ped_id=%s AND detpedpro_pro_id=%s", (pedido_id, i['id']))
+                    res = cursor.fetchone()
+                    precio = res['detpedpro_precio_unitario'] if res else 0
+                    
+                    cursor.execute("INSERT INTO detalle_pedido_productos (detpedpro_ped_id, detpedpro_pro_id, detpedpro_cantidad, detpedpro_precio_unitario) VALUES (%s, %s, %s, %s)", (new_id, i['id'], i['cant'], precio))
+                
+                for i in items_backorder_mat:
+                    cursor.execute("SELECT detpedmat_precio_unitario FROM detalle_pedido_materias_primas WHERE detpedmat_ped_id=%s AND detpedmat_matprim_id=%s", (pedido_id, i['id']))
+                    res = cursor.fetchone()
+                    precio = res['detpedmat_precio_unitario'] if res else 0
+
+                    cursor.execute("INSERT INTO detalle_pedido_materias_primas (detpedmat_ped_id, detpedmat_matprim_id, detpedmat_cantidad, detpedmat_precio_unitario) VALUES (%s, %s, %s, %s)", (new_id, i['id'], i['cant'], precio))
+                
+                msg_extra = f" Se creó el Pedido #{new_id} con los faltantes."
+
+            # Cerrar el ciclo
+            cursor.execute("UPDATE pedidos SET ped_estado_pedido = 'C' WHERE ped_id = %s", (pedido_id,))
+            cursor.execute("UPDATE repartos SET rep_estado_reparto = 'E' WHERE rep_ped_id = %s", (pedido_id,))
+            
+            connection.commit()
+            return jsonify({'success': True, 'message': f'Recepción #{pedido_id} registrada.{msg_extra}'})
+            
+    except Exception as e:
+        if connection: connection.rollback()
+        print(f"Error en confirmar_recepcion: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+# --- 5. NUEVA API: BUSCADOR UNIFICADO (Productos + Materias Primas) ---
+@app.route('/api/buscar_productos')
+def api_buscar_productos():
+    if 'sucursal' not in session: return jsonify([])
+    
+    query_str = request.args.get('q', '').strip()
+    if not query_str or len(query_str) < 1: return jsonify([]) 
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # CONSULTA UNIFICADA: Busca en ambas tablas y agrega la columna 'tipo'
+            sql = """
+                (SELECT pro_id as id, pro_nombre as nombre, pro_unimed as unidad, 'producto' as tipo 
+                FROM productos 
+                WHERE pro_nombre LIKE %s OR CAST(pro_id AS CHAR) LIKE %s
+                LIMIT 5)
+                UNION ALL
+                (SELECT matprim_id as id, matprim_nombre as nombre, matprim_unimed as unidad, 'materia' as tipo 
+                FROM materias_primas 
+                WHERE matprim_nombre LIKE %s OR CAST(matprim_id AS CHAR) LIKE %s
+                LIMIT 5)
+            """
+            param = f"%{query_str}%"
+            # Pasamos el parámetro 4 veces (2 por cada tabla)
+            cursor.execute(sql, (param, param, param, param))
+            resultados = cursor.fetchall()
+            return jsonify(resultados)
+    except Exception as e:
+        print(f"Error búsqueda: {e}")
+        return jsonify([])
+    finally:
+        if connection: connection.close()
+
+# --- 6. API: REGISTRAR ENTRADA MANUAL (CORREGIDA) ---
+@app.route('/api/registrar_entrada_manual', methods=['POST'])
+def api_registrar_entrada_manual():
+    if 'emp_id' not in session or 'sucursal' not in session: return jsonify({'success': False, 'message': 'No autorizado'}), 401
+    
+    data = request.json
+    items = data.get('items', [])
+    motivo = data.get('motivo', 'Ajuste Manual')
+    sucursal_id = session['sucursal']
+    empleado_id = session['emp_id']
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        # CORRECCIÓN 1: Usamos DictCursor
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            connection.begin()
+            for item in items:
+                item_id = item.get('id')
+                cantidad = float(item.get('cantidad'))
+                tipo = item.get('tipo', 'producto') 
+                
+                if tipo == 'producto':
+                    cursor.execute("SELECT pro_nombre, pro_unimed FROM productos WHERE pro_id = %s", (item_id,))
+                    info = cursor.fetchone()
+                    if not info: continue
+
+                    # CORRECCIÓN 2: Usamos claves de diccionario
+                    cursor.execute("""
+                        INSERT INTO inventario_productos (invpro_pro_fk, invpro_suc_fk, pro_nombre, pro_stock, invpro_unimed_fk)
+                        VALUES (%s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE pro_stock = pro_stock + VALUES(pro_stock)
+                    """, (item_id, sucursal_id, info['pro_nombre'], cantidad, info['pro_unimed'])) # info['pro_unimed'] en lugar de info[1]
+
+                    cursor.execute("""
+                        INSERT INTO movimientos_productos (mov_suc_fk, mov_pro_fk, mov_emp_fk, mov_cantidad, mov_tipo, mov_motivo, mov_referencia_id, stock_anterior, stock_nuevo)
+                        SELECT %s, %s, %s, %s, 'ENTRADA', %s, 0, pro_stock - %s, pro_stock 
+                        FROM inventario_productos WHERE invpro_pro_fk = %s AND invpro_suc_fk = %s
+                    """, (sucursal_id, item_id, empleado_id, cantidad, motivo, cantidad, item_id, sucursal_id))
+                
+                elif tipo == 'materia':
+                    cursor.execute("SELECT matprim_nombre, matprim_unimed FROM materias_primas WHERE matprim_id = %s", (item_id,))
+                    info = cursor.fetchone()
+                    if not info: continue
+
+                    # CORRECCIÓN 3: Usamos claves de diccionario (Esto corrige el error reported)
+                    cursor.execute("""
+                        INSERT INTO inventario_materias_primas (invmatprim_matprim_fk, invmatprim_suc_fk, invmatprim_matprim_nombre, invmatprim_stock, invmatprim_unimed)
+                        VALUES (%s, %s, %s, %s, %s)
+                        ON DUPLICATE KEY UPDATE invmatprim_stock = invmatprim_stock + VALUES(invmatprim_stock)
+                    """, (item_id, sucursal_id, info['matprim_nombre'], cantidad, info['matprim_unimed']))
+            
+            connection.commit()
+            return jsonify({'success': True, 'message': 'Entrada manual registrada.'})
+            
+    except Exception as e:
+        if connection: connection.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+
+# ==============================================================================
+# MÓDULO: REGISTRO DE SALIDAS (ALMACÉN)
+# ==============================================================================
+
+# ==============================================================================
+# MÓDULO: REGISTRO DE SALIDAS (ALMACÉN)
+# ==============================================================================
+
+# --- 1. RUTA DE VISTA ---
+@app.route('/registrarSalidas')
+def registrar_salidas_vista():
+    if 'sucursal' not in session: return redirect(url_for('login'))
+    return render_template('almRegistrarSalidas.jinja2')
+
+# --- 2. API: VER PEDIDOS POR SURTIR (Donde yo soy el ORIGEN) ---
+@app.route('/api/pedidos_por_surtir')
+def api_pedidos_por_surtir():
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    
+    mi_sucursal_id = session['sucursal']
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Buscamos pedidos donde YO (mi sucursal) soy el ORIGEN y el estado es 'P'
+            query = """
+                SELECT 
+                    p.ped_id, 
+                    p.ped_fecha_pedido, 
+                    p.ped_asunto, 
+                    p.ped_monto_total,
+                    p.ped_fecha_entrega,
+                    COALESCE(s_dest.suc_nombre, 'Cliente Externo') as destino
+                FROM pedidos p
+                LEFT JOIN sucursales s_dest ON p.ped_sucursal_destino = s_dest.suc_id
+                WHERE p.ped_sucursal_origen = %s 
+                AND p.ped_estado_pedido = 'P'
+                AND p.ped_fecha_entrega = CURDATE()
+                ORDER BY p.ped_fecha_entrega ASC, p.ped_fecha_pedido ASC
+            """
+            cursor.execute(query, (mi_sucursal_id,))
+            pedidos = cursor.fetchall()
+            
+            # Formateo de datos
+            for p in pedidos: 
+                p['ped_monto_total'] = float(p['ped_monto_total'])
+                if p['ped_fecha_pedido']:
+                    p['ped_fecha_pedido'] = p['ped_fecha_pedido'].strftime('%d/%m/%Y')
+                if p['ped_fecha_entrega']:
+                    p['ped_fecha_entrega'] = p['ped_fecha_entrega'].strftime('%d/%m/%Y')
+                else:
+                    p['ped_fecha_entrega'] = "Sin fecha"
+            
+            return jsonify(pedidos)
+    except Exception as e:
+        print(f"Error pedidos por surtir: {e}")
+        return jsonify([])
+    finally:
+        if connection: connection.close()
+
+# --- 3. API: SURTIR PEDIDO (Salida Automática por Pedido) ---
+@app.route('/api/surtir_pedido', methods=['POST'])
+def api_surtir_pedido():
+    if 'emp_id' not in session or 'sucursal' not in session:
+        return jsonify({'success': False, 'message': 'Acceso no autorizado'}), 401
+    
+    empleado_id = session['emp_id']
+    sucursal_id = session['sucursal']
+    pedido_id = request.json.get('pedido_id')
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            connection.begin()
+
+            # 1. Obtener detalles (Productos y Materias Primas del pedido)
+            # PRODUCTOS
+            cursor.execute("SELECT detpedpro_pro_id as id, detpedpro_cantidad as cant, 'producto' as tipo FROM detalle_pedido_productos WHERE detpedpro_ped_id = %s", (pedido_id,))
+            items_prod = cursor.fetchall()
+            # MATERIAS PRIMAS
+            cursor.execute("SELECT detpedmat_matprim_id as id, detpedmat_cantidad as cant, 'materia' as tipo FROM detalle_pedido_materias_primas WHERE detpedmat_ped_id = %s", (pedido_id,))
+            items_mat = cursor.fetchall()
+            
+            # --- CORRECCIÓN DE ERROR: Convertimos ambos a lista antes de sumar ---
+            todos_items = list(items_prod) + list(items_mat)
+
+            if not todos_items:
+                raise Exception("El pedido está vacío, no se puede surtir.")
+
+            # 2. Procesar Descuentos de Inventario
+            for item in todos_items:
+                item_id = item['id']
+                cantidad = float(item['cant'])
+                tipo = item['tipo']
+
+                if tipo == 'producto':
+                    # Verificar Stock (Bloqueo FOR UPDATE para evitar errores de concurrencia)
+                    cursor.execute("SELECT pro_stock FROM inventario_productos WHERE invpro_pro_fk=%s AND invpro_suc_fk=%s FOR UPDATE", (item_id, sucursal_id))
+                    stock_row = cursor.fetchone()
+                    if not stock_row or float(stock_row['pro_stock']) < cantidad:
+                        raise Exception(f"Stock insuficiente del Producto ID {item_id}")
+
+                    # Restar Stock
+                    cursor.execute("UPDATE inventario_productos SET pro_stock = pro_stock - %s WHERE invpro_pro_fk=%s AND invpro_suc_fk=%s", (cantidad, item_id, sucursal_id))
+                    
+                    # Auditoría
+                    cursor.execute("""
+                        INSERT INTO movimientos_productos (mov_suc_fk, mov_pro_fk, mov_emp_fk, mov_cantidad, mov_tipo, mov_motivo, mov_referencia_id, stock_anterior, stock_nuevo) 
+                        VALUES (%s,%s,%s,%s,'SALIDA','SURTIDO_PEDIDO',%s,%s,%s)
+                    """, (sucursal_id, item_id, empleado_id, cantidad, pedido_id, stock_row['pro_stock'], float(stock_row['pro_stock']) - cantidad))
+
+                elif tipo == 'materia':
+                    # Verificar Stock Materia
+                    cursor.execute("SELECT invmatprim_stock FROM inventario_materias_primas WHERE invmatprim_matprim_fk=%s AND invmatprim_suc_fk=%s FOR UPDATE", (item_id, sucursal_id))
+                    stock_row = cursor.fetchone()
+                    if not stock_row or float(stock_row['invmatprim_stock']) < cantidad:
+                        raise Exception(f"Stock insuficiente de Materia Prima ID {item_id}")
+
+                    # Restar Stock Materia
+                    cursor.execute("UPDATE inventario_materias_primas SET invmatprim_stock = invmatprim_stock - %s WHERE invmatprim_matprim_fk=%s AND invmatprim_suc_fk=%s", (cantidad, item_id, sucursal_id))
+                    
+                    # Auditoría Materia
+                    cursor.execute("""
+                        INSERT INTO movimientos_materias_primas (movmp_suc_fk, movmp_matprim_fk, movmp_emp_fk, movmp_cantidad, movmp_tipo, movmp_motivo, movmp_referencia_id, stock_anterior, stock_nuevo) 
+                        VALUES (%s,%s,%s,%s,'SALIDA','SURTIDO_PEDIDO',%s,%s,%s)
+                    """, (sucursal_id, item_id, empleado_id, cantidad, pedido_id, stock_row['invmatprim_stock'], float(stock_row['invmatprim_stock']) - cantidad))
+
+            # 3. Actualizar estado del pedido a 'R' (En Reparto / Ruta)
+            cursor.execute("UPDATE pedidos SET ped_estado_pedido = 'R' WHERE ped_id = %s", (pedido_id,))
+            
+            # Opcional: Crear registro inicial en tabla REPARTOS si se maneja ese módulo
+            cursor.execute("""
+                INSERT INTO repartos (rep_ped_id, rep_suc_origen, rep_suc_destino, rep_fecha_entrega, rep_estado_reparto)
+                SELECT ped_id, ped_sucursal_origen, ped_sucursal_destino, ped_fecha_entrega, 'R'
+                FROM pedidos WHERE ped_id = %s
+                ON DUPLICATE KEY UPDATE rep_estado_reparto = 'R'
+            """, (pedido_id,))
+
+            connection.commit()
+            return jsonify({'success': True, 'message': f'Pedido #{pedido_id} surtido exitosamente.'})
+
+    except Exception as e:
+        if connection: connection.rollback()
+        print(f"Error al surtir pedido: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+# --- 4. API: REGISTRAR SALIDA MANUAL (Producción, Merma, etc.) ---
+@app.route('/api/registrar_salida_manual', methods=['POST'])
+def api_registrar_salida_manual():
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    
+    sucursal_id = session['sucursal']
+    empleado_id = session['emp_id']
+    data = request.json
+    
+    items = data.get('items', [])
+    motivo = data.get('motivo', 'Consumo Interno')
+
+    if not items: return jsonify({'success': False, 'message': 'Lista vacía'}), 400
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            connection.begin()
+            
+            for item in items:
+                tipo = item.get('tipo')
+                item_id = item.get('id')
+                cantidad = float(item.get('cantidad'))
+
+                if cantidad <= 0: raise Exception("Cantidad inválida")
+
+                if tipo == 'producto':
+                    cursor.execute("SELECT pro_stock FROM inventario_productos WHERE invpro_pro_fk=%s AND invpro_suc_fk=%s FOR UPDATE", (item_id, sucursal_id))
+                    row = cursor.fetchone()
+                    if not row or float(row['pro_stock']) < cantidad: raise Exception(f"Stock insuficiente Prod ID {item_id}")
+                    
+                    cursor.execute("UPDATE inventario_productos SET pro_stock = pro_stock - %s WHERE invpro_pro_fk=%s AND invpro_suc_fk=%s", (cantidad, item_id, sucursal_id))
+                    
+                    cursor.execute("INSERT INTO movimientos_productos (mov_suc_fk, mov_pro_fk, mov_emp_fk, mov_cantidad, mov_tipo, mov_motivo, stock_anterior, stock_nuevo) VALUES (%s,%s,%s,%s,'SALIDA',%s,%s,%s)", (sucursal_id, item_id, empleado_id, cantidad, motivo, row['pro_stock'], float(row['pro_stock'])-cantidad))
+
+                elif tipo == 'materia':
+                    cursor.execute("SELECT invmatprim_stock FROM inventario_materias_primas WHERE invmatprim_matprim_fk=%s AND invmatprim_suc_fk=%s FOR UPDATE", (item_id, sucursal_id))
+                    row = cursor.fetchone()
+                    if not row or float(row['invmatprim_stock']) < cantidad: raise Exception(f"Stock insuficiente Materia ID {item_id}")
+
+                    cursor.execute("UPDATE inventario_materias_primas SET invmatprim_stock = invmatprim_stock - %s WHERE invmatprim_matprim_fk=%s AND invmatprim_suc_fk=%s", (cantidad, item_id, sucursal_id))
+                    
+                    cursor.execute("INSERT INTO movimientos_materias_primas (movmp_suc_fk, movmp_matprim_fk, movmp_emp_fk, movmp_cantidad, movmp_tipo, movmp_motivo, stock_anterior, stock_nuevo) VALUES (%s,%s,%s,%s,'SALIDA',%s,%s,%s)", (sucursal_id, item_id, empleado_id, cantidad, motivo, row['invmatprim_stock'], float(row['invmatprim_stock'])-cantidad))
+
+            connection.commit()
+        return jsonify({'success': True, 'message': 'Salida registrada correctamente.'})
+    except Exception as e:
+        if connection: connection.rollback()
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
 
 
 
@@ -863,47 +2115,62 @@ def reparto():
 @app.route('/CalendarioReparto')
 def repCalendario():
     calendario_status = {}
+    
+    # 1. Validación de Sesión y Sucursal
+    if 'emp_id' not in session or 'sucursal' not in session:
+        return redirect(url_for('login'))
+    
+    sucursal_id = session['sucursal']
+
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            # 1. Obtenemos TODOS los eventos (pedidos y repartos) con su estado
-            query = """
-                (SELECT DATE(ped_fecha_pedido) as event_date, ped_estado_pedido as event_status FROM pedidos)
-                UNION ALL
-                (SELECT DATE(rep_fecha_entrega) as event_date, UPPER(rep_estado_reparto) as event_status FROM repartos)
-            """
-            cursor.execute(query)
-            todos_los_eventos = cursor.fetchall()
             
-            # 2. Agrupamos los eventos por día
+            # --- CAMBIO LÓGICO: Fuente de verdad = Tabla REPARTOS ---
+            # Solo traemos repartos de la sucursal actual
+            query = """
+                SELECT 
+                    DATE(rep_fecha_entrega) as fecha_entrega, 
+                    rep_estado_reparto 
+                FROM repartos 
+                WHERE rep_suc_origen = %s
+            """
+            cursor.execute(query, (sucursal_id,))
+            eventos = cursor.fetchall()
+            
+            # 2. Agrupar eventos por fecha
             eventos_por_dia = {}
-            for evento in todos_los_eventos:
-                fecha_str = evento['event_date'].strftime('%Y-%m-%d')
+            for evento in eventos:
+                fecha_str = evento['fecha_entrega'].strftime('%Y-%m-%d')
                 if fecha_str not in eventos_por_dia:
                     eventos_por_dia[fecha_str] = []
-                eventos_por_dia[fecha_str].append(evento['event_status'])
+                eventos_por_dia[fecha_str].append(evento['rep_estado_reparto'])
             
-            # 3. Analizamos cada día para asignarle un color de semáforo
+            # 3. Lógica del Semáforo (Basada en Estados de Reparto: R, E, X)
             hoy = date.today()
+            
             for fecha_str, estados in eventos_por_dia.items():
-                fecha_evento = date.fromisoformat(fecha_str)
-                es_dia_pasado = fecha_evento < hoy
-
-                # Verificamos si hay alguna tarea pendiente ('P' o 'R')
-                hay_pendientes = any(estado in ['P', 'R'] for estado in estados)
+                fecha_objeto = date.fromisoformat(fecha_str)
                 
-                # Verificamos si TODAS las tareas están completas ('C' para pedidos, 'E' para repartos)
-                todas_completas = all(estado in ['C', 'E', 'X'] for estado in estados)
+                # 'E' = Entregado. Consideramos 'X' (Cancelado) como finalizado también para no alertar.
+                todos_finalizados = all(estado in ['E', 'X'] for estado in estados)
+                
+                # Si hay algo en 'R' (Reparto) o 'P' (Pendiente), está activo.
+                hay_activos = any(estado in ['R', 'P'] for estado in estados)
 
-                if es_dia_pasado and hay_pendientes:
-                    calendario_status[fecha_str] = 'rojo' # 🔴
-                elif todas_completas:
-                    calendario_status[fecha_str] = 'verde' # 🟢
+                if fecha_objeto < hoy and hay_activos:
+                    # Fecha ya pasó y hay cosas sin entregar = URGENTE
+                    calendario_status[fecha_str] = 'rojo' 
+                elif todos_finalizados:
+                    # Todo entregado o cancelado = OK
+                    calendario_status[fecha_str] = 'verde'
                 else:
-                    calendario_status[fecha_str] = 'amarillo' # 🟡
+                    # Fecha futura o día actual con activos = EN PROCESO
+                    calendario_status[fecha_str] = 'amarillo'
 
     except Exception as e:
         print(f"Error al generar calendario: {e}")
+        return "Error en servidor", 500
     finally:
         if 'connection' in locals() and connection.open:
             connection.close()
@@ -911,104 +2178,142 @@ def repCalendario():
     return render_template('repCalendario.jinja2', calendario_status=calendario_status)
 
 
-@app.route('/repartos_por_fecha/<fecha>', methods=['GET'])
-def repartos_por_fecha(fecha):
+@app.route('/api/entregas_por_fecha/<fecha>', methods=['GET'])
+def api_entregas_por_fecha(fecha):
+    if 'sucursal' not in session:
+        return jsonify({'error': 'No autorizado'}), 401
+        
+    sucursal_id = session['sucursal']
+    
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # --- CAMBIO LÓGICO: Join principal desde REPARTOS ---
+            # Filtramos por fecha y por sucursal de origen
             query = """
                 SELECT 
-                    r.rep_id,
-                    r.rep_estado_reparto,
+                    p.ped_hora_entrega,
+                    p.ped_id,
+                    s.suc_nombre AS sucursal_destino_nombre,
                     p.ped_asunto,
-                    p.ped_monto_total,
-                    s.suc_nombre AS sucursal_destino_nombre
+                    r.rep_estado_reparto, -- ESTADO VIENE DEL REPARTO
+                    p.ped_monto_total
                 FROM 
                     repartos r
-                JOIN pedidos p ON r.rep_ped_id = p.ped_id
-                LEFT JOIN sucursales s ON r.rep_suc_destino = s.suc_id
+                JOIN 
+                    pedidos p ON r.rep_ped_id = p.ped_id
+                LEFT JOIN 
+                    sucursales s ON r.rep_suc_destino = s.suc_id
                 WHERE 
                     r.rep_fecha_entrega = %s
+                    AND r.rep_suc_origen = %s
+                ORDER BY 
+                    p.ped_hora_entrega ASC
             """
-            cursor.execute(query, (fecha,))
-            repartos = cursor.fetchall()
-            return jsonify(repartos) # Podemos devolverlo directamente
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        if 'connection' in locals() and connection.open:
-            connection.close()
-
-
-@app.route('/pedidos_por_fecha/<fecha>', methods=['GET'])
-def pedidos_por_fecha(fecha):
-    try:
-        connection = pymysql.connect(**db_config)
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            query = """
-                SELECT 
-                    p.ped_id,
-                    p.ped_asunto, -- AÑADIDO
-                    p.ped_estado_pedido,
-                    p.ped_monto_total, -- AÑADIDO
-                    s.suc_nombre AS sucursal_destino_nombre
-                FROM 
-                    pedidos p
-                LEFT JOIN sucursales s ON p.ped_sucursal_destino = s.suc_id
-                WHERE 
-                    p.ped_fecha_pedido = %s
-            """
-            cursor.execute(query, (fecha,))
-            pedidos = cursor.fetchall()
-            return jsonify(pedidos) # Devolvemos la lista directamente
-    except Exception as e:
-        print(f"Error: {e}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        if 'connection' in locals() and connection.open:
-            connection.close()
+            cursor.execute(query, (fecha, sucursal_id))
+            entregas = cursor.fetchall()
             
+            # Formateo de datos
+            for ent in entregas:
+                # Hora
+                if ent['ped_hora_entrega']:
+                    if hasattr(ent['ped_hora_entrega'], 'total_seconds'):
+                        seconds = ent['ped_hora_entrega'].total_seconds()
+                        horas = int(seconds // 3600)
+                        minutos = int((seconds % 3600) // 60)
+                        ent['ped_hora_entrega'] = f"{horas:02}:{minutos:02}"
+                    else:
+                        ent['ped_hora_entrega'] = str(ent['ped_hora_entrega'])[:5]
+                else:
+                    ent['ped_hora_entrega'] = '--:--'
+                
+                # Monto
+                ent['ped_monto_total'] = float(ent['ped_monto_total'])
+
+            return jsonify(entregas)
+            
+    except Exception as e:
+        print(f"Error API entregas: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if 'connection' in locals() and connection.open:
+            connection.close()
 
 @app.route('/Pedidos')
 def repPedidos():
     if 'emp_id' not in session:
-        # Para renderizar una página, es mejor redirigir al login
         return redirect(url_for('login')) 
     
     emp_id = session['emp_id']
+    filtro_actual = request.args.get('filtro', 'dia') 
+
     try:
         connection = pymysql.connect(**db_config)
-        with connection.cursor(pymysql.cursors.DictCursor) as cursor: # Usar DictCursor es más limpio
-            
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT emp_sucursal FROM empleados WHERE emp_id = %s", (emp_id,))
             empleado = cursor.fetchone()
             if not empleado:
                 return "Empleado no encontrado", 404
+            
             sucursal_origen_empleado = empleado['emp_sucursal']
-            # Unimos (JOIN) pedidos con sucursales para obtener el nombre del destino
-            query = """
+
+            # --- Query Base ---
+            base_query = """
                 SELECT 
                     p.ped_id, 
                     p.ped_fecha_pedido, 
                     p.ped_monto_total,
-                    s.suc_nombre AS sucursal_destino_nombre, -- Obtenemos el nombre y le ponemos un alias
+                    s.suc_nombre AS sucursal_destino_nombre, 
                     p.ped_asunto, 
-                    p.ped_comentarios
+                    p.ped_comentarios,
+                    p.ped_fecha_entrega,
+                    p.ped_hora_entrega,
+                    p.ped_estado_pedido
                 FROM 
                     pedidos p
                 JOIN 
                     sucursales s ON p.ped_sucursal_destino = s.suc_id
                 WHERE 
                     p.ped_sucursal_origen = %s
-                ORDER BY 
-                    p.ped_fecha_pedido DESC
             """
-            cursor.execute(query, (sucursal_origen_empleado,))
+            
+            # --- LÓGICA DE FILTRADO ---
+            if filtro_actual == 'pendientes':
+                # Pendientes: Sin fecha de entrega definida Y que no estén completados
+                base_query += " AND p.ped_fecha_entrega IS NULL AND p.ped_estado_pedido != 'C' OR (p.ped_fecha_entrega != CURDATE() AND p.ped_estado_pedido ='P')"
+            else:
+                # Del día: (Creados HOY) O (Para entregar HOY)
+                base_query += """ 
+                    AND (
+                        DATE(p.ped_fecha_pedido) = CURDATE() 
+                        OR 
+                        DATE(p.ped_fecha_entrega) = CURDATE()
+                    )
+                """
+
+            # 4. Ordenamiento
+            base_query += " ORDER BY COALESCE(p.ped_fecha_entrega, p.ped_fecha_pedido) ASC, p.ped_hora_entrega ASC"
+
+            cursor.execute(base_query, (sucursal_origen_empleado,))
             lista_pedidos = cursor.fetchall()
             
-            # ¡CAMBIO IMPORTANTE! Pasamos la lista a la plantilla
-            return render_template('repPedidos.jinja2', pedidos=lista_pedidos)
+            # --- CORRECCIÓN DE HORA (Igual que en Actualizar Repartos) ---
+            # Convertimos el objeto timedelta a string limpio "HH:MM"
+            for pedido in lista_pedidos:
+                if pedido['ped_hora_entrega']:
+                    # Verificamos si es un objeto timedelta (tiene total_seconds)
+                    if hasattr(pedido['ped_hora_entrega'], 'total_seconds'):
+                        seconds = pedido['ped_hora_entrega'].total_seconds()
+                        horas = int(seconds // 3600)
+                        minutos = int((seconds % 3600) // 60)
+                        pedido['ped_hora_entrega'] = f"{horas:02}:{minutos:02}"
+                    else:
+                        # Si por alguna razón ya es string, lo dejamos o lo cortamos
+                        pedido['ped_hora_entrega'] = str(pedido['ped_hora_entrega'])[:5]
+                else:
+                    pedido['ped_hora_entrega'] = None # Aseguramos que sea None si está vacío
+
+            return render_template('repPedidos.jinja2', pedidos=lista_pedidos, filtro_actual=filtro_actual)
 
     except Exception as e:
         print(f"Error en la base de datos: {e}")
@@ -1022,23 +2327,35 @@ def api_detalle_pedido(pedido_id):
     if 'emp_id' not in session:
         return jsonify({'error': 'Acceso no autorizado'}), 401
     
-    connection = None  # Definir fuera para acceso en 'finally'
+    connection = None
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            # Consulta principal (esta ya estaba bien)
+            # --- CONSULTA MEJORADA CON LÓGICA DE ORIGEN ---
             query = """
                 SELECT 
                     p.*,
-                    s_origen.suc_nombre as sucursal_origen_nombre,
-                    s_destino.suc_nombre as sucursal_destino_nombre,
-                    s_destino.suc_direccion as sucursal_destino_direccion,
+                    -- Lógica Inteligente para el ORIGEN
+                    CASE 
+                        WHEN p.ped_prov_fk IS NOT NULL THEN CONCAT('Proveedor: ', prov.prov_nombre_empresa)
+                        WHEN p.ped_usu_id IS NOT NULL THEN CONCAT('Cliente Web: ', u.usu_nombre)
+                        WHEN s_origen.suc_nombre IS NOT NULL THEN CONCAT('Sucursal: ', s_origen.suc_nombre)
+                        ELSE 'Origen Desconocido'
+                    END as origen_nombre,
+                    
+                    -- Lógica para el DESTINO
+                    COALESCE(s_destino.suc_nombre, 'Destino Externo') as destino_nombre,
+                    COALESCE(s_destino.suc_direccion, 'Dirección no disponible') as destino_direccion,
+                    
+                    -- Creador del pedido
                     COALESCE(e.emp_nombre, u.usu_nombre, 'Sistema') AS creador_nombre
+
                 FROM pedidos p
                 LEFT JOIN sucursales s_origen ON p.ped_sucursal_origen = s_origen.suc_id
                 LEFT JOIN sucursales s_destino ON p.ped_sucursal_destino = s_destino.suc_id
                 LEFT JOIN empleados e ON p.ped_emp_id = e.emp_id
                 LEFT JOIN usuarios u ON p.ped_usu_id = u.usu_id
+                LEFT JOIN proveedores prov ON p.ped_prov_fk = prov.prov_id -- JOIN CRÍTICO AGREGADO
                 WHERE p.ped_id = %s
             """
             cursor.execute(query, (pedido_id,))
@@ -1047,76 +2364,138 @@ def api_detalle_pedido(pedido_id):
             if not pedido_detalle:
                 return jsonify({'error': 'Pedido no encontrado'}), 404
 
-            # --- NUEVA LÓGICA PARA AÑADIR PRODUCTOS Y MATERIAS PRIMAS ---
-            
-            # 1. Buscar productos asociados al pedido
+            # --- 1. Buscar productos asociados ---
             query_productos = """
-                SELECT dp.detpedpro_cantidad, p.pro_nombre 
+                SELECT dp.detpedpro_cantidad, p.pro_nombre, p.pro_unimed 
                 FROM detalle_pedido_productos dp 
                 JOIN productos p ON dp.detpedpro_pro_id = p.pro_id 
                 WHERE dp.detpedpro_ped_id = %s
             """
             cursor.execute(query_productos, (pedido_id,))
-            productos = cursor.fetchall()
-            pedido_detalle['productos'] = productos  # Añadimos la lista al resultado
+            pedido_detalle['productos'] = cursor.fetchall()
 
-            # 2. Buscar materias primas asociadas al pedido
-            query_materias_primas = """
-                SELECT dm.detpedmat_cantidad, mp.matprim_nombre 
+            # --- 2. Buscar materias primas asociadas ---
+            query_materias = """
+                SELECT dm.detpedmat_cantidad, mp.matprim_nombre, mp.matprim_unimed
                 FROM detalle_pedido_materias_primas dm 
                 JOIN materias_primas mp ON dm.detpedmat_matprim_id = mp.matprim_id 
                 WHERE dm.detpedmat_ped_id = %s
             """
-            cursor.execute(query_materias_primas, (pedido_id,))
-            materias_primas = cursor.fetchall()
-            pedido_detalle['materias_primas'] = materias_primas # Añadimos la lista al resultado
-            
-            # --- FIN DE LA NUEVA LÓGICA ---
+            cursor.execute(query_materias, (pedido_id,))
+            pedido_detalle['materias_primas'] = cursor.fetchall()
 
-            # Formatear la fecha y el monto
-            pedido_detalle['ped_fecha_pedido'] = pedido_detalle['ped_fecha_pedido'].strftime('%Y-%m-%d')
+            # --- Formateo de Datos ---
+            if pedido_detalle.get('ped_fecha_pedido'):
+                pedido_detalle['ped_fecha_pedido'] = pedido_detalle['ped_fecha_pedido'].strftime('%Y-%m-%d')
+            
+            if pedido_detalle.get('ped_fecha_entrega'):
+                pedido_detalle['ped_fecha_entrega'] = pedido_detalle['ped_fecha_entrega'].strftime('%Y-%m-%d')
+            else:
+                pedido_detalle['ped_fecha_entrega'] = 'Pendiente'
+            
+            if pedido_detalle.get('ped_hora_entrega'):
+                pedido_detalle['ped_hora_entrega'] = str(pedido_detalle['ped_hora_entrega'])
+            else:
+                pedido_detalle['ped_hora_entrega'] = '--:--'
+
             pedido_detalle['ped_monto_total'] = float(pedido_detalle['ped_monto_total'])
             
             return jsonify(pedido_detalle)
 
     except Exception as e:
-        print(f"Error en la API de detalle de pedido: {e}")
+        print(f"Error en API detalle pedido: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
     finally:
-        if 'connection' in locals() and connection.open:
-            connection.close()
+        if connection: connection.close()
 
 @app.route("/repDia")
 def ver_repartos_dia():
-    connection = pymysql.connect(**db_config)
-    #Conexion para obtener las actividades existentes en la base de datos
-    with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-        cursor.execute("""
-        SELECT
-            r.rep_id,
-            r.rep_estado_reparto,
-            p.ped_id,
-            p.ped_asunto,
-            p.ped_comentarios,
-            p.ped_monto_total,
-            suc_origen.suc_nombre AS sucursal_origen,
-            suc_destino.suc_nombre AS sucursal_destino
-            -- Puedes agregar aquí el JOIN con la tabla de usuarios si necesitas el nombre del cliente
-        FROM
-            repartos r
-        JOIN
-            pedidos p ON r.rep_ped_id = p.ped_id
-        LEFT JOIN
-            sucursales suc_origen ON r.rep_suc_origen = suc_origen.suc_id
-        LEFT JOIN
-            sucursales suc_destino ON r.rep_suc_destino = suc_destino.suc_id
-        WHERE
-            r.rep_fecha_entrega = CURDATE()
-        """)
-        pedidos = cursor.fetchall() #Captura todos los elementos encontrados dentro de una lista
-    connection.close()
-    return render_template("repDia.jinja2", pedidos=pedidos) #Manda las actividades a un render de otro recurso
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        
+        # --- BLOQUE DE AUTOMATIZACIÓN (CORREGIDO) ---
+        # Antes de consultar, generamos los repartos faltantes para hoy
+        with connection.cursor() as cursor:
+            connection.begin()
+            
+            # 1. Insertar repartos automáticamente para pedidos de HOY
+            # CORRECCIÓN: Eliminamos 'rep_hora_entrega' ya que esa columna NO existe en la tabla repartos.
+            query_auto_create = """
+                INSERT INTO repartos (
+                    rep_ped_id, 
+                    rep_suc_origen, 
+                    rep_suc_destino, 
+                    rep_fecha_entrega, 
+                    rep_estado_reparto
+                )
+                SELECT
+                    ped_id,
+                    ped_sucursal_origen,
+                    ped_sucursal_destino,
+                    ped_fecha_entrega,
+                    'R'
+                FROM pedidos
+                WHERE 
+                    ped_fecha_entrega = CURDATE()
+                    AND ped_estado_pedido = 'R'
+                    -- Evitamos duplicados: Solo si NO existe ya en repartos
+                    AND ped_id NOT IN (SELECT rep_ped_id FROM repartos)
+            """
+            cursor.execute(query_auto_create)
+            connection.commit()
 
+        # --- BLOQUE DE CONSULTA ---
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("""
+            SELECT
+                r.rep_id,
+                r.rep_estado_reparto,
+                r.rep_fecha_entrega,
+                p.ped_id,
+                p.ped_asunto,
+                p.ped_comentarios,
+                p.ped_monto_total,
+                p.ped_hora_entrega, -- La hora viene de la tabla pedidos
+                suc_origen.suc_nombre AS sucursal_origen,
+                suc_destino.suc_nombre AS sucursal_destino
+            FROM
+                repartos r
+            JOIN
+                pedidos p ON r.rep_ped_id = p.ped_id
+            LEFT JOIN
+                sucursales suc_origen ON r.rep_suc_origen = suc_origen.suc_id
+            LEFT JOIN
+                sucursales suc_destino ON r.rep_suc_destino = suc_destino.suc_id
+            WHERE
+                r.rep_fecha_entrega = CURDATE() AND r.rep_estado_reparto in ('R','E')
+            ORDER BY 
+                p.ped_hora_entrega ASC -- CORRECCIÓN: Ordenamos por la hora del PEDIDO
+            """)
+            pedidos = cursor.fetchall()
+
+            # Formateo de hora en Python para la vista
+            for p in pedidos:
+                if p['ped_hora_entrega']:
+                     if hasattr(p['ped_hora_entrega'], 'total_seconds'):
+                        seconds = p['ped_hora_entrega'].total_seconds()
+                        horas = int(seconds // 3600)
+                        minutos = int((seconds % 3600) // 60)
+                        p['ped_hora_entrega'] = f"{horas:02}:{minutos:02}"
+                     else:
+                        p['ped_hora_entrega'] = str(p['ped_hora_entrega'])[:5]
+            
+        return render_template("repDia.jinja2", pedidos=pedidos)
+
+    except Exception as e:
+        print(f"Error en Repartos del Día: {e}")
+        if connection:
+            connection.rollback()
+        return "Error al procesar los repartos del día", 500
+    finally:
+        if connection:
+            connection.close()
+            
 @app.route("/detalles_reparto/<int:rep_id>")
 def detalles_reparto(rep_id):
     """
@@ -1210,7 +2589,7 @@ def confirmar_entregas():
         # También se actualiza el estado de los pedidos originales.
         query_update_pedidos = f"""
             UPDATE pedidos
-            SET ped_estado_pedido = 'C'
+            SET ped_estado_pedido = 'R'
             WHERE ped_id IN ({placeholders})
         """
         cursor.execute(query_update_pedidos, pedidos_ids)
@@ -1228,117 +2607,119 @@ def confirmar_entregas():
             connection.close()
 
 
-@app.route('/agregarRepartos')
-def vistaAgregarRepartos():
+
+# ==============================================================================
+# MÓDULO: GESTIÓN LOGÍSTICA (MONITOR DE LOGÍSTICA)
+# Reemplaza: /agregarRepartos, /crear_reparto, /actualizarRepartos
+# ==============================================================================
+
+@app.route('/gestionLogistica')
+def vista_gestion_logistica():
     """
-    Muestra la página con la lista de pedidos listos para ser enviados.
+    Muestra TODOS los pedidos ACTIVOS (Pendientes y En Reparto) de la SUCURSAL ACTUAL.
+    FILTRO DE SEGURIDAD: Oculta pedidos Completados, Entregados o Cancelados.
     """
-    connection = None
-    try:
-        connection = pymysql.connect(**db_config)
-        cursor = connection.cursor(pymysql.cursors.DictCursor) # Usamos DictCursor para manejarlo como diccionario
-        query = """
-            SELECT * FROM pedidos p
-            WHERE p.ped_estado_pedido = 'P' -- O el estado que uses para 'Pendiente'/'Aprobado'
-            AND NOT EXISTS (
-                SELECT 1 FROM repartos r WHERE r.rep_ped_id = p.ped_id
-            );
-        """
-        cursor.execute(query)
-        pedidos_pendientes = cursor.fetchall()
-        # Renderiza la plantilla HTML y le pasa la lista de pedidos
-        return render_template('repAgregarRepartos.jinja2', pedidos=pedidos_pendientes)
+    # 1. Validación de Sesión
+    if 'emp_id' not in session:
+        return redirect(url_for('login'))
+    
+    # OPTIMIZACIÓN: Obtener sucursal directamente de la sesión
+    sucursal_origen = session.get('sucursal')
+    
+    # Validación extra por si la sesión está corrupta o incompleta
+    if not sucursal_origen:
+        return redirect(url_for('login'))
 
-    except Exception as e:
-        print(f"Error al obtener pedidos pendientes: {e}")
-        # Aquí podrías redirigir a una página de error
-        return "Error al cargar la página", 500
-    finally:
-        if connection:
-            connection.close()
-
-
-@app.route('/crear_reparto', methods=['POST'])
-def crear_reparto():
-    """
-    Recibe una lista de IDs de pedidos y crea un registro en la tabla 'repartos' para cada uno.
-    """
-    datos = request.get_json()
-    pedidos_ids = datos.get("pedidos", [])
-    if not pedidos_ids:
-        return jsonify({"message": "No se seleccionó ningún pedido"}), 400
-    connection = None
-    try:
-        connection = pymysql.connect(**db_config)
-        cursor = connection.cursor()
-        # Iniciamos una transacción
-        connection.begin()
-        for ped_id in pedidos_ids:
-            # 1. Insertar el nuevo reparto en la tabla 'repartos'
-            query_insert = """
-                INSERT INTO repartos (rep_ped_id, rep_suc_origen, rep_suc_destino, rep_fecha_entrega, rep_estado_reparto)
-                SELECT
-                    ped_id,
-                    ped_sucursal_origen,
-                    ped_sucursal_destino,
-                    CURDATE(),      -- Fecha de hoy como inicio del reparto
-                    'R'    -- Estado inicial
-                FROM pedidos
-                WHERE ped_id = %s;
-            """
-            cursor.execute(query_insert, (ped_id,))
-            # 2. Actualizar el estado del pedido original a 'En Reparto'
-            query_update = "UPDATE pedidos SET ped_estado_pedido = 'R' WHERE ped_id = %s;"
-            cursor.execute(query_update, (ped_id,))
-
-        # Si todo fue exitoso, confirmamos los cambios
-        connection.commit()
-        return jsonify({"message": f"{len(pedidos_ids)} reparto(s) creado(s) exitosamente"})
-    except Exception as e:
-        if connection:
-            connection.rollback() # Revertimos todo si algo falla
-        print(f"Error al crear repartos: {e}")
-        return jsonify({"message": "Error en el servidor al crear repartos"}), 500
-    finally:
-        if connection:
-            connection.close()
-
-
-@app.route('/actualizarRepartos')
-def vistaActualizarRepartos():
-    """Muestra la página con la lista de todos los repartos existentes."""
     connection = None
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            # Obtenemos todos los repartos con detalles del pedido asociado
+            # 2. Consulta Blindada
+            # Ya no hacemos la query extra a 'empleados', usamos la variable de sesión directa.
             query = """
                 SELECT 
-                    r.rep_id, r.rep_fecha_entrega, r.rep_estado_reparto,
-                    p.ped_id, p.ped_asunto
-                FROM repartos r
-                JOIN pedidos p ON r.rep_ped_id = p.ped_id
-                ORDER BY r.rep_fecha_entrega DESC;
+                    p.ped_id, 
+                    p.ped_asunto,
+                    r.rep_id, -- Será NULL si el pedido está Pendiente puro
+                    
+                    -- Fecha y Estado (Coalesce para priorizar Reparto si existe)
+                    COALESCE(r.rep_fecha_entrega, p.ped_fecha_entrega) as fecha_programada,
+                    COALESCE(r.rep_estado_reparto, p.ped_estado_pedido) as estado_actual,
+                    
+                    -- Hora del pedido
+                    p.ped_hora_entrega
+                    
+                FROM pedidos p
+                LEFT JOIN repartos r ON p.ped_id = r.rep_ped_id
+                
+                WHERE 
+                    -- A. Filtro de Sucursal (Seguridad)
+                    p.ped_sucursal_origen = %s
+                    
+                    -- B. Filtro de Estado del Pedido Maestro
+                    -- No mostrar si ya está Completado (C) o Cancelado (X)
+                    AND p.ped_estado_pedido NOT IN ('X', 'C')
+                    
+                    -- C. Filtro de Estado del Reparto (Lógica Correctora)
+                    -- Muestra si NO tiene reparto (NULL) -> Pendientes
+                    -- O si tiene reparto pero NO es Entregado (E) ni Cancelado (X)
+                    AND (
+                        r.rep_estado_reparto IS NULL 
+                        OR 
+                        r.rep_estado_reparto NOT IN ('X', 'E')
+                    )
+                
+                -- Ordenamiento
+                ORDER BY 
+                    FIELD(COALESCE(r.rep_estado_reparto, p.ped_estado_pedido), 'R', 'P'),
+                    fecha_programada DESC,
+                    p.ped_hora_entrega ASC
             """
-            cursor.execute(query)
-            repartos = cursor.fetchall()
-            return render_template('repActualizarRepartos.jinja2', repartos=repartos)
+            cursor.execute(query, (sucursal_origen,))
+            registros = cursor.fetchall()
+
+            # --- Formateo de Hora ---
+            for reg in registros:
+                if reg['ped_hora_entrega']:
+                    if hasattr(reg['ped_hora_entrega'], 'total_seconds'):
+                        seconds = reg['ped_hora_entrega'].total_seconds()
+                        horas = int(seconds // 3600)
+                        minutos = int((seconds % 3600) // 60)
+                        reg['ped_hora_entrega'] = f"{horas:02}:{minutos:02}"
+                    else:
+                        reg['ped_hora_entrega'] = str(reg['ped_hora_entrega'])[:5]
+                else:
+                    reg['ped_hora_entrega'] = ""
+
+            return render_template('repGestionLogistica.jinja2', registros=registros)
+
+    except Exception as e:
+        print(f"Error en Gestión Logística: {e}")
+        return "Error al cargar el monitor logístico", 500
     finally:
         if connection:
             connection.close()
-@app.route('/guardar_cambios_reparto', methods=['POST'])
-def guardar_cambios_reparto():
-    """
-    Actualiza un reparto. Si el nuevo estado es 'P' (Pendiente),
-    borra el reparto y resetea el pedido para que pueda ser reasignado.
-    """
-    datos = request.get_json()
-    rep_id = datos.get('rep_id')
-    nueva_fecha = datos.get('nueva_fecha')
-    nuevo_estado_reparto = datos.get('nuevo_estado', '').upper() # ej: 'P', 'R', 'E', 'X'
 
-    if not all([rep_id, nueva_fecha, nuevo_estado_reparto]):
-        return jsonify({'error': 'Faltan datos'}), 400
+
+@app.route('/guardar_gestion_logistica', methods=['POST'])
+def guardar_gestion_logistica():
+    if 'emp_id' not in session:
+        return jsonify({'error': 'Sesión expirada'}), 401
+
+    datos = request.get_json()
+    ped_id = datos.get('ped_id')
+    
+    # Limpieza de datos
+    fecha = datos.get('fecha')
+    if fecha == "": fecha = None
+    
+    hora = datos.get('hora')
+    if hora == "": hora = None
+    
+    nuevo_estado = datos.get('estado', '').upper()
+
+    if not ped_id:
+        return jsonify({'error': 'Falta el ID del pedido'}), 400
 
     connection = None
     try:
@@ -1346,59 +2727,64 @@ def guardar_cambios_reparto():
         with connection.cursor() as cursor:
             connection.begin()
 
-            # --- LÓGICA CONDICIONAL AÑADIDA ---
-            # Si el nuevo estado es 'P', se ejecuta la lógica de borrado y reseteo.
-            if nuevo_estado_reparto == 'P':
-                # Obtenemos el ID del pedido asociado ANTES de borrar el reparto
-                cursor.execute("SELECT rep_ped_id FROM repartos WHERE rep_id = %s", (rep_id,))
-                resultado = cursor.fetchone()
-                if not resultado:
-                    raise Exception("No se encontró el reparto para resetear.")
-                pedido_id_asociado = resultado[0]
-                
-                # 1. Borramos el reparto de la tabla 'repartos'
-                cursor.execute("DELETE FROM repartos WHERE rep_id = %s", (rep_id,))
-                
-                # 2. Reseteamos el estado del pedido original a 'P' (Pendiente) en la tabla 'pedidos'
-                cursor.execute("UPDATE pedidos SET ped_estado_pedido = 'P' WHERE ped_id = %s", (pedido_id_asociado,))
-                
-                msg = f"Reparto {rep_id} marcado como pendiente. Fue eliminado para poder ser reasignado y el Pedido {pedido_id_asociado} ha sido reseteado."
+            # ... (Aquí va tu lógica de mapeo de estados igual que antes) ...
+            map_estado_pedido = {'P': 'P', 'R': 'R', 'E': 'R', 'X': 'X'}
+            est_ped = map_estado_pedido.get(nuevo_estado, 'P')
 
-            # Si el estado es cualquier otro (R, E, X), se ejecuta la lógica de actualización normal.
+            cursor.execute("SELECT rep_id FROM repartos WHERE rep_ped_id = %s", (ped_id,))
+            existe = cursor.fetchone()
+
+            # --- AQUI ES DONDE OCURRE LA MAGIA DEL MANEJO DE ERRORES ---
+            # Intentamos ejecutar la lógica. Si la BD rechaza el NULL, saltará al 'except'
+            
+            if existe:
+                # Si no mandas fecha y la BD es estricta, esto fallará y lo atraparemos abajo
+                cursor.execute("""
+                    UPDATE repartos 
+                    SET rep_fecha_entrega = %s, rep_estado_reparto = %s 
+                    WHERE rep_ped_id = %s
+                """, (fecha, nuevo_estado, ped_id))
             else:
-                status_map = {
-                    'R': 'R',
-                    'E': 'C',  # Entregado en Repartos es Completado en Pedidos
-                    'X': 'X'
-                }
-                nuevo_estado_pedido = status_map.get(nuevo_estado_reparto)
+                # Intentamos insertar. Si fecha es None y la columna es NOT NULL, fallará aquí.
+                cursor.execute("""
+                    INSERT INTO repartos (rep_ped_id, rep_suc_origen, rep_suc_destino, rep_fecha_entrega, rep_estado_reparto)
+                    SELECT ped_id, ped_sucursal_origen, ped_sucursal_destino, %s, %s
+                    FROM pedidos WHERE ped_id = %s
+                """, (fecha, nuevo_estado, ped_id))
 
-                if not nuevo_estado_pedido:
-                    return jsonify({'error': 'Estado no válido proporcionado'}), 400
-
-                # Se actualiza la tabla 'repartos'
-                query_reparto = "UPDATE repartos SET rep_fecha_entrega = %s, rep_estado_reparto = %s WHERE rep_id = %s;"
-                cursor.execute(query_reparto, (nueva_fecha, nuevo_estado_reparto, rep_id))
-
-                # Se actualiza la tabla 'pedidos'
-                query_pedido = "UPDATE pedidos SET ped_estado_pedido = %s WHERE ped_id = (SELECT rep_ped_id FROM repartos WHERE rep_id = %s);"
-                cursor.execute(query_pedido, (nuevo_estado_pedido, rep_id))
-                
-                msg = f'Reparto {rep_id} y pedido asociado actualizados.'
-
-            # --- FIN DE LA LÓGICA CONDICIONAL ---
-
+            # Actualizar Pedido Maestro
+            cursor.execute("""
+                UPDATE pedidos 
+                SET ped_estado_pedido = %s, ped_fecha_entrega = %s, ped_hora_entrega = %s
+                WHERE ped_id = %s
+            """, (est_ped, fecha, hora, ped_id))
+            
             connection.commit()
-            return jsonify({'message': msg})
+            return jsonify({'message': 'Guardado correctamente.'})
+
+    # --- ATRAPAR ERRORES DE MYSQL ---
+    except err.IntegrityError as e:
+        # Revertimos cambios para no dejar datos corruptos
+        if connection: connection.rollback()
+        
+        # e.args suele ser una tupla (codigo_error, mensaje)
+        codigo, mensaje = e.args
+        
+        # Error 1048: Column cannot be null
+        if codigo == 1048:
+            print(f"Intento de guardar NULL en campo obligatorio: {mensaje}")
+            return jsonify({'error': 'Error de Base de Datos: Intentaste guardar un registro de logística sin FECHA, pero el sistema requiere una fecha obligatoria.'}), 400
+        
+        # Otros errores de integridad (claves duplicadas, foráneas, etc.)
+        return jsonify({'error': f'Error de integridad de datos: {mensaje}'}), 400
 
     except Exception as e:
-        if connection:
-            connection.rollback()
-        print(f"Error al actualizar reparto: {e}")
-        return jsonify({'error': 'Error interno del servidor'}), 500
+        if connection: connection.rollback()
+        print(f"Error general: {e}")
+        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
+        
     finally:
-        if connection:
-            connection.close()
+        if connection: connection.close()
 # __________________________________________________________
 
 # INICIO ENDPOINTS VENTAS
@@ -2093,79 +3479,262 @@ def api_finalizar_venta():
 
 
 
-# --- RUTA PARA MOSTRAR LA INTERFAZ DE "SOLICITAR PRODUCTOS" ---
+# ==============================================================================
+# MÓDULO: COBRO Y CIERRE DE PEDIDOS (CAJA)
+# ==============================================================================
+
+@app.route('/cobrarPedidos')
+def cobrar_pedidos_vista():
+    if 'sucursal' not in session or 'emp_id' not in session:
+        return redirect(url_for('login'))
+    
+    sucursal_id = session['sucursal']
+    cajas = []
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Obtener cajas de la sucursal para el selector
+            cursor.execute("SELECT caja_id FROM CAJA WHERE caja_suc_fk = %s", (sucursal_id,))
+            cajas = cursor.fetchall()
+    except Exception as e:
+        print(f"Error cargando cajas: {e}")
+    finally:
+        if connection: connection.close()
+
+    return render_template('venCobrarPedidos.jinja2', cajas=cajas)
+
+
+# --- API 1: OBTENER PEDIDOS PENDIENTES DE COBRO ---
+@app.route('/api/pedidos_por_cobrar')
+def api_pedidos_por_cobrar():
+    if 'sucursal' not in session: return jsonify({'error': 'No autorizado'}), 401
+    
+    sucursal_id = session['sucursal']
+    
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # CORRECCIÓN DE LÓGICA:
+            # Buscamos pedidos que YA LLEGARON a la tienda (Estado 'C'ompletado logísticamente)
+            # y que están pendientes de entrega final al cliente (Cobro).
+            # Filtramos hasta la fecha de hoy (incluye atrasados no recogidos).
+            query = """
+                SELECT 
+                    p.ped_id,
+                    p.ped_fecha_entrega,
+                    p.ped_asunto,
+                    p.ped_monto_total,
+                    p.ped_estado_pedido,
+                    COALESCE(u.usu_nombre, 'Cliente Mostrador') as cliente_nombre
+                FROM pedidos p
+                LEFT JOIN usuarios u ON p.ped_usu_id = u.usu_id
+                WHERE 
+                    p.ped_sucursal_origen = %s -- O destino, según quien cobra. Asumimos origen=tienda venta.
+                    AND p.ped_fecha_entrega <= CURDATE()
+                    AND p.ped_estado_pedido = 'C' -- SOLO LOS QUE YA ESTÁN EN TIENDA
+                ORDER BY p.ped_fecha_entrega ASC
+            """
+            # Nota: Si la sucursal que cobra es la de DESTINO (donde el cliente recoge), 
+            # cambia 'p.ped_sucursal_origen' por 'p.ped_sucursal_destino' en el WHERE.
+            
+            cursor.execute(query, (sucursal_id,))
+            pedidos = cursor.fetchall()
+            
+            for p in pedidos:
+                p['ped_monto_total'] = float(p['ped_monto_total'])
+                if p['ped_fecha_entrega']:
+                    p['ped_fecha_entrega'] = p['ped_fecha_entrega'].strftime('%d/%m/%Y')
+            
+            return jsonify(pedidos)
+    except Exception as e:
+        print(f"Error pedidos por cobrar: {e}")
+        return jsonify([])
+    finally:
+        if connection: connection.close()
+
+
+# --- API 2: PROCESAR COBRO (FINALIZAR PEDIDO) ---
+@app.route('/api/procesar_cobro_pedido', methods=['POST'])
+def api_procesar_cobro_pedido():
+    if 'emp_id' not in session or 'sucursal' not in session:
+        return jsonify({'success': False, 'message': 'No autorizado'}), 401
+
+    empleado_id = session['emp_id']
+    sucursal_id = session['sucursal']
+    
+    data = request.json
+    pedido_id = data.get('pedido_id')
+    caja_id = data.get('caja_id')
+    metodo_pago = data.get('metodo_pago')
+    
+    if not pedido_id or not caja_id:
+        return jsonify({'success': False, 'message': 'Faltan datos.'}), 400
+
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            connection.begin()
+
+            # 1. Obtener datos del pedido
+            cursor.execute("SELECT * FROM pedidos WHERE ped_id = %s", (pedido_id,))
+            pedido = cursor.fetchone()
+            if not pedido: raise Exception("Pedido no encontrado")
+            
+            # Validar estado
+            if pedido['ped_estado_pedido'] != 'C':
+                raise Exception("El pedido no está listo para cobro (No está en estado 'C').")
+
+            monto_total = float(pedido['ped_monto_total'])
+            
+            # Obtener nombre sucursal
+            cursor.execute("SELECT suc_nombre FROM sucursales WHERE suc_id = %s", (sucursal_id,))
+            suc_row = cursor.fetchone()
+            sucursal_nombre = suc_row['suc_nombre'] if suc_row else "Sucursal"
+
+            # 2. Registrar VENTA (Dinero entra)
+            sql_venta = """
+                INSERT INTO VENTA 
+                (venta_emp_fk, venta_caja_fk, venta_suc_fk, venta_fecha, venta_monto_total, venta_sucursal, venta_metodo_pago) 
+                VALUES (%s, %s, %s, CURDATE(), %s, %s, %s)
+            """
+            cursor.execute(sql_venta, (empleado_id, caja_id, sucursal_id, monto_total, sucursal_nombre, metodo_pago))
+            venta_id = cursor.lastrowid
+
+            # 3. Copiar productos a DETALLES_VENTA
+            cursor.execute("""
+                SELECT dp.detpedpro_pro_id, dp.detpedpro_cantidad, dp.detpedpro_precio_unitario, p.pro_nombre
+                FROM detalle_pedido_productos dp
+                JOIN productos p ON dp.detpedpro_pro_id = p.pro_id
+                WHERE dp.detpedpro_ped_id = %s
+            """, (pedido_id,))
+            items_prod = cursor.fetchall()
+
+            sql_detalle = """
+                INSERT INTO DETALLES_VENTA 
+                (detven_venta_fk, detven_pro_fk, detven_pro_precio, detven_pro_nombre, detven_pro_cant, detven_pro_precio_total) 
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            for item in items_prod:
+                total_linea = float(item['detpedpro_cantidad']) * float(item['detpedpro_precio_unitario'])
+                cursor.execute(sql_detalle, (
+                    venta_id, item['detpedpro_pro_id'], item['detpedpro_precio_unitario'], 
+                    item['pro_nombre'], item['detpedpro_cantidad'], total_linea
+                ))
+
+            # 4. Actualizar Saldos en CAJA
+            if metodo_pago == 'efectivo':
+                cursor.execute("UPDATE CAJA SET caja_efectivo = caja_efectivo + %s WHERE caja_id = %s", (monto_total, caja_id))
+            else:
+                cursor.execute("UPDATE CAJA SET caja_tarjeta = caja_tarjeta + %s WHERE caja_id = %s", (monto_total, caja_id))
+
+            # 5. FINALIZAR PEDIDO -> Estado 'E' (Entregado al Cliente)
+            cursor.execute("UPDATE pedidos SET ped_estado_pedido = 'E' WHERE ped_id = %s", (pedido_id,))
+            
+            # Aseguramos que el reparto (si existe) quede cerrado
+            cursor.execute("UPDATE repartos SET rep_estado_reparto = 'E' WHERE rep_ped_id = %s", (pedido_id,))
+
+            connection.commit()
+            return jsonify({'success': True, 'message': f'Pedido #{pedido_id} cobrado y entregado exitosamente.'})
+
+    except Exception as e:
+        if connection: connection.rollback()
+        print(f"Error al cobrar: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+    finally:
+        if connection: connection.close()
+
+# ==============================================================================
+# MÓDULO: SOLICITUD DE PRODUCTOS (SUCURSAL -> ALMACÉN)
+# ==============================================================================
+
 @app.route('/solicitarProductos')
 def solicitar_productos_vista():
     if 'sucursal' not in session or 'emp_id' not in session:
-            return redirect(url_for('login'))
+        return redirect(url_for('login'))
             
     connection = None
     try:
-            connection = pymysql.connect(**db_config)
-            with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-                # 1. Obtenemos TODOS los productos (para seleccionar)
-                query_productos = """
-                    SELECT pro_id as id, pro_nombre as nombre, pro_costo_unit as costo, pro_unimed as unidad
-                    FROM productos ORDER BY pro_nombre
-                """
-                cursor.execute(query_productos)
-                productos_disponibles = cursor.fetchall()
-                for prod in productos_disponibles:
-                    prod['costo'] = float(prod['costo'])
-                
-                # 2. Obtenemos TODAS las sucursales (para el selector de ORIGEN)
-                cursor.execute("SELECT suc_id, suc_nombre FROM sucursales")
-                sucursales = cursor.fetchall()
-                
-            # Pasamos productos y sucursales a la plantilla
-            return render_template('venSolicitarProductos.jinja2', 
+        connection = pymysql.connect(**db_config)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # 1. Productos disponibles (Catálogo)
+            query_productos = """
+                SELECT pro_id as id, pro_nombre as nombre, pro_costo_unit as costo, pro_unimed as unidad
+                FROM productos ORDER BY pro_nombre
+            """
+            cursor.execute(query_productos)
+            productos_disponibles = cursor.fetchall()
+            for prod in productos_disponibles:
+                prod['costo'] = float(prod['costo'])
+            
+            # 2. Sucursales (Para el selector de Origen)
+            cursor.execute("SELECT suc_id, suc_nombre FROM sucursales")
+            sucursales = cursor.fetchall()
+            
+        return render_template('venSolicitarProductos.jinja2', 
                                 productos=productos_disponibles,
                                 sucursales=sucursales)
     except Exception as e:
-            print(f"Error en solicitar_productos_vista: {e}")
-            return "Error al cargar la página", 500
+        print(f"Error en solicitar_productos_vista: {e}")
+        return "Error al cargar la página", 500
     finally:
-            if connection:
-                connection.close()
+        if connection: connection.close()
 
-# --- API PARA PROCESAR Y REGISTRAR LA SOLICITUD (PEDIDO) ---
 @app.route('/api/finalizar_solicitud', methods=['POST'])
 def api_finalizar_solicitud():
     if 'emp_id' not in session or 'sucursal' not in session:
         return jsonify({'success': False, 'message': 'Acceso no autorizado'}), 401
 
-    # Obtenemos datos de la sesión y del JSON
     empleado_id = session['emp_id']
-    sucursal_id_destino = session['sucursal'] # La sucursal que HACE la solicitud
+    sucursal_id_destino = session['sucursal'] # Quien PIDE (Destino de la mercancía)
+    
     data = request.json
     carrito = data.get('carrito')
-    comentarios = data.get('comentarios', '') # Un campo de comentarios opcional
-    sucursal_id_origen = data.get('sucursal_origen_id') # El ORIGEN se recibe del formulario
+    sucursal_id_origen = data.get('sucursal_origen_id') # A quien le PIDO (Origen)
+    comentarios = data.get('comentarios', '')
+    
+    # --- NUEVOS CAMPOS DE FECHA Y HORA ---
+    fecha_entrega = data.get('fecha_entrega')
+    hora_entrega = data.get('hora_entrega')
 
     if not carrito:
-        return jsonify({'success': False, 'message': 'No hay productos en la solicitud.'}), 400
+        return jsonify({'success': False, 'message': 'El carrito está vacío.'}), 400
+    if not sucursal_id_origen:
+        return jsonify({'success': False, 'message': 'Debes seleccionar una sucursal de origen.'}), 400
+    if not fecha_entrega:
+        return jsonify({'success': False, 'message': 'La fecha de entrega es obligatoria.'}), 400
     
-    # Calculamos el monto total basado en el COSTO, no en el precio de venta
+    # Calcular monto total (basado en costo)
     monto_total_solicitud = sum(decimal.Decimal(item['costo']) * int(item['cantidad']) for item in carrito)
 
     connection = None
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor() as cursor:
-            connection.begin() # INICIA TRANSACCIÓN
+            connection.begin()
 
-            # 1. Insertar el Pedido principal
+            # 1. Insertar el Pedido (Con Fecha y Hora de Entrega)
             sql_pedido = """
                 INSERT INTO pedidos 
-                (ped_emp_id, ped_sucursal_origen, ped_sucursal_destino, ped_fecha_pedido, ped_monto_total, ped_estado_pedido, ped_asunto, ped_comentarios) 
-                VALUES (%s, %s, %s, %s, %s, 'P', 'Solicitud de Productos', %s)
+                (ped_emp_id, ped_sucursal_origen, ped_sucursal_destino, 
+                ped_fecha_pedido, ped_fecha_entrega, ped_hora_entrega,
+                ped_monto_total, ped_estado_pedido, ped_asunto, ped_comentarios) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'P', 'Solicitud de Productos', %s)
             """
             today = date.today()
-            cursor.execute(sql_pedido, (empleado_id, sucursal_id_origen, sucursal_id_destino, today, monto_total_solicitud, comentarios))
-            pedido_id = cursor.lastrowid # Obtenemos el ID del pedido
+            hora_val = hora_entrega if hora_entrega else None # Manejar hora vacía
+            
+            cursor.execute(sql_pedido, (
+                empleado_id, sucursal_id_origen, sucursal_id_destino, 
+                today, fecha_entrega, hora_val,
+                monto_total_solicitud, comentarios
+            ))
+            pedido_id = cursor.lastrowid
 
-            # 2. Insertar los detalles del pedido
-            # (Asumiendo que tienes la tabla 'detalle_pedido_productos' de nuestras conversaciones anteriores)
+            # 2. Insertar detalles
             sql_detalle = """
                 INSERT INTO detalle_pedido_productos 
                 (detpedpro_ped_id, detpedpro_pro_id, detpedpro_cantidad, detpedpro_precio_unitario) 
@@ -2175,12 +3744,11 @@ def api_finalizar_solicitud():
             for item in carrito:
                 costo_unitario = decimal.Decimal(item['costo'])
                 cantidad = int(item['cantidad'])
-                detalles_para_insertar.append((
-                    pedido_id, item['id'], cantidad, costo_unitario
-                ))
+                detalles_para_insertar.append((pedido_id, item['id'], cantidad, costo_unitario))
+            
             cursor.executemany(sql_detalle, detalles_para_insertar)
             
-            connection.commit() # TERMINA TRANSACCIÓN CON ÉXITO
+            connection.commit()
             
         return jsonify({'success': True, 'message': f'Solicitud #{pedido_id} registrada exitosamente.'}), 200
     except Exception as e:
@@ -2188,8 +3756,8 @@ def api_finalizar_solicitud():
         print(f"Error al finalizar solicitud: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
     finally:
-        if connection:
-            connection.close()
+        if connection: connection.close()
+
 
 #----------------------------
 # INICIO MODULO DE REPORTES
@@ -2831,4 +4399,4 @@ def api_actualizar_empleado():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5555, debug=True)

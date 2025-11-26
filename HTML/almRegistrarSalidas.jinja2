@@ -1,0 +1,111 @@
+{% extends "base.jinja2" %}
+{% block title %}Registrar Salidas{% endblock %}
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='almRegistrarSalidas.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Gestión de Salidas de Inventario</h1>
+
+    <!-- PESTAÑAS -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="cambiarTab('surtir')">📦 Surtir Pedidos</button>
+        <button class="tab-btn" onclick="cambiarTab('manual')">🏭 Salida Manual / Producción</button>
+    </div>
+
+    <!-- SECCIÓN 1: SURTIR PEDIDOS -->
+    <div id="seccion-surtir" class="tab-content active">
+        <div class="info-bar"><p>Pedidos pendientes donde tu sucursal es el origen.</p></div>
+        <div class="tabla-scroll-container">
+            <table id="tabla-pedidos-surtir">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Destino</th>
+                        <th>Asunto</th>
+                        <th>Entrega Prog.</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-pedidos-surtir">
+                    <tr><td colspan="5">Cargando pedidos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 2: SALIDA MANUAL (Producción) -->
+    <div id="seccion-manual" class="tab-content">
+        <div class="manual-card">
+            <div class="manual-header">
+                <h3>Salida Manual de Materiales</h3>
+                <p>Registra consumo por producción, mermas o ajustes.</p>
+            </div>
+
+            <div class="manual-controls">
+                <!-- Motivo -->
+                <div class="control-group">
+                    <label>Motivo</label>
+                    <div class="select-wrapper">
+                        <select id="manual-motivo">
+                            <option value="PRODUCCION">Producción / Consumo</option>
+                            <option value="MERMA">Merma / Desperdicio</option>
+                            <option value="CADUCADO">Caducado</option>
+                            <option value="AJUSTE">Ajuste de Inventario</option>
+                            <option value="TRASLADO_MANUAL">Traslado sin Pedido</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+
+                <!-- Buscador -->
+                <div class="control-group search-group">
+                    <label>Buscar Ítem</label>
+                    <div class="search-wrapper">
+                        <input type="text" id="search-input" placeholder="Producto o Materia Prima..." autocomplete="off">
+                        <input type="hidden" id="selected-item-id">
+                        <div id="search-results" class="search-dropdown"></div>
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="control-group quantity-group">
+                    <label>Cant.</label>
+                    <input type="number" id="manual-cantidad" placeholder="0" min="0.01" step="0.01">
+                </div>
+
+                <!-- Botón -->
+                <div class="control-group btn-group">
+                    <label>&nbsp;</label>
+                    <button class="btn-add-manual" onclick="agregarItemManual()">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="manual-list-container">
+                <table class="tabla-manual">
+                    <thead><tr><th>Ítem</th><th>Cant.</th><th>Unidad</th><th></th></tr></thead>
+                    <tbody id="manual-tbody"></tbody>
+                </table>
+                <div id="empty-msg" class="empty-state-msg">Agrega ítems a la lista de salida.</div>
+            </div>
+
+            <div class="manual-footer">
+                <button class="btn-save-manual" onclick="confirmarSalidaManual()">
+                    <i class="fas fa-sign-out-alt"></i> Registrar Salida
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='almRegistrarSalidas.js') }}"></script>
+{% endblock %}

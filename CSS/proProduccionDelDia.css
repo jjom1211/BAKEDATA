@@ -68,3 +68,21 @@
     display: table;
     clear: both;
 }
+
+
+
+/* Estilo rápido para el selector de gerente */
+.admin-selector-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+.admin-selector-container select {
+    padding: 8px;
+    font-size: 1em;
+}

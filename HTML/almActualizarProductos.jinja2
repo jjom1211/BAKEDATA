@@ -1,0 +1,81 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Actualizar Productos{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='almActualizarProductos.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Actualizar Productos</h1>
+
+    <div class="table-scroll-container">
+        <table class="table-edicion">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Unidad de Medida</th>
+                    <th>Precio Actual</th>
+                    <th>Nuevo Precio</th>
+                    <th>Costo Actual</th>
+                    <th>Nuevo Costo</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr data-id="{{ producto.id }}">
+                    <td class="cell-id">{{ producto.id }}</td>
+                    <td class="cell-nombre">{{ producto.nombre }}</td>
+
+                    <td class="cell-desc">
+                        <input type="text" class="input-editable input-desc"
+                               value="{{ producto.descripcion | default('', true) }}">
+                    </td>
+
+                    <td class="cell-unidad">
+                        <select class="select-editable select-unidad">
+                            {% for val, txt in unidades %}
+                            <option value="{{ val }}" {% if val == producto.unidad %}selected{% endif %}>
+                                {{ txt }} ({{ val }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                    <td class="cell-precio-actual">
+                        $ {{ "%.2f"|format(producto.precio) }}
+                    </td>
+
+                    <td class="cell-precio-nuevo">
+                        <input type="number" class="input-editable input-nuevo-precio" placeholder="Ej: 15.00" step="0.01" min="0">
+                    </td>
+                    
+                    <td class="cell-costo-actual">
+                        $ {{ "%.2f"|format(producto.costo) }}
+                    </td>
+
+                    <td class="cell-costo-nuevo">
+                        <input type="number" class="input-editable input-costo-precio" placeholder="Ej: 5.00" step="0.01" min="0">
+                    </td>
+
+                    <td class="cell-accion">
+                        <button class="btn-guardar" onclick="guardarCambiosProducto(this)">Guardar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> </div>
+
+{# Botón de Regresar Fijo #}
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='almActualizarProductos.js') }}"></script>
+{% endblock %}

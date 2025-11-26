@@ -1,0 +1,49 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Inventario de Materias Primas{% endblock %}
+
+{% block head_links %}
+    {# Asumo que gen.css y produccion.css ya están en tu base.jinja2 #}
+    {# Si no, añádelos aquí #}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='almVerMateriaPrima.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Inventario de Materias Primas</h2>
+                <select id="sucursal">
+                    <option value="">-- Selecciona una sucursal --</option>
+                    <option value="1">Paseos del Bosque</option>
+                    <option value="2">Pirámides</option>
+                    <option value="3">Puerta Real</option>
+                    <option value="4">Santuarios</option>
+                </select>
+    <table id="tablaInventario">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Unidad</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="4" style="text-align: center;">
+                    Seleccione una sucursal para ver el inventario
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div id="boton-volver-wrapper">
+        <button onclick="window.history.back()" id="botonVolver">
+            ⭠
+        </button>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    {# Asumo que sidebar.js ya está en tu base.jinja2 #}
+    <script src="{{ url_for('serve_js', filename='almVerMateriaPrima.js') }}"></script>
+{% endblock %}

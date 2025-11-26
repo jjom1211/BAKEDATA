@@ -72,35 +72,36 @@ h1 {
     cursor: pointer;
     transition: background-color 0.2s;
     border-radius: 50%; /* Hacemos todos los días un círculo */
+    height: 40px;      /* Altura fija para centrar mejor */
+    line-height: 40px; /* Centrado vertical */
+    margin-bottom: 5px;
 }
 .grid div:hover {
     background-color: rgb(253, 207, 188);
 }
 
 /* --- NUEVO SISTEMA DE SEMÁFORO UNIFICADO --- */
-/* 🔴 ROJO: Días pasados con tareas pendientes */
 .rojo {
-    background-color: #e63946;
+    background-color: #e63946 !important;
     color: white;
     font-weight: bold;
 }
-/* 🟡 AMARILLO: Días con tareas en progreso o futuras */
 .amarillo {
-    background-color: #fbc82e;
+    background-color: #fbc82e !important;
     color: #333;
     font-weight: bold;
 }
-/* 🟢 VERDE: Días con TODAS las tareas completadas */
 .verde {
-    background-color: #2a9d8f;
+    background-color: #2a9d8f !important;
     color: white;
     font-weight: bold;
 }
 /* Estilo para el día actual (MÁXIMA PRIORIDAD) */
 .actualday {
-    background-color: #7e084b;
+    background-color: #7e084b !important;
     color: white;
     font-weight: bold;
+    border: 2px solid white;
 }
 
 /* --- SECCIÓN DE DETALLES DEL DÍA --- */
@@ -111,9 +112,11 @@ h1 {
     padding: 20px;
     border-radius: 10px;
     width: 100%;
-    max-width: 550px;
+    max-width: 650px; /* Un poco más ancho para la tabla detallada */
+    margin-left: auto;
+    margin-right: auto;
 }
-/* ... (el resto de tus estilos para la tabla y el botón de regresar pueden quedar igual) ... */
+
 .pedidos-table { 
     width: 100%;
     margin-top: 15px;
@@ -123,13 +126,15 @@ h1 {
 
 .pedidos-table th, .pedidos-table td {
     padding: 10px; 
-    border: 1px solid rgb(253, 207, 188); 
+    border: 1px solid rgba(255, 255, 255, 0.3); 
     text-align: left; 
+    vertical-align: middle;
 }
 
 .pedidos-table th { 
-    background-color: rgb(65, 17, 99); 
+    background-color: #411163; 
     font-weight: bold; 
+    text-align: center;
 }
 
 #backButton { 
@@ -145,7 +150,8 @@ h1 {
     border: none; 
     cursor: pointer; 
     box-shadow: 0 4px 8px rgb(0, 0, 0); 
-    z-index: 100; display: flex; 
+    z-index: 100; 
+    display: flex; 
     justify-content: center; 
     align-items: center; 
     transition: all 0.2s ease-in-out; 

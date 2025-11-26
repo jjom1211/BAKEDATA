@@ -1,0 +1,136 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    margin: 0px;
+    padding: 30px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Estilo para la tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0px 0px;
+    font-family: Arial, sans-serif;
+}
+
+/* Encabezados de la tabla */
+th {
+    background-color: #4f4f4f; /* Azul oscuro */
+    color: rgb(255, 255, 255);
+    padding: 12px;
+    text-align: left;
+}
+
+/* Celdas de la tabla */
+td {
+    padding: 10px;
+    border-bottom: 1px solid #c3c3c3;
+}
+
+/* Estilo de las filas */
+tr {
+    background-color: #e5e3e3;
+}
+
+/* Resaltar fila al pasar el mouse */
+tr:hover {
+    background-color: #fff9e6;
+}
+
+/* Estilo para el título */
+h1 {
+    color: #ca563f;
+    font-size: 70px; /* Tamaño más pequeño (ajusta según lo que necesites) */
+    padding-left: 40px;
+}
+
+
+
+#botonVolver {
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    
+    /* Colores y tipografía */
+    background-color: #7e084b; /* Color principal de tu paleta */
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Otros estilos */
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
+}
+
+#botonVolver:hover {
+    background-color: #411163; /* Color secundario de tu paleta */
+    transform: scale(1.05);
+}
+
+
+/* Botón adicional para acciones (ej: exportar) */
+.button.accion {
+    margin-top: 20px;
+    padding: 15px 30px;
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    float: left;
+    width: auto;
+}
+
+/* Limpieza de floats */
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 8px;
+    }
+    
+    .button.volver, .button.accion {
+        padding: 10px 20px;
+        width: 100%;
+        float: none;
+        margin-bottom: 10px;
+    }
+}
+/* Estilo unificado para el selector */
+#sucursal {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    box-sizing: border-box;
+    display: inline-block; /* Necesario para que text-align: center funcione */
+    width: 100%;
+    max-width: 400px; /* Limita el ancho */
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 30px; /* Espacio antes de la tabla */
+}

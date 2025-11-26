@@ -5,105 +5,112 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalContent = document.getElementById('modal-body-content');
     const closeButton = document.querySelector('.modal-close-button');
 
-    // --- Función para MOSTRAR el modal ---
     function showModal() {
-        modalOverlay.style.display = 'block';
+        if(modalOverlay) modalOverlay.style.display = 'block';
     }
 
-    // --- Función para OCULTAR el modal ---
     function hideModal() {
-        modalOverlay.style.display = 'none';
-        modalContent.innerHTML = '<p>Cargando...</p>'; // Resetea el contenido
+        if(modalOverlay) modalOverlay.style.display = 'none';
+        if(modalContent) modalContent.innerHTML = '<p style="text-align:center; padding:20px;">Cargando información...</p>';
     }
 
-    // Cierra el modal al hacer clic en el botón de cerrar o en el fondo
-    closeButton.addEventListener('click', hideModal);
-    modalOverlay.addEventListener('click', function(event) {
-        if (event.target === modalOverlay) {
-            hideModal();
-        }
-    });
-
-tableBody.addEventListener('click', function(event) {
-    if (event.target.classList.contains('btn-detalles')) {
-        const pedidoId = event.target.dataset.id;
-        showModal();
-        
-        fetch(`/Pedidos/${pedidoId}`)
-            .then(response => {
-                if (!response.ok) throw new Error('Respuesta del servidor no fue exitosa.');
-                return response.json();
-            })
-            .then(details => {
-                if (details.error) throw new Error(details.error);
-                
-                const montoFormateado = details.ped_monto_total.toLocaleString('es-MX', {
-                    style: 'currency',
-                    currency: 'MXN'
-                });
-
-                // --- HTML CON UN LUGAR PARA LA LISTA DE ÍTEMS ---
-                modalContent.innerHTML = `
-                    <h4>Detalles Generales</h4>
-                    <ul>
-                        <li><strong># Pedido:</strong> ${details.ped_id}</li>
-                        <li><strong>Fecha:</strong> ${details.ped_fecha_pedido}</li>
-                        <li><strong>Asunto:</strong> ${details.ped_asunto}</li>
-                        <li><strong>Monto Total:</strong> ${montoFormateado}</li>
-                        <li><strong>Estado:</strong> ${details.ped_estado_pedido}</li>
-                        <li><strong>Registrado por:</strong> ${details.creador_nombre}</li>
-                    </ul>
-                    <h4>Origen y Destino</h4>
-                    <ul>
-                        <li><strong>Origen:</strong> ${details.sucursal_origen_nombre}</li>
-                        <li><strong>Destino:</strong> ${details.sucursal_destino_nombre}</li>
-                        <li><strong>Dirección:</strong> ${details.sucursal_destino_direccion}</li>
-                    </ul>
-                    <h4>Comentarios</h4>
-                    <p>${details.ped_comentarios || 'Ninguno'}</p>
-                    
-                    <div id="lista-items-modal"></div>
-                `;
-
-                // --- LÓGICA NUEVA PARA CONSTRUIR LA LISTA DE ÍTEMS ---
-                const listaItemsDiv = modalContent.querySelector('#lista-items-modal');
-                let itemsHTML = '';
-
-                // Construir sección de Productos
-                if (details.productos && details.productos.length > 0) {
-                    itemsHTML += '<h4>Productos</h4><ul>';
-                    details.productos.forEach(item => {
-                        itemsHTML += `<li>${item.detpedpro_cantidad} x ${item.pro_nombre}</li>`;
-                    });
-                    itemsHTML += '</ul>';
-                }
-
-                // Construir sección de Materias Primas
-                if (details.materias_primas && details.materias_primas.length > 0) {
-                    itemsHTML += '<h4>Materias Primas</h4><ul>';
-                    details.materias_primas.forEach(item => {
-                        itemsHTML += `<li>${item.detpedmat_cantidad} x ${item.matprim_nombre}</li>`;
-                    });
-                    itemsHTML += '</ul>';
-                }
-                
-                // Si no hay ningún ítem, mostrar un mensaje
-                if (itemsHTML === '') {
-                    listaItemsDiv.innerHTML = '<p>Este pedido no contiene productos o materias primas detalladas.</p>';
-                } else {
-                    listaItemsDiv.innerHTML = itemsHTML;
-                }
-            })
-            .catch(error => {
-                console.error('Error al obtener detalles:', error);
-                modalContent.innerHTML = '<p style="color: red;">No se pudieron cargar los detalles.</p>';
-            });
+    if(closeButton) closeButton.addEventListener('click', hideModal);
+    
+    if(modalOverlay) {
+        modalOverlay.addEventListener('click', function(event) {
+            if (event.target === modalOverlay) hideModal();
+        });
     }
-    });
+
+    if(tableBody) {
+        tableBody.addEventListener('click', function(event) {
+            if (event.target.classList.contains('btn-detalles')) {
+                const pedidoId = event.target.dataset.id;
+                showModal();
+                
+                fetch(`/Pedidos/${pedidoId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Error al consultar el servidor.');
+                        return response.json();
+                    })
+                    .then(details => {
+                        if (details.error) throw new Error(details.error);
+                        
+                        const montoFormateado = details.ped_monto_total.toLocaleString('es-MX', {
+                            style: 'currency', currency: 'MXN'
+                        });
+
+                        // --- CONSTRUCCIÓN DEL HTML DEL MODAL ---
+                        let contenidoHTML = `
+                            <div class="modal-section">
+                                <h4><i class="fas fa-info-circle"></i> Detalles Generales</h4>
+                                <ul class="details-list">
+                                    <li><strong># Pedido:</strong> ${details.ped_id}</li>
+                                    <li><strong>Estado:</strong> <span class="status-badge">${details.ped_estado_pedido}</span></li>
+                                    <li><strong>Registrado por:</strong> ${details.creador_nombre}</li>
+                                    <li><strong>Fecha Solicitud:</strong> ${details.ped_fecha_pedido}</li>
+                                    <li><strong>Programación Entrega:</strong> ${details.ped_fecha_entrega} (${details.ped_hora_entrega})</li>
+                                    <li><strong>Asunto:</strong> ${details.ped_asunto}</li>
+                                    <li><strong>Monto Total:</strong> <span class="amount">${montoFormateado}</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="modal-section">
+                                <h4><i class="fas fa-map-marker-alt"></i> Ruta Logística</h4>
+                                <ul class="details-list">
+                                    <li><strong>Origen:</strong> ${details.origen_nombre}</li>
+                                    <li><strong>Destino:</strong> ${details.destino_nombre}</li>
+                                    <li><strong>Dirección:</strong> <span style="font-size:0.9em; color:#555;">${details.destino_direccion}</span></li>
+                                </ul>
+                                <div class="comments-box">
+                                    <strong>Comentarios:</strong>
+                                    <p>${details.ped_comentarios || 'Sin comentarios adicionales.'}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-section">
+                                <h4><i class="fas fa-boxes"></i> Contenido del Pedido</h4>
+                                <div id="lista-items-modal">`;
+
+                        // --- Lógica de Ítems ---
+                        let itemsHTML = '';
+
+                        if (details.productos && details.productos.length > 0) {
+                            itemsHTML += '<h5 style="margin:10px 0 5px 0; color:#411163;">Productos</h5><ul class="items-list">';
+                            details.productos.forEach(item => {
+                                const unidad = item.pro_unimed ? `(${item.pro_unimed})` : '';
+                                itemsHTML += `<li><strong>${item.detpedpro_cantidad}</strong> x ${item.pro_nombre} ${unidad}</li>`;
+                            });
+                            itemsHTML += '</ul>';
+                        }
+
+                        if (details.materias_primas && details.materias_primas.length > 0) {
+                            itemsHTML += '<h5 style="margin:10px 0 5px 0; color:#c45d3c;">Materias Primas</h5><ul class="items-list">';
+                            details.materias_primas.forEach(item => {
+                                const unidad = item.matprim_unimed ? `(${item.matprim_unimed})` : '';
+                                itemsHTML += `<li><strong>${item.detpedmat_cantidad}</strong> x ${item.matprim_nombre} ${unidad}</li>`;
+                            });
+                            itemsHTML += '</ul>';
+                        }
+                        
+                        if (itemsHTML === '') {
+                            itemsHTML = '<p class="empty-msg">No hay ítems detallados.</p>';
+                        }
+
+                        contenidoHTML += itemsHTML + `</div></div>`;
+                        
+                        modalContent.innerHTML = contenidoHTML;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        modalContent.innerHTML = `<div class="error-msg"><p>Error: ${error.message}</p></div>`;
+                    });
+            }
+        });
+    }
+
     const backButton = document.getElementById('backButton');
     if (backButton) {
-        backButton.addEventListener('click', () => {
-            window.history.back(); // Esta función te regresa a la página anterior
-        });
+        backButton.addEventListener('click', () => window.history.back());
     }
 });

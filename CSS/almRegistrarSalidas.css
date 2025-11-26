@@ -1,0 +1,364 @@
+/* --- BASE (Igual a Entradas para consistencia) --- */
+body {
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 20px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #333;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+h1 {
+    text-align: center;
+    color: #c45d3c;
+    margin: 0 0 25px 0;
+}
+
+/* TABS */
+.tabs-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 25px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #777;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background: #f5f5f5;
+    color: #411163;
+}
+
+.tab-btn.active {
+    background-color: #411163;
+    color: white;
+    box-shadow: 0 4px 10px rgba(65, 17, 99, 0.3);
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* TABLAS */
+.tabla-scroll-container {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #411163;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.btn-surtir {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-surtir:hover {
+    background-color: #0056b3;
+}
+
+/* MANUAL CARD */
+.manual-card {
+    background: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.manual-header {
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 10px;
+}
+
+.manual-header h3 {
+    color: #411163;
+    margin: 0;
+}
+
+.manual-header p {
+    color: #888;
+    margin: 5px 0 0;
+    font-size: 0.9em;
+}
+
+/* CONTROLES MANUALES (GRID CORREGIDO) */
+.manual-controls {
+    display: grid;
+    grid-template-columns: 30% 1fr 100px 130px;
+    /* Motivo | Buscador | Cant | Botón */
+    gap: 15px;
+    align-items: end;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.manual-controls input,
+.manual-controls select,
+.btn-add-manual {
+    height: 42px;
+    box-sizing: border-box;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-wrapper select {
+    width: 100%;
+    padding: 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    appearance: none;
+    background: white;
+    cursor: pointer;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #411163;
+    pointer-events: none;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-wrapper input {
+    width: 100%;
+    padding: 0 15px 0 35px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    max-height: 250px;
+    overflow-y: auto;
+    display: none;
+    z-index: 50;
+}
+
+.search-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.search-item:hover {
+    background-color: #f4eaf7;
+}
+
+.res-name {
+    font-weight: bold;
+    display: block;
+}
+
+.res-info {
+    font-size: 0.85em;
+    color: #777;
+}
+
+.quantity-group input {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.btn-add-manual {
+    width: 100%;
+    padding: 0;
+    background-color: #411163;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-add-manual:hover {
+    background-color: #5a1a4a;
+}
+
+/* TABLA MANUAL */
+.tabla-manual {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tabla-manual th {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+.tabla-manual td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.empty-state-msg {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+    border: 1px dashed #ccc;
+    margin-top: 5px;
+    background: #fafafa;
+}
+
+.btn-delete-row {
+    background: #fee2e2;
+    color: #dc2626;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.manual-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-save-manual {
+    background: #DA6049;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(218, 96, 73, 0.3);
+    transition: transform 0.2s;
+}
+
+.btn-save-manual:hover {
+    transform: translateY(-2px);
+    background: #c94e36;
+}
+
+#botonRegresarFijo {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #7e084b;
+    color: white;
+    font-size: 28px;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+@media (max-width: 768px) {
+    .manual-controls {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}

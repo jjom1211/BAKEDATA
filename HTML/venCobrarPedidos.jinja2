@@ -1,0 +1,78 @@
+{% extends "base.jinja2" %}
+
+{% block title %}Cobrar Pedidos{% endblock %}
+
+{% block head_links %}
+    <link rel="stylesheet" href="{{ url_for('serve_css', filename='venCobrarPedidos.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Caja: Cobro de Pedidos</h1>
+    
+    <!-- HEADER: Selección de Caja -->
+    <div class="caja-selector-container">
+        <label for="caja_activa">Operando en:</label>
+        <select id="caja_activa">
+            {% if cajas %}
+                {% for caja in cajas %}
+                    <option value="{{ caja.caja_id }}">Caja #{{ caja.caja_id }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="">No hay cajas asignadas</option>
+            {% endif %}
+        </select>
+    </div>
+
+    <!-- LISTA DE PEDIDOS -->
+    <div class="pedidos-list-container">
+        <h3>Pedidos Listos para Entrega y Cobro</h3>
+        <div id="loading-msg" style="text-align:center; color:#666; padding:20px;">Cargando pedidos...</div>
+        
+        <div class="grid-pedidos" id="grid-pedidos">
+            <!-- Se llena dinámicamente con JS -->
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE COBRO -->
+<div id="modal-cobro" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <span class="modal-close" id="cerrar-modal">&times;</span>
+        <h2>Cobrar Pedido #<span id="modal-ped-id"></span></h2>
+        
+        <div class="resumen-cobro">
+            <p>Cliente: <strong id="modal-cliente"></strong></p>
+            <p class="total-line">Total a Pagar: <span id="modal-total">$0.00</span></p>
+        </div>
+
+        <div class="metodo-pago-selector">
+            <label class="radio-card">
+                <input type="radio" name="metodo" value="efectivo" checked>
+                <i class="fas fa-money-bill-wave"></i> Efectivo
+            </label>
+            <label class="radio-card">
+                <input type="radio" name="metodo" value="tarjeta">
+                <i class="fas fa-credit-card"></i> Tarjeta
+            </label>
+        </div>
+
+        <div id="seccion-efectivo">
+            <label>Monto Recibido:</label>
+            <input type="number" id="monto-recibido" placeholder="0.00" step="0.5">
+            <div class="cambio-info">
+                Cambio: <span id="cambio-text">$0.00</span>
+            </div>
+        </div>
+
+        <button id="btn-finalizar-cobro" class="btn-pagar">Confirmar Pago y Entrega</button>
+    </div>
+</div>
+
+<button id="botonRegresarFijo" onclick="window.history.back()">⭠</button>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{{ url_for('serve_js', filename='venCobrarPedidos.js') }}"></script>
+{% endblock %}

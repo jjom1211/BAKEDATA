@@ -1,0 +1,123 @@
+/* Archivo: CSS/almActualizarMateriaPrima.css */
+
+/* --- ESTRUCTURA GENERAL --- */
+body {
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    /* Aseguramos que el contenido empiece arriba */
+    display: block; 
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    /* Margen superior para separar del techo */
+    margin: 40px auto; 
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #DA6049;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+/* --- NUEVO CONTENEDOR CON SCROLL (LA SOLUCIÓN) --- */
+.table-scroll-container {
+    width: 100%;
+    /* Define una altura máxima. Si la tabla es más larga, aparecerá el scroll */
+    max-height: 65vh; /* Ocupa el 65% de la altura de la pantalla */
+    
+    /* Habilita el scroll tanto vertical como horizontal si es necesario */
+    overflow: auto; 
+    
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    background-color: #fff;
+}
+
+.table-edicion {
+    width: 100%;
+    border-collapse: separate; /* Necesario para el sticky header */
+    border-spacing: 0;
+    min-width: 1000px; /* Asegura que no se apriete demasiado horizontalmente */
+}
+
+/* --- ENCABEZADO FIJO (STICKY HEADER) --- */
+.table-edicion thead th {
+    position: sticky; /* Magia: se queda pegado arriba */
+    top: 0;
+    z-index: 10; /* Se asegura que esté por encima del contenido */
+    background-color: #411163;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    white-space: nowrap;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.1); /* Sombra para distinguir el header */
+}
+
+.table-edicion td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+/* --- ESTILOS DE INPUTS Y BOTONES (IGUAL QUE ANTES) --- */
+.input-editable, .select-editable {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.btn-guardar {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+.btn-guardar:hover { background-color: #0056b3; }
+.btn-guardar:disabled { background-color: #ccc; cursor: not-allowed; }
+
+/* Botón Regresar Fijo */
+#botonRegresarFijo {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #7e084b;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: all 0.2s ease-in-out;
+}
+#botonRegresarFijo:hover {
+    background-color: #411163;
+    transform: scale(1.05);
+}

@@ -1,0 +1,85 @@
+body {
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0; padding: 20px; color: #333;
+}
+
+.container {
+    max-width: 1000px; margin: 60px auto; padding: 30px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h1 { text-align: center; color: #c45d3c; margin-top: 0; }
+
+/* SELECTOR CAJA */
+.caja-selector-container {
+    text-align: center; margin-bottom: 30px; padding: 15px;
+    background: #f8f9fa; border-radius: 8px; border: 1px solid #eee;
+}
+.caja-selector-container label { font-weight: bold; margin-right: 10px; color: #555; }
+.caja-selector-container select { padding: 8px 15px; border-radius: 5px; border: 1px solid #ccc; font-size: 1em; }
+
+/* GRID PEDIDOS */
+.pedidos-list-container h3 { border-bottom: 2px solid #eee; padding-bottom: 10px; color: #411163; }
+.grid-pedidos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px; margin-top: 20px;
+}
+
+/* TARJETA DE PEDIDO */
+.pedido-card {
+    background: white; border: 1px solid #e0e0e0; border-radius: 10px;
+    padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: transform 0.2s; display: flex; flex-direction: column;
+}
+.pedido-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+
+/* Estado: C (Ready / Listo en Tienda) */
+.pedido-card.ready { border-left: 5px solid #007bff; }
+
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.ped-id { font-weight: bold; color: #777; font-size: 0.9em; }
+
+.badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; }
+.badge-blue { background: #e0f2fe; color: #007bff; }
+
+.cliente { margin: 0 0 5px 0; color: #333; font-size: 1.1em; }
+.asunto { color: #666; margin: 0 0 10px 0; font-size: 0.95em; font-style: italic; }
+.fecha { font-size: 0.9em; color: #888; margin: 0; }
+
+.card-footer { margin-top: auto; padding-top: 15px; border-top: 1px dashed #eee; display: flex; justify-content: space-between; align-items: center; }
+.monto { font-size: 1.3em; font-weight: bold; color: #411163; }
+
+.btn-cobrar {
+    background: #28a745; color: white; border: none;
+    padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-cobrar:hover { background: #218838; }
+
+.empty-state { text-align: center; padding: 40px; color: #999; font-size: 1.1em; grid-column: 1 / -1; }
+
+/* MODAL */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 2000; }
+.modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
+.modal-close { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #aaa; }
+.resumen-cobro { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+.total-line { font-size: 1.4em; color: #28a745; font-weight: bold; margin-bottom: 0; }
+
+.metodo-pago-selector { display: flex; gap: 15px; margin-bottom: 20px; }
+.radio-card { flex: 1; border: 2px solid #eee; padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; color: #555; transition: 0.2s; }
+.radio-card:has(input:checked) { border-color: #411163; color: #411163; background: #f3e5f5; }
+.radio-card i { display: block; font-size: 1.5em; margin-bottom: 5px; }
+
+#seccion-efectivo input { width: 100%; padding: 12px; font-size: 1.2em; border: 2px solid #ccc; border-radius: 6px; box-sizing: border-box; text-align: center; }
+.cambio-info { text-align: center; margin-top: 10px; font-size: 1.2em; font-weight: bold; }
+
+.btn-pagar { width: 100%; padding: 15px; background: #411163; color: white; border: none; border-radius: 8px; font-size: 1.2em; font-weight: bold; margin-top: 20px; cursor: pointer; }
+.btn-pagar:hover { background: #5a1a4a; }
+.btn-pagar:disabled { background: #ccc; cursor: not-allowed; }
+
+#botonRegresarFijo { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: #7e084b; color: white; font-size: 28px; border: none; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }

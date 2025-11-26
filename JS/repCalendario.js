@@ -65,81 +65,81 @@ document.getElementById('backButton').addEventListener('click', () => {
     window.history.back();
 });
 
+// ... (El código del renderCalendar se mantiene IGUAL, solo cambia esta función) ...
 
-// --- FUNCIÓN TOTALMENTE NUEVA QUE REEMPLAZA A LA ANTERIOR ---
 function mostrarDetallesDelDia(fechaStr) {
     const detallesDiv = document.getElementById('pedidosDelDia');
-    detallesDiv.innerHTML = `<h3>Detalles para ${fechaStr}</h3>`; // Título principal
+    
+    // Mostramos un mensaje de carga
     detallesDiv.style.display = 'block';
+    detallesDiv.innerHTML = `<h3>Repartos del día: ${fechaStr}</h3><p>Cargando datos...</p>`;
 
-    // Peticiones a ambos endpoints al mismo tiempo
-    const fetchPedidos = fetch(`/pedidos_por_fecha/${fechaStr}`).then(res => res.json());
-    const fetchRepartos = fetch(`/repartos_por_fecha/${fechaStr}`).then(res => res.json());
+    fetch(`/api/entregas_por_fecha/${fechaStr}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Error en la red');
+            return response.json();
+        })
+        .then(entregas => {
+            detallesDiv.innerHTML = `<h3>Repartos del día: ${fechaStr}</h3>`;
 
-    // Cuando ambas promesas se resuelvan...
-    Promise.all([fetchPedidos, fetchRepartos])
-        .then(([pedidos, repartos]) => {
+            if (entregas.length === 0) {
+                detallesDiv.innerHTML += '<p>No hay repartos programados para esta fecha en tu sucursal.</p>';
+                return;
+            }
+
+            // Crear tabla única
+            const table = document.createElement('table');
+            table.classList.add('pedidos-table');
             
-            // --- Sección para Pedidos Creados ---
-            detallesDiv.innerHTML += '<h4>Pedidos Creados</h4>';
-            if (pedidos.length === 0) {
-                detallesDiv.innerHTML += '<p>No hay pedidos creados en esta fecha.</p>';
-            } else {
-                const table = document.createElement('table');
-                table.classList.add('pedidos-table');
-                const headerRow = document.createElement('tr');
-                ['# Ped', 'Asunto', 'Estado', 'Monto', 'Sucursal Destino'].forEach(text => {
-                    const th = document.createElement('th');
-                    th.textContent = text;
-                    headerRow.appendChild(th);
-                });
-                table.appendChild(headerRow);
+            // Encabezados
+            const headerRow = document.createElement('tr');
+            ['Hora', 'Pedido', 'Destino', 'Asunto', 'Estado Reparto', 'Monto'].forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+
+            // Filas
+            entregas.forEach(p => {
+                const row = document.createElement('tr');
                 
-                pedidos.forEach(p => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${p.ped_id}</td>
-                        <td>${p.ped_asunto}</td>
-                        <td>${p.ped_estado_pedido}</td>
-                        <td>$${parseFloat(p.ped_monto_total).toFixed(2)}</td>
-                        <td>${p.sucursal_destino_nombre || 'N/A'}</td>
-                    `;
-                    table.appendChild(row);
-                });
-                detallesDiv.appendChild(table);
-            }
+                // --- LÓGICA VISUAL BASADA EN ESTADO DE REPARTO ---
+                let estadoColor = '#fff';
+                let textoEstado = p.rep_estado_reparto;
 
-            // --- Sección para Repartos Programados ---
-            detallesDiv.innerHTML += '<hr><h4>Repartos Programados</h4>';
-            if (repartos.length === 0) {
-                detallesDiv.innerHTML += '<p>No hay repartos programados para esta fecha.</p>';
-            } else {
-                const table = document.createElement('table');
-                table.classList.add('pedidos-table');
-                const headerRow = document.createElement('tr');
-                ['# Rep', 'Asunto', 'Estado', 'Monto', 'Sucursal Destino'].forEach(text => {
-                    const th = document.createElement('th');
-                    th.textContent = text;
-                    headerRow.appendChild(th);
-                });
-                table.appendChild(headerRow);
+                // Mapeo de colores y textos
+                if(p.rep_estado_reparto === 'R') {
+                    estadoColor = '#fef3c7'; // Amarillo claro (En Camino)
+                    textoEstado = 'En Ruta';
+                } else if(p.rep_estado_reparto === 'E') {
+                    estadoColor = '#dcfce7'; // Verde claro (Entregado)
+                    textoEstado = 'Entregado';
+                } else if(p.rep_estado_reparto === 'X') {
+                    estadoColor = '#fee2e2'; // Rojo claro (Cancelado)
+                    textoEstado = 'Cancelado';
+                } else if(p.rep_estado_reparto === 'P') {
+                     estadoColor = '#e0f2fe'; // Azul claro (Pendiente)
+                     textoEstado = 'Pendiente';
+                }
 
-                repartos.forEach(r => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${r.rep_id}</td>
-                        <td>${r.ped_asunto}</td>
-                        <td>${r.rep_estado_reparto}</td>
-                        <td>$${parseFloat(r.ped_monto_total).toFixed(2)}</td>
-                        <td>${r.sucursal_destino_nombre || 'N/A'}</td>
-                    `;
-                    table.appendChild(row);
-                });
-                detallesDiv.appendChild(table);
-            }
+                row.innerHTML = `
+                    <td style="font-weight:bold;">${p.ped_hora_entrega}</td>
+                    <td>${p.ped_id}</td>
+                    <td>${p.sucursal_destino_nombre || 'Sin Sucursal'}</td>
+                    <td>${p.ped_asunto}</td>
+                    <td style="background-color: ${estadoColor}; color: #333; font-weight:bold; text-align:center;">
+                        ${textoEstado}
+                    </td>
+                    <td>$${p.ped_monto_total.toFixed(2)}</td>
+                `;
+                table.appendChild(row);
+            });
+
+            detallesDiv.appendChild(table);
         })
         .catch(error => {
-            console.error('Error al obtener detalles del día:', error);
-            detallesDiv.innerHTML += '<p>Ocurrió un error al cargar los detalles.</p>';
+            console.error('Error:', error);
+            detallesDiv.innerHTML = '<p style="color:white; background:red; padding:10px;">Error al cargar las entregas.</p>';
         });
 }

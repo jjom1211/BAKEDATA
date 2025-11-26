@@ -2,25 +2,20 @@
 
 {% block title %}Almacén{% endblock %}
 
-{% block head_links %}
-    <link rel="stylesheet" href="{{ url_for('serve_css', filename='almacen.css') }}">
-{% endblock %}
 
 {% block content %}
     <div class="container">
         <h1>Almacén</h1>
-        <button class="button" data-url="/almacen/entradas">Registrar Entradas</button>
-        <button class="button" data-url="/almacen/actualizarMateriaPrima">Actualizar Materia Prima</button>
-        <button class="button" data-url="/almacen/salidas">Registrar Salidas</button>
-        <button class="button" data-url="/almacen/actualizarProductos">Actualizar Productos</button>
+        <button class="button" data-url="/registrarEntradas">Registrar Entradas</button>
+        <button class="button" data-url="/registrarSalidas">Registrar Salidas</button>
         <button class="button" data-url="/almacen/verProductos">Ver Productos</button>
         <button class="button" data-url="/almacen/verMateriasPrimas">Ver Materias Primas</button>
+        <button class="button admin-only" data-url="/actualizarMateriaPrima">Actualizar Materia Prima</button>
+        <button class="button admin-only" data-url="/actualizarProductos">Actualizar Productos</button>
         <button class="button admin-only" data-url="/almacen/solicitarProductos">Solicitar Productos</button>
         <button class="button admin-only" data-url="/almacen/solicitarMateriaPrima">Solicitar Materia Prima</button>
-        <button class="button admin-only" data-url="/almacen/enviarProductos">Enviar Productos a Tienda</button>
     </div>
 {% endblock %}
-
 {% block extra_scripts %}
     <script src="{{ url_for('serve_js', filename='almacen.js') }}"></script>
 {% endblock %}

@@ -1,27 +1,20 @@
 // Objeto de datos que define toda la estructura de la barra lateral
 const menuData = [
     { name: "Almacén", url: "/almacen", roles: ["A", "EA", "E", "G"], icon: "https://i.imgur.com/vp9A1f3.png", submenu: [
-        { name: "Registrar Entradas", url: "/almacen/entradas", roles: ["A"] },
-        { name: "Actualizar Materia Prima", url: "/actualizarMateriaPrima", roles: ["A"] },
+        { name: "Registrar Entradas", url: "/registrarEntradas", roles: ["A"] },
         { name: "Registrar Salidas", url: "/registrarSalidas", roles: ["A"] },
-        { name: "Actualizar Productos", url: "/actualizarProductos", roles: ["A"] },
-        { name: "Ver Productos", url: "/verProductos", roles: ["A"] },
-        { name: "Ver Materias Primas", url: "/verMateriasPrimas", roles: ["A"] },
-        { name: "Solicitar Productos", url: "/solicitarProductos", roles: ["EA", "E", "G"] },
-        { name: "Solicitar Materia Prima", url: "/solicitarMateriaPrima", roles: ["EA", "E", "G"] },
-        { name: "Enviar Productos a Tienda", url: "/enviarProductos", roles: ["EA", "E", "G"] }
+        { name: "Ver Productos", url: "/almacen/verProductos", roles: ["A"] },
+        { name: "Ver Materias Primas", url: "/almacen/verMateriasPrimas", roles: ["A"] },
+        { name: "Actualizar Materia Prima", url: "/actualizarMateriaPrima", roles: ["G"]},
+        { name: "Actualizar Productos", url: "/actualizarProductos", roles: ["G"] },
+        { name: "Solicitar Productos", url: "/almacen/solicitarProductos", roles: ["EA", "E", "G"] },
+        { name: "Solicitar Materia Prima", url: "/almacen/solicitarMateriaPrima", roles: ["EA", "E", "G"] },
     ]},
     { name: "Reparto", url: "/reparto", roles: ["R", "ER", "E", "G"], icon: "https://i.imgur.com/dZdUNal.png", submenu: [
         { name: "Calendario", url: "/CalendarioReparto", roles: ["R"] },
         { name: "Pedidos", url: "/Pedidos", roles: ["R"] },
         { name: "Repartos del dia", url: "/repDia", roles: ["R"] },
-        { name: "Actualizar repartos", url: "/actualizarRepartos", roles: ["ER", "E", "G"]},
-        { name: "Agregar repartos", url: "/agregarRepartos", roles: ["ER", "E", "G"] },
-    ]},
-    { name: "Usuario", url: "/usuario", roles: ["U", "E", "G"], icon: "https://i.imgur.com/WLyck1q.png", submenu: [
-        { name: "Catálogo", url: "/verCatalogo", roles: ["U"] },
-        { name: "Realizar Pedido", url: "/realizarPedido", roles: ["U"] },
-        { name: "Ver sucursales", url: "/verSucursales", roles: ["U"] },
+        {name: "Gestion Logistica", url: "/gestionLogistica", roles: ["ER", "E", "G"]},
     ]},
     { name: "Producción", url: "/produccion", roles: ["P", "EP", "E", "G"], icon: "https://i.imgur.com/3cO5Fks.png", submenu: [
         { name: "Ver Materia Prima", url: "/verMateriaPrima", roles: ["P"] },
@@ -32,7 +25,7 @@ const menuData = [
     { name: "Ventas", url: "/ventas", roles: ["V", "EV", "E", "G"], icon: "https://i.imgur.com/aUIJoQt.png", submenu: [
         { name: "Registrar Cliente", url: "/ventas/registrarCliente", roles: ["V"] },
         { name: "Registrar Venta", url: "/registrarVenta", roles: ["V"] },
-        { name: "Realizar Pedido", url: "/realizarPedidoVenta", roles: ["V"] },
+        { name: "Entregar Pedidos", url: "/cobrarPedidos", roles: ["V"] },
         { name: "Ver Caja", url: "/verCaja", roles: ["V"] },
         { name: "Movmientos de efectivo", url: "/movimientosEfectivo", roles: ["V"] },
         { name: "Ver Productos", url: "/verProductosVenta", roles: ["V"] },
@@ -69,7 +62,6 @@ const roleHierarchy = {
 const roleToClassMap = {
     "A": "slide-button-almacen",
     "R": "slide-button-reparto",
-    "U": "slide-button-usuario",
     "P": "slide-button-produccion",
     "V": "slide-button-ventas",
     "L": "slide-button-limpieza",
