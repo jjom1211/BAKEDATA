@@ -12,7 +12,7 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     overflow-x: hidden;
 }
 
@@ -49,10 +49,12 @@ h2 {
     font-weight: bold;
     transition: all 0.18s ease;
 }
+
 .button:hover {
     background-color: #eb816c;
 }
-.admin-only{
+
+.admin-only {
     display: none;
     width: 250px;
     margin: 10px auto;
@@ -83,9 +85,29 @@ h2 {
     transition: left 0.3s ease;
     z-index: 1000;
 }
-.sidebar-background { position:absolute; top:0; left:0; width:100%; height:100%; background-size:cover; background-position:center; opacity:.5; z-index:-1; }
-.sidebar-content { position:relative; z-index:1; text-align:center; }
-.sidebar-logo { width:110px; margin-bottom:10px; }
+
+.sidebar-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: .5;
+    z-index: -1;
+}
+
+.sidebar-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.sidebar-logo {
+    width: 110px;
+    margin-bottom: 10px;
+}
 
 /* ---------------------------
     Botones DENTRO del sidebar
@@ -97,7 +119,8 @@ h2 {
     width: 90%;
     margin: 10px 0;
     padding: 10px;
-    background-color: transparent; /* neutral por defecto */
+    background-color: transparent;
+    /* neutral por defecto */
     color: white;
     border: none;
     border-radius: 5px;
@@ -107,20 +130,45 @@ h2 {
     text-align: left;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.08s ease;
 }
+
 /* -> Hover genérico **solo** para botones que NO son slide-button-* */
 .sidebar .button:not([class*="slide-button-"]):hover {
-    background-color: rgba(255,255,255,0.08);
+    background-color: rgba(255, 255, 255, 0.08);
     color: inherit;
 }
+
 /* ---------------------------
     HOVER por departamento (opcional / ajustable)
    --------------------------- */
-.sidebar .button.slide-button-almacen:hover { background-color: #2ecc71; color: #fff; }
-.sidebar .button.slide-button-reparto:hover { background-color: #e74c3c; color: #fff; }
-.sidebar .button.slide-button-usuario:hover { background-color: #3498db; color: #fff; }
-.sidebar .button.slide-button-produccion:hover { background-color: #e67e22; color: #fff; }
-.sidebar .button.slide-button-ventas:hover { background-color: #edb620; color: #fff; }
-.sidebar .button.slide-button-limpieza:hover { background-color: #1abc9c; color: #fff; }
+.sidebar .button.slide-button-almacen:hover {
+    background-color: #2ecc71;
+    color: #fff;
+}
+
+.sidebar .button.slide-button-reparto:hover {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.sidebar .button.slide-button-usuario:hover {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.sidebar .button.slide-button-produccion:hover {
+    background-color: #e67e22;
+    color: #fff;
+}
+
+.sidebar .button.slide-button-ventas:hover {
+    background-color: #edb620;
+    color: #fff;
+}
+
+.sidebar .button.slide-button-limpieza:hover {
+    background-color: #1abc9c;
+    color: #fff;
+}
 
 /* ---------------------------
     REGLA ÚNICA para TODOS los botones admin
@@ -135,19 +183,96 @@ h2 {
 /* ---------------------------
     Resto (menús, íconos y wrappers)
    --------------------------- */
-.return-icon { width:40px; height:auto; vertical-align:middle; margin-right:10px; }
-.open-sidebar { position:fixed; top:10px; left:10px; background-color:#333; color:white; border:none; padding:10px; font-size:20px; cursor:pointer; z-index:1001; }
-.open-sidebar:hover { background-color:#575757; }
+.return-icon {
+    width: 40px;
+    height: auto;
+    vertical-align: middle;
+    margin-right: 10px;
+}
 
-.content { margin-left:0; padding:20px; transition: margin-left 0.3s ease; }
-.sidebar.active { left:0; } .content.active { margin-left:250px; }
+.open-sidebar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1001;
+}
 
-.menu-item { display:flex; align-items:center; margin:5px 0; }
-.icono-sidebar { width:40px; height:40px; margin-right:5px; }
+.open-sidebar:hover {
+    background-color: #575757;
+}
 
-.menu-item.doble-opcion { display:flex; flex-direction:column; align-items:stretch; position:relative; }
-.menu-item.doble-opcion .ir-item-wrapper { display:flex; align-items:center; width:100%; }
-.menu-item.doble-opcion .toggle-submenu { background:none; border:none; color:white; font-size:25px; cursor:pointer; margin-right:5px; }
-.menu-item.doble-opcion .ir-item { background-color:transparent; border:none; color:white; text-align:left; width:100%; cursor:pointer; font-size:16px; }
-.menu-item.doble-opcion .submenu { display:none; flex-direction:column; margin-left:20px; }
-.menu-item.doble-opcion .submenu .button { color:white; margin:3px 0; font-size:14px; }
+.content {
+    margin-left: 0;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+.content.active {
+    margin-left: 250px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.icono-sidebar {
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+}
+
+.menu-item.doble-opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+}
+
+.menu-item.doble-opcion .ir-item-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.menu-item.doble-opcion .toggle-submenu {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.menu-item.doble-opcion .ir-item {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.menu-item.doble-opcion .submenu {
+    display: none;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.menu-item.doble-opcion .submenu .button {
+    color: white;
+    margin: 3px 0;
+    font-size: 14px;
+}

@@ -21,37 +21,37 @@ def migrar_contraseñas():
             # 1. Buscar solo empleados con contraseñas en TEXTO PLANO.
             # (Las contraseñas hasheadas empiezan con 'pbkdf2:sha256...')
             print("Buscando empleados con contraseñas sin hashear...")
-            cursor.execute("SELECT emp_id, emp_contrasenia FROM empleados WHERE emp_contrasenia NOT LIKE 'scrypt:%'")
-            empleados_a_migrar = cursor.fetchall()
+            cursor.execute("SELECT usu_id, usu_contrasenia FROM usuarios WHERE usu_contrasenia NOT LIKE 'scrypt:%'")
+            usuario_a_migrar = cursor.fetchall()
 
-            if not empleados_a_migrar:
+            if not usuario_a_migrar:
                 print("\n¡Felicidades! Todas las contraseñas ya están hasheadas.")
                 return
 
-            print(f"Se encontraron {len(empleados_a_migrar)} contraseñas para migrar.")
+            print(f"Se encontraron {len(usuario_a_migrar)} contraseñas para migrar.")
             
             # 2. Recorrer cada empleado y hashear su contraseña
-            for empleado in empleados_a_migrar:
-                emp_id = empleado['emp_id']
-                contraseña_plana = empleado['emp_contrasenia']
+            for usuario in usuario_a_migrar:
+                usu_id = usuario['usu_id']
+                contraseña_plana = usuario['usu_contrasenia']
 
                 # Pequeña validación para no hashear contraseñas vacías
                 if not contraseña_plana or len(contraseña_plana) < 4:
-                    print(f"  - Omitiendo empleado {emp_id} (contraseña vacía o muy corta).")
+                    print(f"  - Omitiendo empleado {usu_id} (contraseña vacía o muy corta).")
                     continue
                 
-                print(f"  - Migrando contraseña para empleado {emp_id}...")
+                print(f"  - Migrando contraseña para empleado {usu_id}...")
                 
                 # 3. Generar el hash seguro
                 hashed_password = generate_password_hash(contraseña_plana)
                 
                 # 4. Actualizar la base de datos con el nuevo hash
-                cursor.execute("UPDATE empleados SET emp_contrasenia = %s WHERE emp_id = %s", (hashed_password, emp_id))
+                cursor.execute("UPDATE empleados SET emp_contrasenia = %s WHERE emp_id = %s", (hashed_password, usu_id))
             
             # 5. Guardar todos los cambios
             connection.commit()
             
-            print(f"\n¡Migración completada! Se actualizaron {len(empleados_a_migrar)} contraseñas.")
+            print(f"\n¡Migración completada! Se actualizaron {len(usuario_a_migrar)} contraseñas.")
 
     except Exception as e:
         if connection:

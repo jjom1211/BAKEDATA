@@ -6,7 +6,7 @@ body {
     background-position: top left;
     height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,19 +22,20 @@ body {
 
 h1 {
     font-weight: bold;
-    color: #ff6d4c;
-    padding: 5px;
-    font-size: 70px;
-    -webkit-text-stroke: 2px #000000;
+    color: #f7f1f1;
+    font-size: 3.5em;
+    -webkit-text-stroke: 2px #3d3d3d;
     margin-bottom: 20px;
 }
 .calendar {
-    background-color: #fc9d78;
+    background-color: #df6c55;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 500px;
-    color: #ffff;
+    box-shadow: 0 4px 15px rgb(0, 0, 0);
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto 20px auto;
+    color: white;
 }
 .header {
     display: flex;
@@ -42,21 +43,52 @@ h1 {
     align-items: center;
     margin-bottom: 20px;
 }
+.header h2 {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin: 0;
+    color: #fff
+}
 .header button {
-    background-color: #625c5b;
+    background-color: #3d3d3d;
     color: white;
     border: none;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 .header button:hover {
     background-color: #9a9696;
 }
+.days, .grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+.day {
+    width: 14.28%;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.grid div {
+    width: 14.28%;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 50%; /* Hacemos todos los días un círculo */
+    height: 40px;      /* Altura fija para centrar mejor */
+    line-height: 40px; /* Centrado vertical */
+    margin-bottom: 5px;
+}
+.grid div:hover {
+    background-color: rgb(253, 207, 188);
+}
 .header h2 {
     font-weight: bold;
     font-size: 24px;
-    color: white;
+    color: #fff;
 }
 .days {
     display: flex;
@@ -80,24 +112,52 @@ h1 {
     padding: 10px 0;
     cursor: pointer;
 }
-.buttons {
-    margin-top: 20px;
+
+#backButton {
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    
+    /* Colores y tipografía */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    
+    /* Centrado del icono */
     display: flex;
     justify-content: center;
-    width: 500px;
-}
-.buttons button {
-    background-color: #625c5b;
-    color: white;
+    align-items: center;
+    
+    /* Otros estilos */
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
 }
-.buttons button:hover {
-    background-color: #9a9696;
+
+#backButton:hover {
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
+    transform: scale(1.05);
 }
+
+/* Limpiar el float para evitar desbordamientos */
+.container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+
+
+
 .grid div:hover {
     background-color: #fdcfbc;
 }
@@ -115,7 +175,7 @@ h1 {
 .tareas-del-dia {
     color: white;
     margin-top: 20px;
-    background: #fc9d78;
+    background: #df6c55;
     padding: 15px;
     border-radius: 10px;
 }

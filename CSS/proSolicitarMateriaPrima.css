@@ -7,10 +7,17 @@ body {
     background-image: url("https://i.imgur.com/3nSk8QU.jpg");
     background-size: cover;
     background-attachment: fixed;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
+}
+
+h1 {
+    text-align: center;
+    color: #f5e9dc;
+    margin: 0 0 25px 0;
+    -webkit-text-stroke: 1px #945038;
 }
 
 #main-content-wrapper {
@@ -23,7 +30,7 @@ body {
     max-width: 1200px;
     margin: 80px auto 40px auto; 
     
-    background: rgba(255, 255, 255, 0.95);
+    background: #fffaf0;
     border-radius: 10px;
     padding: 30px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -45,7 +52,7 @@ body {
 
 .busqueda-container h1 {
     font-size: 3em;
-    color: #c45d3c;
+    color: #f5e9dc;
     margin-top: 0;
     margin-bottom: 20px;
     text-align: center;
@@ -55,7 +62,8 @@ body {
     width: 100%;
     padding: 12px;
     font-size: 18px;
-    border: 2px solid #ccc;
+    background-color: #fffaf0;
+    border: 2px solid #df6c55;
     border-radius: 5px 5px 0 0;
     box-sizing: border-box;
     margin-bottom: 0;
@@ -75,9 +83,9 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-top: none;
+    background-color: #fffaf0;
+    border: 1px solid #df6c55;
+    border-top: #df6c55;
     border-radius: 0 0 5px 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -86,16 +94,16 @@ body {
     padding: 12px 15px;
     font-size: 1.1em;
     cursor: pointer;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #df6c55;
 }
 #sugerencias div:last-child { border-bottom: none; }
-#sugerencias div:hover { background: #eef; }
+#sugerencias div:hover { background: #f5e9dc; }
 
 /* --- COLUMNA DERECHA (Panel de Seleccionados) --- */
 .seleccionadas-container-MatPri {
     flex: 1; /* 5. Hace que esta columna sea más estrecha */
     min-width: 250px;
-    background-color: #f2baa4;
+    background-color: #df6c55;
     border-radius: 10px;
     padding: 20px;
     max-height: 500px; /* Aumentado para que quepan los selectores */
@@ -105,11 +113,12 @@ body {
     z-index: 1;
 }
 
+
 .seleccionadas-container-MatPri h3 {
-    color: #DA6049;
+    color: #3d3d3d;
     margin-top: 0;
     padding-bottom: 10px;
-    border-bottom: 2px solid #fff6f2;
+    border-bottom: 2px solid #fffaf0;
     text-align: center;
 }
 
@@ -122,9 +131,9 @@ body {
 .seleccionadas-container-MatPri li {
     margin: 10px 0;
     padding: 12px;
-    background-color: #fff6f2;
+    background-color: #fffaf0;
     border-radius: 6px;
-    border-left: 5px solid #DA6049;
+    border-left: 5px solid #b35340;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -132,14 +141,14 @@ body {
 }
 
 .seleccionadas-container-MatPri strong {
-    color: #DA6049;
+    color: #b35340;
 }
 
 .seleccionadas-container-MatPri input[type="number"] {
     width: 50px !important;
     padding: 5px !important;
     text-align: center;
-    border: 1px solid #ddd;
+    border: 1px solid #f5e9dc;
     border-radius: 3px;
     margin-left: 5px;
 }
@@ -155,16 +164,16 @@ body {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
-    color: #333;
+    color: #3d3d3d;
 }
 
 .origen-container select {
     width: 100%;
     padding: 10px;
     font-size: 1em;
-    border: 1px solid #ccc; /* O borde más suave si prefieres */
+    border: 1px solid #f5e9dc; /* O borde más suave si prefieres */
     border-radius: 5px;
-    background-color: #fff;
+    background-color: #f5e9dc;
     box-sizing: border-box;
     margin-bottom: 15px;
 }
@@ -182,17 +191,34 @@ body {
 /* --- FIN DE ESTILOS NUEVOS --- */
 
 
+#fecha_solicitud{
+    background-color: #f5e9dc;
+}
+
+#hora_solicitud{
+    background-color: #f5e9dc;
+}
+
+#comentarios-solicitud{
+    background-color: #f5e9dc;
+}
+
 /* --- BOTONES FIJOS --- */
 #boton-fijo-wrapper {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 30px; /* Mantiene la distancia desde abajo */
+    /* Elimina 'right: 30px;' */
+    
+    /* Centrado Horizontal en la ventana: */
+    left: 50%; 
+    transform: translateX(-50%); /* Ajusta el 50% de su propio ancho hacia la izquierda */
+    
     z-index: 1001;
 }
 
 #botonEnviar {
     padding: 12px 25px;
-    background-color: #000000;
+    background-color: #b35340;
     color: white;
     border: none;
     border-radius: 8px;
@@ -200,33 +226,56 @@ body {
     font-weight: bold;
     font-size: 1em;
     transition: background-color 0.2s;
+    /* --- PROPIEDADES A AGREGAR PARA CENTRAR --- */
+    
+    /* 1. Define un ancho para que no ocupe todo el espacio */
+    width: fit-content; 
+    
+    /* 2. Centra el elemento en su contenedor */
+    margin-left: auto;
+    margin-right: auto;
+    display: block; /* Asegura que se comporte como un bloque para que los márgenes funcionen */
+    
+    /* ------------------------------------------ */
 }
 #botonEnviar:hover {
-    background-color: #DA6049 !important;
+    background-color: #df6c55 !important;
 }
 
-#boton-volver-wrapper {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    z-index: 1001;
-}
 
 #botonVolver {
-    padding: 12px 20px;
-    background-color: #000000;
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    
+    /* Colores y tipografía */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
     color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    font-size: 28px;
     font-weight: bold;
+    
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Otros estilos */
+    border: none;
     cursor: pointer;
-    transition: background 0.2s;
-}
-#botonVolver:hover {
-    background-color: #DA6049;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
 }
 
+#botonVolver:hover {
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
+    transform: scale(1.05);
+}
 
 .datetime-container {
     display: flex;
@@ -263,7 +312,7 @@ body {
 
 .comentarios-container textarea {
     resize: vertical; /* Permite estirar solo hacia abajo */
-    font-family: inherit;
+    font-family: 'Quicksand', sans-serif;
 }
 
 /* Ajuste visual al hacer foco */

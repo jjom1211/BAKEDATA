@@ -112,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         datasets: [{
                             label: 'Total Vendido $MXN',
                             data: grafica_data.data,
-                            backgroundColor: 'rgba(218, 96, 73, 0.7)',
-                            borderColor: 'rgba(218, 96, 73, 1)',
+                            backgroundColor: '#b35340',
+                            borderColor: '#df6c55',
                             borderWidth: 1,
                             maxBarThickness: 100 
                         }]

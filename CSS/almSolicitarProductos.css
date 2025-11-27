@@ -3,26 +3,55 @@ body {
     background-image: url("https://i.imgur.com/3nSk8QU.jpg");
     background-size: cover;
     background-attachment: fixed;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
 }
 
+#buscador-productos{
+background-color: #f5e9dc;
+color: #3d3d3d;
+border-color: #df6c55;
+}
+
+#sucursal-origen{
+    background-color: #fffaf0;
+    border-color: #df6c55;
+}
+
+#fecha-entrega{
+    background-color: #fffaf0;
+    border-color: #df6c55;
+}
+
+
+#hora-entrega{
+    background-color: #fffaf0;
+    border-color: #df6c55;
+}
+
+#comentarios-solicitud{
+    background-color: #fffaf0;
+    border-color: #df6c55;
+}
+
+
 .venta-container {
     max-width: 1200px;
     margin: 40px auto;
     padding: 30px;
-    background: rgba(255, 255, 255, 0.96);
+    background: #fffaf0;
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 h1 {
     text-align: center;
-    color: #c45d3c;
+    color: #f5e9dc;
     margin: 0 0 10px;
     font-size: 2.5em;
+    -webkit-text-stroke: 1px  #945038;
 }
 
 .venta-container>p {
@@ -47,10 +76,10 @@ h1 {
 
 .productos-columna,
 .carrito-columna {
-    background: #fff;
+    background: #fffaf0;
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #df6c55;
     display: flex;
     flex-direction: column;
     max-height: 80vh;
@@ -59,9 +88,9 @@ h1 {
 
 h2 {
     margin-top: 0;
-    color: #411163;
+    color: #b35340;
     font-size: 1.4em;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid #df6c55;
     padding-bottom: 10px;
     margin-bottom: 15px;
 }
@@ -70,9 +99,9 @@ h2 {
 .lista-items {
     flex-grow: 1;
     overflow-y: auto;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #f5e9dc;
     padding: 10px;
-    background-color: #fafafa;
+    background-color: #f5e9dc;
     border-radius: 6px;
     margin-bottom: 15px;
     min-height: 200px;
@@ -84,8 +113,8 @@ h2 {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid #eee;
-    background: white;
+    border-bottom: 1px solid #fffaf0;
+    background: #fffaf0;
     margin-bottom: 5px;
     border-radius: 4px;
 }
@@ -106,7 +135,7 @@ h2 {
 }
 
 .btn-add {
-    background: #28a745;
+    background: #b35340;
     color: white;
     border: none;
     padding: 6px 12px;
@@ -118,7 +147,7 @@ h2 {
 }
 
 .btn-add:hover {
-    background: #218838;
+    background: #df6c55;
 }
 
 .btn-add:disabled {
@@ -132,8 +161,8 @@ h2 {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px dashed #ddd;
-    background: white;
+    border-bottom: 1px dashed #fffaf0;
+    background: #fffaf0;
     margin-bottom: 5px;
 }
 
@@ -177,12 +206,13 @@ h2 {
 
 /* --- FORMULARIO CARRITO --- */
 .form-section {
-    background: #f9f9f9;
+    background: #fffaf0;
     padding: 15px;
     border-radius: 6px;
     margin-bottom: 15px;
-    border: 1px solid #eee;
+    border: 1px solid #df6c55;
 }
+
 
 .control-group {
     margin-bottom: 12px;
@@ -240,7 +270,7 @@ h2 {
 }
 
 .carrito-total h3 {
-    color: #411163;
+    color: #b35340;
     margin: 0;
 }
 
@@ -248,7 +278,7 @@ h2 {
     width: 100%;
     padding: 12px;
     margin-top: 15px;
-    background: #c45d3c;
+    background: #b35340;
     color: white;
     border: none;
     border-radius: 6px;
@@ -259,7 +289,7 @@ h2 {
 }
 
 #btn-confirmar-solicitud:hover {
-    background: #a84a32;
+    background: #df6c55;
 }
 
 #btn-confirmar-solicitud:disabled {
@@ -268,19 +298,37 @@ h2 {
     cursor: not-allowed;
 }
 
+
 #botonRegresarFijo {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: #7e084b;
+    
+    /* Colores y tipografía */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
     color: white;
     font-size: 28px;
     font-weight: bold;
+    
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Otros estilos */
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
+}
+
+#botonRegresarFijo:hover {
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
+    transform: scale(1.05);
 }

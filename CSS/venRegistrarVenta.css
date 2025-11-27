@@ -1,26 +1,28 @@
 /* Archivo: CSS/venRegistrarVenta.css */
 
 /* --- ESTRUCTURA GENERAL --- */
+
 body {
-    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
-    /* Fondo general */
-    background-size: cover;
-    background-attachment: fixed;
-    font-family: Arial, sans-serif;
+    background-image: url("https://i.imgur.com/zJ2qs1g.jpg");
+    background-size: 40%;
+    background-repeat: repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
     padding: 20px;
-    /* Añade un poco de espacio alrededor */
-    min-height: 100vh;
-    /* Asegura que el body ocupe al menos toda la pantalla */
+    font-family: 'Quicksand', sans-serif;
     box-sizing: border-box;
 }
+
 
 .venta-container {
     max-width: 1200px;
     margin: 20px auto;
     /* Centra el contenedor principal */
     padding: 20px;
-    background: rgba(255, 255, 255, 0.95);
+    background: #d7d7cb;
     /* Fondo blanco para el contenido */
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -29,11 +31,12 @@ body {
 /* --- TÍTULO Y SELECTOR DE CAJA --- */
 h1 {
     text-align: center;
-    color: #c45d3c;
+    color: #4f4f4f;
     margin-top: 0;
     /* Quita margen superior por defecto */
     margin-bottom: 20px;
     font-size: 3em;
+        -webkit-text-stroke: 1px #4f4f4f;
     /* Tamaño adecuado */
 }
 
@@ -46,7 +49,7 @@ h1 {
     font-weight: bold;
     display: block;
     margin-bottom: 10px;
-    color: #495057;
+    color: #4f4f4f;
 }
 
 #caja_selector_venta {
@@ -55,7 +58,10 @@ h1 {
     padding: 10px;
     font-size: 1em;
     border: 1px solid #ced4da;
+    border-color: #4f4f4f;
+    background-color: #fffaf0;
     border-radius: 5px;
+    font-weight: bold;
     display: inline-block;
 }
 
@@ -69,11 +75,11 @@ h1 {
 
 .productos-columna,
 .carrito-columna {
-    background: #ffffff;
+    background: #fffaf0;
     /* Fondo sólido para legibilidad */
+    border-color: #4f4f4f;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     /* Usamos flex para controlar mejor el contenido interno */
     flex-direction: column;
@@ -85,6 +91,7 @@ h1 {
     /* Ocupa más espacio */
     min-width: 300px;
     /* Ancho mínimo */
+        background: #fffaf0;
 }
 
 .carrito-columna {
@@ -108,9 +115,13 @@ h1 {
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
+    background: #fffaf0;
+    border-color: #4f4f4f;
     border-radius: 4px;
     font-size: 1em;
     box-sizing: border-box;
+    font-weight: bold;
+    color: #4f4f4f;
     /* Incluye padding en el ancho */
 }
 
@@ -122,7 +133,8 @@ h1 {
     overflow-y: auto;
     border: 1px solid #eee;
     padding: 10px;
-    background-color: #fdfdfd;
+    background-color: #fffaf0;
+    border-color: #4f4f4f;
     margin-bottom: 15px;
     /* Espacio antes del total/botón */
 }
@@ -134,6 +146,7 @@ h1 {
     align-items: center;
     padding: 8px 5px;
     border-bottom: 1px solid #eee;
+    border-color: #4f4f4f;
 }
 
 .item-producto:last-child,
@@ -151,8 +164,12 @@ h1 {
 }
 
 .btn-add {
-    background-color: #28a745;
+    background-color: #df6c55;
     color: white;
+}
+
+.btn-add:hover {
+    background-color: #ec735b;
 }
 
 .btn-add:disabled {
@@ -168,6 +185,8 @@ h1 {
     width: 50px;
     text-align: center;
     padding: 5px;
+    background: #fffaf0;
+    border-color: #4f4f4f;
 }
 
 .carrito-total {
@@ -206,15 +225,19 @@ h1 {
 }
 
 .modal-content {
-    background: #fff;
+    background: #fffaf0;
     padding: 20px 30px;
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     width: 90%;
     max-width: 500px;
     position: relative;
-    color: #333;
+    color: #4f4f4f;
     /* Añadido color de texto */
+}
+
+.modal-content h2{
+    color: #4f4f4f;
 }
 
 .modal-close {
@@ -246,6 +269,12 @@ h1 {
     box-sizing: border-box;
 }
 
+#monto-recibido{
+    background-color: #fffaf0;
+    color:#28a745;
+    font-weight: bold;
+}
+
 .monto-grande {
     font-size: 1.5em;
     font-weight: bold;
@@ -273,7 +302,7 @@ h1 {
 
 /* Botones genéricos */
 .btn-primary {
-    background-color: #DA6049;
+    background-color: #df6c55;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -282,7 +311,7 @@ h1 {
 }
 
 .btn-primary:hover {
-    background-color: #eb816c;
+    background-color: #ec735b;
 }
 
 .btn-primary:disabled {
@@ -303,6 +332,7 @@ h1 {
     background-color: #5a6268;
 }
 
+
 #botonRegresarFijo {
     position: fixed; /* Lo fija en la pantalla */
     bottom: 30px;    /* A 30px del borde inferior */
@@ -314,7 +344,7 @@ h1 {
     border-radius: 50%;
     
     /* Colores y tipografía */
-    background-color: #7e084b; /* Color principal de tu paleta */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
     color: white;
     font-size: 28px;
     font-weight: bold;
@@ -333,6 +363,6 @@ h1 {
 }
 
 #botonRegresarFijo:hover {
-    background-color: #411163; /* Color secundario de tu paleta */
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
     transform: scale(1.05);
 }

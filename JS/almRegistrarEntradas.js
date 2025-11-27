@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.forEach(p => {
                     const row = `<tr>
                         <td><strong>#${p.ped_id}</strong></td>
-                        <td style="color:#2a9d8f; font-weight:bold;">${p.fecha_formateada}</td>
+                        <td style="color:#b35340; font-weight:bold;">${p.fecha_formateada}</td>
                         <td>${p.origen}</td>
                         <td>${p.ped_asunto}</td>
                         <td><button class="btn-ver-detalles" data-id="${p.ped_id}">Recepcionar</button></td>

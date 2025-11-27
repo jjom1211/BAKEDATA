@@ -6,86 +6,124 @@ body {
     background-position: top left;
     height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column; /* Alinea los elementos en una columna */
 }
 
-h1, h2 {
-    font-weight: bold;
-    color: #ff6d4c;
-    padding: 5px;
-    -webkit-text-stroke: 1px #000000;
-}
-
-h1 {
-    font-size: 70px;
-    -webkit-text-stroke-width: 2px;
-}
-
-h2 {
-    font-size: 40px;
-}
-
-/* Nuevo contenedor para centrar el calendario y los botones */
+/* Nuevo estilo para el contenedor principal */
 .main-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra los elementos hijos (calendario y botones) horizontalmente */
+    align-items: center;
     text-align: center;
 }
 
-/* ---------- CALENDARIO ---------- */
-.calendar {
-    background-color: #fc9d78;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 500px;
-    color: #fff;
-    margin-bottom: 20px; /* Espacio entre el calendario y los botones */
+h1 {
+    font-weight: bold;
+    color: #f7f1f1;
+    font-size: 3.5em;
+    -webkit-text-stroke: 2px #3d3d3d;
+    margin-bottom: 20px;
 }
 
+h2 {
+    font-weight: bold;
+    color: #f7f1f1;
+    font-size: 2.5em;
+    -webkit-text-stroke: 1.5px #3d3d3d;
+    margin-bottom: 20px;
+}
+
+h4 {
+    font-weight: bold;
+    color: #f7f1f1;
+    font-size: 2em;
+
+    margin-bottom: 20px;
+}
+
+.calendar {
+    background-color: #df6c55;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgb(0, 0, 0);
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto 20px auto;
+    color: white;
+}
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
-
+.header h2 {
+    font-weight: bold;
+    font-size: 1.5em;
+    margin: 0;
+    color: #fff
+}
 .header button {
-    background-color: #625c5b;
+    background-color: #3d3d3d;
     color: white;
     border: none;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
-
 .header button:hover {
     background-color: #9a9696;
 }
 
+.days, .grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+.day {
+    width: 14.28%;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.grid div {
+    width: 14.28%;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 50%; /* Hacemos todos los días un círculo */
+    height: 40px;      /* Altura fija para centrar mejor */
+    line-height: 40px; /* Centrado vertical */
+    margin-bottom: 5px;
+}
+.grid div:hover {
+    background-color: rgb(253, 207, 188);
+}
+.header h2 {
+    font-weight: bold;
+    font-size: 24px;
+    color: #fff;
+}
 .days {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
     color: white;
 }
-
 .day {
     width: 14%;
     text-align: center;
     font-weight: bold;
+    color: #ffff;
 }
-
 .grid {
     display: flex;
     flex-wrap: wrap;
 }
-
 .grid div {
     width: 14%;
     text-align: center;
@@ -112,27 +150,39 @@ h2 {
 }
 
 /* ---------- BOTONES ---------- */
-.buttons {
-    display: flex;
-    justify-content: center; /* Centra los botones horizontalmente */
-    gap: 20px; /* Espacio entre los botones */
-    width: 500px; /* Alinea los botones con el calendario */
-}
-
-.buttons button {
-    background-color: #625c5b;
+#backButton {
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    
+    /* Colores y tipografía */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
     color: white;
+    font-size: 28px;
+    font-weight: bold;
+    
+    /* Centrado del icono */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Otros estilos */
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    transition: all 0.2s ease-in-out;
 }
 
-.buttons button:hover {
-    background-color: #9a9696;
+#backButton:hover {
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
+    transform: scale(1.05);
 }
-
 /* ---------- TAREAS DEL DÍA ---------- */
 #tareasDelDiaContainer h2 {
     font-size: 24px;
@@ -168,14 +218,14 @@ h2 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); /* Centra el popup en la pantalla */
-    background: #fff;
+    background: #fcfcf4;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     z-index: 1000;
     overflow: auto;
     width: 600px;
-    max-height: 80vh;
+    height: 500px;
 }
 
 /* ---------- TABLA EN POPUP ---------- */
@@ -183,8 +233,8 @@ h2 {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: #fcfcf4;
+    border: 1px solid #fcfcf4;
     color: #000;
 }
 
@@ -196,12 +246,13 @@ h2 {
 }
 
 #contenidoPopup th {
-    background-color: #f0f0f0;
+    background-color: #b35340;
     font-weight: bold;
+    color:#fff;
 }
 
 #contenidoPopup tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f5e9dc;
 }
 
 #contenidoPopup select {
@@ -225,7 +276,9 @@ h2 {
     font-size: 18px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    color: #d35400;
+    color: #b35340;
+    background-color: #f5e9dc;
+    border-color: #b35340;
     width: 80%;
 }
 
@@ -246,7 +299,8 @@ input[list] {
     border-radius: 5px;
     max-height: 150px;
     overflow-y: auto;
-    background: white;
+    background: #f5e9dc;
+    color: #b35340;
     position: absolute;
     top: 100%;
     left: 0;
@@ -261,13 +315,13 @@ input[list] {
 }
 
 .autocomplete-list li:hover {
-    background-color: #f0f0f0;
+    background-color: #f5e9dc;
 }
 
 .autocomplete-container-row button:not(#toggleAllBtn) {
     padding: 8px 14px;
     font-size: 15px;
-    background-color: #3498db;
+    background-color: #b35340;
     color: white;
     border: none;
     border-radius: 5px;
@@ -275,7 +329,7 @@ input[list] {
 }
 
 .autocomplete-container-row button:not(#toggleAllBtn):hover {
-    background-color: #2980b9;
+    background-color: #df6c55;
 }
 
 #toggleAllBtn {
@@ -295,7 +349,7 @@ input[list] {
 /* Contenedor de tareas del servidor */
 .contenedor-servidor {
     margin-top: 20px;
-    background-color: #fefefe;
+    background-color: #f5e9dc;
     border: 1px solid #ccc;
     padding: 15px;
     border-radius: 10px;
@@ -305,12 +359,18 @@ input[list] {
 .contenedor-servidor h3 {
     margin-top: 0;
     font-size: 20px;
-    color: #333;
+    color: #b35340;
 }
+
+h3{
+    color:#b35340
+}
+
+
 
 /* Botón de "+" agregar tarea */
 #addTaskBtn {
-    background-color: #2ecc71;
+    background-color: #b35340;
     color: white;
     border: none;
     padding: 10px 16px;
@@ -324,20 +384,20 @@ input[list] {
 }
 
 #addTaskBtn:hover {
-    background-color: #27ae60;
+    background-color: #df6c55;
     transform: scale(1.05);
 }
 
 /* Botón toggle imagen */
 #toggleAllBtn {
-    background-color: #f39c12;
+    background-color: #b35340;
     padding: 8px;
     border-radius: 5px;
     transition: background-color 0.2s ease;
 }
 
 #toggleAllBtn:hover {
-    background-color: #e67e22;
+    background-color: #df6c55;
 }
 
 /* Lista de tareas del día */
@@ -379,153 +439,4 @@ input[list] {
 
 #cerrarPopupBtn:hover {
     color: #e74c3c;
-}
-
-/* ---------- SIDEBAR ---------- */
-.sidebar {
-    overflow-y: auto;
-    max-height: 100vh;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: -250px;
-    background-color: rgba(51, 51, 51, 0.9);
-    padding-top: 20px;
-    transition: left 0.3s ease;
-    z-index: 1000;
-}
-
-.sidebar-background {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.5;
-    z-index: -1;
-}
-
-.sidebar-content {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-}
-
-.sidebar-logo {
-    width: 110px;
-    margin-bottom: 10px;
-}
-
-.sidebar .button {
-    display: block;
-    width: 90%;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: transparent;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: left;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar .button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.return-icon {
-    width: 40px;
-    height: auto;
-    vertical-align: middle;
-    margin-right: 10px;
-}
-
-/* ---------- BOTÓN DE ABRIR SIDEBAR ---------- */
-.open-sidebar {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-.open-sidebar:hover {
-    background-color: #575757;
-}
-
-/* ---------- CONTENIDO PRINCIPAL ---------- */
-.content {
-    margin-left: 0;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-}
-
-.sidebar.active {
-    left: 0;
-}
-
-.content.active {
-    margin-left: 250px;
-}
-
-/* ---------- MENU ITEM ---------- */
-.menu-item {
-    display: flex;
-    align-items: center;
-    margin: 5px 0;
-}
-
-.icono-sidebar {
-    width: 40px;
-    height: 40px;
-    margin-right: 5px;
-}
-
-.menu-item.doble-opcion {
-    flex-direction: column;
-    align-items: stretch;
-    position: relative;
-}
-
-.menu-item.doble-opcion .ir-produccion-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-.menu-item.doble-opcion .toggle-submenu {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 25px;
-    cursor: pointer;
-}
-
-.menu-item.doble-opcion .ir-produccion {
-    background-color: transparent;
-    border: none;
-    color: white;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-}
-
-/* Estilo para el menú desplegable producción */
-.menu-item.doble-opcion .submenu {
-    display: none;
-    flex-direction: column;
-    margin-left: 20px;
-}
-
-.menu-item.doble-opcion .submenu .button {
-    color: white;
-    margin: 3px 0;
-    font-size: 14px;
 }

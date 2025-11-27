@@ -36,7 +36,7 @@ async function cargarPedidosPendientes() {
                     <td>${p.origen}</td>
                     <td>${p.destino}</td>
                     <td>${p.ped_asunto}</td>
-                    <td style="color:#2a9d8f; font-weight:bold;">${p.ped_fecha_entrega || 'Pendiente'} <small>${p.ped_hora_entrega || ''}</small></td>
+                    <td style="color:#b35340; font-weight:bold;">${p.ped_fecha_entrega || 'Pendiente'} <small>${p.ped_hora_entrega || ''}</small></td>
                     <td>
                         <button class="btn-cargar-prod" onclick="cargarPedidoAProduccion(${p.ped_id})">
                             <i class="fas fa-plus-circle"></i> Cargar

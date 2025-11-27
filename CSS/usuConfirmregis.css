@@ -1,5 +1,9 @@
 /* En tu archivo static/css/usuConfirmregis.css */
 
+body{
+    font-family: 'Quicksand', sans-serif;
+}
+
 .confirmation-container {
     display: flex;
     flex-direction: column;

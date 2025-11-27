@@ -3535,6 +3535,7 @@ def api_pedidos_por_cobrar():
                     p.ped_sucursal_origen = %s -- O destino, según quien cobra. Asumimos origen=tienda venta.
                     AND p.ped_fecha_entrega <= CURDATE()
                     AND p.ped_estado_pedido = 'C' -- SOLO LOS QUE YA ESTÁN EN TIENDA
+                    AND p.ped_usu_id IS NOT NULL
                 ORDER BY p.ped_fecha_entrega ASC
             """
             # Nota: Si la sucursal que cobra es la de DESTINO (donde el cliente recoge), 
@@ -4399,4 +4400,5 @@ def api_actualizar_empleado():
 
 
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    #app.run(host 'ip' ,  port = 5555, debug = true)
+    app.run(host='0.0.0.0',port=5555, debug=True)

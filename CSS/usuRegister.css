@@ -1,5 +1,5 @@
 body {
-    background-image: url("https://i.imgur.com/mGwWm4L.jpg");
+    background-image: url("https://i.imgur.com/zJ2qs1g.jpg");
     background-size: 40%;
     background-repeat: repeat;
     display: flex;
@@ -8,7 +8,7 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     box-sizing: border-box;
 }
 
@@ -20,7 +20,7 @@ body {
 
 /* La caja principal que contiene TODO */
 .content-box {
-    background: rgba(255, 255, 255, 0.9);
+    background: #d7d7cb;
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -36,12 +36,12 @@ body {
 
 /* El título ya no necesita su propio fondo */
 .content-box h1 {
-    font-weight: bold;
-    color: #eb816c;
+    color: #4f4f4f;
     font-size: 2.2em;
     text-align: center;
     margin-top: 0;
     margin-bottom: 10px;
+    -webkit-text-stroke: 1px #4f4f4f;
 }
 
 .logo {
@@ -68,18 +68,26 @@ label {
     font-weight: bold;
     margin-bottom: 5px;
     text-align: left; /* Esta regla ahora se aplicará correctamente a todas */
-    color: #333;
+    color: #4f4f4f;
     width: 100%; /* Asegura que ocupe todo el ancho disponible */
 }
 
 input {
     width: 100%;
+    background-color: #fffaf0 ;
     margin-bottom: 15px;
     padding: 10px;
+    color: #b35340;
+    font-weight: bold;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 1em;
+}
+
+
+#nombre{
+        font: bolder;
 }
 
 button {
@@ -160,18 +168,18 @@ button:hover {
 
 /* Botón de acción principal (Registrar) */
 .btn-primary {
-    background-color: #DA6049;
+    background-color: #b35340;
     color: white;
 }
 .btn-primary:hover {
-    background-color: #eb816c;
+    background-color: #df6c55;
 }
 
 /* Botón de acción secundaria (Regresar) */
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: #3d3d3d;
     color: white;
 }
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background-color: #5a5a5a;
 }

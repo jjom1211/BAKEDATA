@@ -1,24 +1,41 @@
 /* Estilos para la tabla de producción */
+body {
+    background-image: url("https://i.imgur.com/3nSk8QU.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 20px;
+    font-family: 'Quicksand', sans-serif;
+}
+
+
+h1{
+    color: #fcfcf4;
+    -webkit-text-stroke: 2px #3d3d3d ;
+}
+
 #tablaProduccion {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background-color: white; /* Fondo blanco solo para la tabla */
+    background-color: #fcfcf4; /* Fondo blanco solo para la tabla */
 }
 
 #tablaProduccion th, #tablaProduccion td {
-    border: 1px solid #ddd;
+    border: 1px solid #fcfcf4;
     padding: 8px;
     text-align: left;
 }
 
 #tablaProduccion th {
-    background-color: #f2f2f2;
+    background-color: #b35340;
     font-weight: bold;
+    color: #fff;
+    border-color: #b35340;
 }
 
 #tablaProduccion tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #b35340;
 }
 
 #tablaProduccion tr:hover {
@@ -37,7 +54,7 @@
     border-radius: 50%;
     
     /* Colores y tipografía */
-    background-color: #7e084b; /* Color principal de tu paleta */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
     color: white;
     font-size: 28px;
     font-weight: bold;
@@ -56,11 +73,9 @@
 }
 
 #botonRegresarFijo:hover {
-    background-color: #411163; /* Color secundario de tu paleta */
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
     transform: scale(1.05);
 }
-
-
 
 /* Limpiar el float para evitar desbordamientos */
 .container::after {
@@ -77,12 +92,14 @@
     text-align: center;
     margin-bottom: 20px;
     padding: 15px;
-    background-color: #fff3cd;
-    border: 1px solid #ffeeba;
+    background-color: #5a5a5a;
+    border: 1px solid #f7f1f1;
     border-radius: 8px;
     box-sizing: border-box;
+    color:#fff
 }
 .admin-selector-container select {
     padding: 8px;
     font-size: 1em;
+    background-color: #f7f1f1f7;
 }

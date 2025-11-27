@@ -9,13 +9,15 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
 }
 
 
 
 #taskSelect {
-    color:#d35400;
+    color:#b35340;
+    background-color: #fcfcf4;
+    border-color: #d35400;
     width: 80%; /* más ancho */
     font-size: 18px; /* más grande */
     padding: 12px;
@@ -24,7 +26,7 @@ body {
 input[list] {
     width: 60%;
     padding: 10px;
-    border: 2px solid #ccc;
+    border: 2px solid #fcfcf4;
     border-radius: 5px;
     font-size: 16px;
     margin-top: 10px;
@@ -32,7 +34,7 @@ input[list] {
 
 .subinterface {
     size: 80%;
-    background: #fff;
+    background: #fcfcf4;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -40,7 +42,7 @@ input[list] {
     text-align: center;
 }
 h2,h3{
-    color: #d35400;
+    color: #b35340;
     text-size-adjust: 30px;
 }
 
@@ -52,13 +54,15 @@ li {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #f2d7d5;
+    background: #b35340;
+    color: #fff;
+    font: bolder;
     padding: 8px;
     border-radius: 5px;
     margin: 5px 0;
 }
 button {
-    background-color: #d35400;
+    background-color: #b35340;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -67,7 +71,8 @@ button {
     margin-top: 10px;
 }
 button:hover {
-    background-color: #e67e22;
+    background-color: #df6c55;
+    font: bold;
 }
 select {
     width: 100%;
@@ -129,9 +134,8 @@ select {
     width: 1000px; /* mismo que .subinterface */
     max-height: 200px;
     overflow-y: auto;
-    background: white;
+    background: #fcfcf4;
     z-index: 10;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-top: 5px;
     position: relative; /* ya no flota */
@@ -143,7 +147,7 @@ select {
 }
 
 .autocomplete-list li:hover {
-    background-color: #f0f0f0;
+    background-color: #df6c55;
 }
 
 /* Contenedor de la lista de tareas */
@@ -156,8 +160,9 @@ select {
 
 /* Cada tarea individual */
 #taskList li {
-    background-color: #fdebd0; /* color de fondo suave */
-    color: #6e2c00;            /* texto oscuro */
+    background-color: #5a5a5a; /* color de fondo suave */
+    color: #fff;            /* texto oscuro */
+    font: bold;
     padding: 12px 16px;
     border-radius: 8px;
     margin: 8px 0;
@@ -170,7 +175,7 @@ select {
 
 /* Botón de eliminación "X" */
 #taskList li button {
-    background-color: #d35400;
+    background-color: #847c84;
     color: white;
     border: none;
     padding: 6px 10px;
@@ -182,178 +187,9 @@ select {
 }
 
 #taskList li button:hover {
-    background-color: #e67e22;
+    background-color: #df6c55;
 }
 
-
-
-/* Sidebar  y submenus */
-.sidebar {
-    overflow-y: auto; /* permite scroll vertical */
-    max-height: 100vh;
-    height: 100%;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: -250px;
-    /* Oculta la sidebar por defecto */
-    background-color: rgba(51, 51, 51, 0.9);
-    /* Fondo semitransparente */
-    padding-top: 20px;
-    transition: left 0.3s ease;
-    /* Animación suave */
-    z-index: 1000;
-}
-
-.sidebar-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.5;
-    /* Ajusta la opacidad de la imagen */
-    z-index: -1;
-}
-
-.sidebar-content {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-}
-
-/* Estilo para la imagen en la sidebar (más pequeña) */
-.sidebar-logo {
-    width: 110px;
-    /* Tamaño pequeño */
-    height: center;
-    /* Mantiene la proporción */
-    margin-bottom: 10px;
-    /* Espacio debajo de la imagen */
-}
-
-.sidebar .button {
-    display: block;
-    width: 90%;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: transparent;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: left;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar .button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.return-icon {
-    width: 40px;
-    height: auto;
-    vertical-align: middle;
-}
-
-/* Botón para abrir/cerrar la sidebar */
-.open-sidebar {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-.open-sidebar:hover {
-    background-color: #575757;
-}
-
-/* Contenido principal */
-.content {
-    margin-left: 0;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-    /* Animación suave */
-}
-
-/* Cuando la sidebar está abierta */
-.sidebar.active {
-    left: 0;
-}
-
-.return-icon {
-    margin-right: 10px;
-}
-
-.content.active {
-    margin-left: 250px;
-}
-
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    margin: 5px 0;
-}
-
-/* Estilo para el icono de la barra lateral */
-.icono-sidebar {
-    width: 40px;
-    height: 40px;
-    margin-right: 5px;
-}
-
-.menu-item.doble-opcion {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    position: relative;
-}
-
-.menu-item.doble-opcion .ir-produccion-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-.menu-item.doble-opcion .toggle-submenu {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 25px; /* Tamaño del la flecha que espliegua el submenú*/
-    cursor: pointer;
-}
-
-.menu-item.doble-opcion .ir-produccion {
-    background-color: transparent;
-    border: none;
-    color: white;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-}
-
-/* Estilo para el menú desplegable producción */
-.menu-item.doble-opcion .submenu {
-    display: none;
-    flex-direction: column;
-    margin-left: 20px;
-}
-
-.menu-item.doble-opcion .submenu .button {
-    color: white;
-    margin: 3px 0;
-    font-size: 14px;
-}
 
 .confirmar-btn {
   position: absolute;     /* lo posicionamos fijo dentro del modal */

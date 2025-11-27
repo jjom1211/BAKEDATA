@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <li><strong>Dirección:</strong> <span style="font-size:0.9em; color:#555;">${details.destino_direccion}</span></li>
                                 </ul>
                                 <div class="comments-box">
-                                    <strong>Comentarios:</strong>
+                                    <strong  style= "color:#df6c55">Comentarios:</strong>
                                     <p>${details.ped_comentarios || 'Sin comentarios adicionales.'}</p>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         let itemsHTML = '';
 
                         if (details.productos && details.productos.length > 0) {
-                            itemsHTML += '<h5 style="margin:10px 0 5px 0; color:#411163;">Productos</h5><ul class="items-list">';
+                            itemsHTML += '<h5 style="margin:10px 0 5px 0; color:#df6c55;">Productos</h5><ul class="items-list">';
                             details.productos.forEach(item => {
                                 const unidad = item.pro_unimed ? `(${item.pro_unimed})` : '';
                                 itemsHTML += `<li><strong>${item.detpedpro_cantidad}</strong> x ${item.pro_nombre} ${unidad}</li>`;
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         if (details.materias_primas && details.materias_primas.length > 0) {
-                            itemsHTML += '<h5 style="margin:10px 0 5px 0; color:#c45d3c;">Materias Primas</h5><ul class="items-list">';
+                            itemsHTML += '<h5 style="margin:10px 0 5px 0; color:#df6c55;">Materias Primas</h5><ul class="items-list">';
                             details.materias_primas.forEach(item => {
                                 const unidad = item.matprim_unimed ? `(${item.matprim_unimed})` : '';
                                 itemsHTML += `<li><strong>${item.detpedmat_cantidad}</strong> x ${item.matprim_nombre} ${unidad}</li>`;

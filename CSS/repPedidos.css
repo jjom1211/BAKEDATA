@@ -5,7 +5,7 @@ body {
     background-image: url("https://i.imgur.com/3nSk8QU.jpg");
     background-size: cover;
     background-attachment: fixed;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
@@ -17,11 +17,11 @@ body {
 h1 {
     text-align: center;
     font-weight: bold;
-    color: #c45d3c; /* Color sólido para mejor lectura */
+    color: #f5e9dc; /* Color sólido para mejor lectura */
     font-size: 3.5em;
     margin-top: 0;
     margin-bottom: 15px;
-    /* -webkit-text-stroke: 2px #9d6363; (Opcional, a veces dificulta lectura) */
+    -webkit-text-stroke: 2px #3d3d3d;  
 }
 
 
@@ -34,7 +34,7 @@ h1 {
 
 .filter-container label {
     font-weight: bold;
-    color: #402929;
+    color: #b35340;
     font-size: 1.1em;
     margin-right: 10px;
 }
@@ -45,7 +45,7 @@ h1 {
     border: 2px solid #9d6363;
     border-radius: 8px;
     background-color: #fceae5; /* Un tono rosado muy suave */
-    color: #7e084b;
+    color: #b35340;
     font-weight: bold;
     cursor: pointer;
     outline: none;
@@ -56,7 +56,7 @@ h1 {
 .filter-container select:hover,
 .filter-container select:focus {
     background-color: #fff;
-    border-color: #7e084b;
+    border-color: #df6c55;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
@@ -68,8 +68,8 @@ h1 {
     max-height: 65vh; /* Ocupa el 65% de la altura de la ventana */
     overflow-y: auto; /* Habilita scroll vertical */
     
-    border: 2px solid #9d6363;
-    background-color: #fff; /* Fondo blanco para la tabla */
+    border: 2px solid #df6c55;
+    background-color: #f5e9dc; /* Fondo blanco para la tabla */
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
@@ -78,7 +78,7 @@ table {
     width: 100%;
     border-collapse: separate; /* Necesario para sticky header */
     border-spacing: 0;
-    background-color: #fff;
+    background-color: #fffaf0;
 }
 
 /* Encabezado Fijo (Sticky) */
@@ -86,8 +86,8 @@ thead th {
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: #E7A59A; /* Tu color rosa/salmón */
-    color: #402929;
+    background-color: #b35340; /* Tu color rosa/salmón */
+    color: #fff;
     padding: 15px;
     text-align: left;
     border-bottom: 2px solid #9d6363;
@@ -96,18 +96,18 @@ thead th {
 
 tbody td {
     padding: 12px 15px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #df6c55;
     color: #333;
 }
 
 tbody tr:hover {
-    background-color: #fceae5; /* Efecto hover suave */
+    background-color: #f5e9dc; /* Efecto hover suave */
 }
 
 
 /* Botón de Ver Detalles */
 .btn-detalles {
-    background-color: #7e084b;
+    background-color: #b35340;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -117,33 +117,42 @@ tbody tr:hover {
     transition: background-color 0.2s ease-in-out;
 }
 .btn-detalles:hover {
-    background-color: #411163;
+    background-color: #df6c55;
 }
 
 
 /* --- BOTÓN DE REGRESAR FIJO --- */
 #backButton {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #7e084b;
+    
+    /* Colores y tipografía */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
     color: white;
     font-size: 28px;
     font-weight: bold;
+    
+    /* Centrado del icono */
     display: flex;
     justify-content: center;
     align-items: center;
+    
+    /* Otros estilos */
     border: none;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 100;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
     transition: all 0.2s ease-in-out;
 }
+
 #backButton:hover {
-    background-color: #411163;
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
     transform: scale(1.05);
 }
 
@@ -187,7 +196,12 @@ tbody tr:hover {
     font-weight: bold;
     cursor: pointer;
 }
-.modal-close-button:hover { color: #000; }
+
+h2,h4,h5{
+    color:#df6c55
+}
+
+.modal-close-button:hover { color: #b35340; }
 
 #modal-body-content ul {
     list-style-type: none;
@@ -195,9 +209,13 @@ tbody tr:hover {
 }
 #modal-body-content li {
     padding: 8px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f5e9dc;
 }
 #modal-body-content li strong {
-    color: #c45d3c;
+    color: #df6c55;
     margin-right: 5px;
+}
+
+#comments-box strong{
+        color: #df6c55;
 }

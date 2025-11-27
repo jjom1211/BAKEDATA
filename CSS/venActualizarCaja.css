@@ -1,9 +1,25 @@
 /* Archivo: CSS/venActualizarCaja.css */
+
+body {
+    background-image: url("https://i.imgur.com/zJ2qs1g.jpg");
+    background-size: 40%;
+    background-repeat: repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    font-family: 'Quicksand', sans-serif;
+    box-sizing: border-box;
+}
+
+
 .container {
     max-width: 600px;
     margin: 20px auto;
     padding: 30px;
-    background: rgba(255, 255, 255, 0.95);
+    background: #fffaf0;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -16,7 +32,7 @@
 
 h1 {
     text-align: center;
-    color: #c45d3c;
+    color: #4f4f4f;
     font-size: 2.5em;
     /* Tamaño reducido */
     border-bottom: none;
@@ -24,6 +40,7 @@ h1 {
     padding-bottom: 0;
     margin-top: 0;
     margin-bottom: 20px;
+    -webkit-text-stroke: 2px #4f4f4f;
 }
 
 /* Estilo para el label del selector */
@@ -39,21 +56,26 @@ h1 {
     max-width: 300px;
     padding: 10px;
     font-size: 1em;
+    background-color: #f5e9dc;
     border: 1px solid #ccc;
     border-radius: 5px;
+    color: #4f4f4f;
+    font-weight: bold;
+    border-color: #4f4f4f;
 }
 
 .info-caja {
     text-align: center;
-    background-color: #f2f2f2;
+    background-color: #f5e9dc;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 30px;
+    color: #4f4f4f;
 }
 
 .info-caja h4 {
     margin: 0;
-    color: #555;
+    color: #4f4f4f;
 }
 
 .info-caja .efectivo-actual {
@@ -78,6 +100,10 @@ form select {
     border-radius: 4px;
     box-sizing: border-box;
     margin-bottom: 20px;
+    background-color: #f5e9dc;
+    border-color: #4f4f4f;
+    color: #4f4f4f;
+    font-weight: bold;
 }
 
 .radio-group {
@@ -92,6 +118,9 @@ form select {
     align-items: center;
     gap: 8px;
     font-weight: normal;
+    font-weight: bold;
+    font-size: 2em;
+    color: #4f4f4f;
 }
 
 /* Botones centrados */
@@ -113,19 +142,19 @@ form select {
 }
 
 .btn-primary {
-    background-color: #DA6049;
+    background-color: #b35340;
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: #eb816c;
+    background-color: #df6c55;
 }
 
 .btn-secondary {
-    background-color: #6c757d;
+    background-color: #3d3d3d;
     color: white;
 }
 
 .btn-secondary:hover {
-    background-color: #5a6268;
+    background-color: #5a5a5a;
 }

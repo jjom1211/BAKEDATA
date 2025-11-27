@@ -5,7 +5,7 @@ body {
     background-image: url("https://i.imgur.com/3nSk8QU.jpg");
     background-size: cover;
     background-attachment: fixed;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
@@ -19,17 +19,18 @@ body {
     /* Margen superior para separar del techo */
     margin: 40px auto; 
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: #fffaf0;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 h1 {
     text-align: center;
-    color: #DA6049;
+    color: #f5e9dc;
     margin-top: 0;
     margin-bottom: 20px;
     font-size: 2.5em;
+    -webkit-text-stroke: 1px #945038;
 }
 
 /* --- NUEVO CONTENEDOR CON SCROLL (LA SOLUCIÓN) --- */
@@ -41,10 +42,10 @@ h1 {
     /* Habilita el scroll tanto vertical como horizontal si es necesario */
     overflow: auto; 
     
-    border: 1px solid #ddd;
+    border: 1px solid #fffaf0;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    background-color: #fff;
+    background-color: #fffaf0;
 }
 
 .table-edicion {
@@ -59,7 +60,7 @@ h1 {
     position: sticky; /* Magia: se queda pegado arriba */
     top: 0;
     z-index: 10; /* Se asegura que esté por encima del contenido */
-    background-color: #411163;
+    background-color: #b35340;
     color: white;
     padding: 15px;
     text-align: left;
@@ -84,7 +85,7 @@ h1 {
 
 .btn-guardar {
     padding: 8px 15px;
-    background-color: #007bff;
+    background-color: #b35340;
     color: white;
     border: none;
     border-radius: 4px;
@@ -93,31 +94,40 @@ h1 {
     width: 100%;
     transition: background-color 0.2s;
 }
-.btn-guardar:hover { background-color: #0056b3; }
+.btn-guardar:hover { background-color: #df6c55; }
 .btn-guardar:disabled { background-color: #ccc; cursor: not-allowed; }
 
-/* Botón Regresar Fijo */
+
 #botonRegresarFijo {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
+    position: fixed; /* Lo fija en la pantalla */
+    bottom: 30px;    /* A 30px del borde inferior */
+    right: 30px;     /* A 30px del borde derecho */
+    
+    /* Estilos para hacerlo un círculo */
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: #7e084b;
+    
+    /* Colores y tipografía */
+    background-color: #3d3d3d; /* Color principal de tu paleta */
     color: white;
     font-size: 28px;
     font-weight: bold;
+    
+    /* Centrado del icono */
     display: flex;
     justify-content: center;
     align-items: center;
+    
+    /* Otros estilos */
     border: none;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
     transition: all 0.2s ease-in-out;
 }
+
 #botonRegresarFijo:hover {
-    background-color: #411163;
+    background-color: #5a5a5a; /* Color secundario de tu paleta */
     transform: scale(1.05);
 }

@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td><strong>#${p.ped_id}</strong></td>
                     <td>${p.destino}</td>
                     <td>${p.ped_asunto}</td>
-                    <td style="color:#2a9d8f; font-weight:bold;">${p.ped_fecha_entrega || '-'}</td>
+                    <td style="color:#b35340; font-weight:bold;">${p.ped_fecha_entrega || '-'}</td>
                     <td><button class="btn-surtir" data-id="${p.ped_id}">Surtir</button></td>
                 </tr>`;
                 tbodyPedidos.insertAdjacentHTML('beforeend', row);
