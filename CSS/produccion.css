@@ -112,9 +112,6 @@ body {
   /* Añadido para asegurar la alineación de la columna izquierda */
 }
 
-.busqueda-container h1 {
-  font-size: 80px;
-}
 
 /* Buscador (Existente) de Registrar produccion*/
 #buscador {
@@ -535,12 +532,7 @@ body {
   text-align: center;
 }
 
-/* ESTILO DEL TÍTULO "Producción" en produccion.html*/
-.container h1 {
-  color: #DA6049;
-  font-size: 100px;
-  text-align: center;
-}
+
 
 /* ESTILO DEL TÍTULO "Inventario de Materias Primas" en materias_primas.html*/
 .container h2 {
